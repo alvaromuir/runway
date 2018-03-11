@@ -1,47 +1,53 @@
 package com.verizon.itanalytics.dataengineering.runway
 
 import java.io.File
-import java.util
 
-import com.verizon.itanalytics.dataengineering.runway.PredictiveModel.{getArguments, readPMML}
-import org.dmg.pmml.PMML
-import org.jpmml.evaluator.InputField
-import org.jpmml.evaluator.mining.MiningModelEvaluator
-
-import scala.io.Source
 import scala.util.control.Breaks.{break, breakable}
 import scala.collection.JavaConversions._
 
-// This is temporary, just a test run
+import com.verizon.itanalytics.dataengineering.runway.PredictiveModel._
+
 object Runway extends App {
 
-  val sourceDir = "./src/test/resources"
+  // Model
+  val pmmlFile = "./src/test/resources/test.pmml"
+  val pMML = readPMML(new File(pmmlFile))
+  val algorithmName = pMML.getModels.head.getAlgorithmName
 
-  val pmmlFileName = "test.pmml"
-  val pmmlFile = sourceDir + "/" + pmmlFileName
-  val pMML: PMML = readPMML(new File(pmmlFile))
-  val evaluator = new MiningModelEvaluator(pMML)
 
-  val dataFileName = "iris.csv"
-  val dataFile = sourceDir + "/" + dataFileName
-  val data = Source.fromFile(dataFile)
+  // Observations
+  val dataFile = "./src/test/resources/test.csv"
+  val data = readDataSet(new File(dataFile))
+  val line = data.getLines.slice(1, 2).next
 
-  val inputFields:util.List[InputField] = evaluator.getInputFields
+  // initialize evaluator
+  val evaluator = getEvaluator(pMML)
+  evaluator.verify()
 
-  var count = 0
+  // Score dataset
+  val inputFields = evaluator.getInputFields
+  val arguments = getArguments(line, inputFields, evaluator)
+  val results = evaluator.evaluate(arguments)
+  val outputFields = evaluator.getOutputFields
+
+  // return results
   for(line <- data.getLines) {
     breakable {
       if(line.startsWith("sepal_length")) break
-      else if(line.isEmpty) break
+      else if (line.isEmpty) break
+      else if (line.split(",").size != inputFields.size) break
       else {
         val arguments = getArguments(line, inputFields, evaluator)
         val results = evaluator.evaluate(arguments)
-        val targetFields = evaluator.getTargetFields
         val outputFields = evaluator.getOutputFields
         for (outputField <- outputFields) {
-          if (outputField.getName.toString == "Predicted_Species") {
-            count += 1
-            println(s"observation ${count} - Predicted_Species : ${results.get(outputField.getName)}")
+          val outputFieldName = outputField.getName
+          if (outputFieldName.toString.startsWith("Predicted")) {
+            println(s"algorithm: $algorithmName")
+            println(inputFields.map(x => x.getName).mkString(", "))
+            println(s"data set: ${line.split(",").mkString(", ")}")
+            println(s"result: ${outputFieldName.toString} - ${results.get(outputFieldName)}")
+            println
           }
         }
       }

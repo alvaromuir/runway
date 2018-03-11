@@ -3,8 +3,7 @@ package com.verizon.itanalytics.dataengineering.runway
 import java.util
 
 import org.dmg.pmml.{FieldName, PMML}
-import org.dmg.pmml.mining.MiningModel
-import org.jpmml.evaluator.{FieldValue, ModelEvaluator, _}
+import org.jpmml.evaluator.{FieldValue, _}
 import org.jpmml.model.PMMLUtil
 import _root_.java.io.{File, FileInputStream, FileNotFoundException, FileOutputStream}
 
@@ -13,6 +12,7 @@ import org.slf4j.{Logger, LoggerFactory}
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable
+import scala.io.{BufferedSource, Source}
 
 object PredictiveModel {
 
@@ -23,6 +23,14 @@ object PredictiveModel {
   def readPMML(file: File): PMML = try {
     val input = new FileInputStream(file)
     try { PMMLUtil.unmarshal(input) }
+    finally if (input != null) input.close()
+  }
+
+  @throws[JAXBException]
+  @throws[FileNotFoundException]
+  def readDataSet(file: File): BufferedSource = try {
+    val input = new FileInputStream(file)
+    try { Source.fromFile(file) }
     finally if (input != null) input.close()
   }
 
@@ -45,17 +53,18 @@ object PredictiveModel {
   }
 
 
+  // todo: Write better arguments class. This one is demo-specific
   def getArguments(line: String,
                        inputFields: util.List[InputField],
-                       modelEvaluator: ModelEvaluator[MiningModel]): mutable.LinkedHashMap[FieldName, FieldValue] = {
+                       modelEvaluator: Evaluator): mutable.LinkedHashMap[FieldName, FieldValue] = {
 
     val lineVariables = line.split(",")
     val arguments = new mutable.LinkedHashMap[FieldName, FieldValue]
 
-    if (lineVariables.size - 1 != inputFields.size) return arguments
+    if (lineVariables.size != inputFields.size) return arguments
 
     // todo: Write dynamic transform logic
-    for ((_, idx) <- lineVariables.zipWithIndex.take(lineVariables.zipWithIndex.length - 1)) {
+    for ((_, idx) <- lineVariables.zipWithIndex.take(lineVariables.zipWithIndex.length)) {
       arguments(new FieldName(inputFields(idx).getName.toString)) =
         inputFields(idx).prepare(
           lineVariables(idx) match {
@@ -67,5 +76,3 @@ object PredictiveModel {
   }
 
 }
-
-
