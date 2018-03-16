@@ -1,36 +1,69 @@
 name := "Project: Runway"
 
-version := "0.1"
+val shared = Seq(
+  scalacOptions ++=  Seq(
+    "-unchecked",
+    "-feature",
+    "-language:existentials",
+    "-language:higherKinds",
+    "-language:implicitConversions",
+    "-language:postfixOps",
+    "-deprecation",
+    "-encoding",
+    "utf8"
+  ),
+  resolvers ++= Seq(
+    "Local Maven Repository" at "file://" + Path.userHome.absolutePath + "/.m2/repository",
+    Resolver.sonatypeRepo("releases"),
+    Resolver.sonatypeRepo("snapshots")
+  ),
+  organization := "com.verizon.itanalytics.dataengineering",
+  version := "0.1",
+  scalaVersion    := "2.11.8"
+)
 
-scalaVersion := "2.11.12"
-
-libraryDependencies ++= {
-  val akkaVersion = "2.4.11.2"
-  Seq(
-    "com.typesafe.akka" %% "akka-actor"   % akkaVersion,
-    "com.typesafe.akka" %% "akka-stream"  % akkaVersion,
-    "com.typesafe.akka" %% "akka-http-experimental" % akkaVersion,
-    "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaVersion,
-    "com.typesafe.akka" %% "akka-slf4j"   % akkaVersion % Test,
-    "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test
+lazy val Runway = (project in file("."))
+  .aggregate(Evaluator)
+  .settings(
+    shared,
+    name := "Project: Runway"
+  ).aggregate(
+    Evaluator,
+    MicroService
   )
+
+lazy val Evaluator = (project in file("evaluator"))
+  .settings(
+    shared,
+    name := "runway-evaluator",
+    description := "Project: Runway -- evaluator",
+    libraryDependencies ++= scalastic.value,
+    libraryDependencies ++= scalatest.value
+  )
+
+lazy val MicroService = (project in file("microservice"))
+  .settings(
+    shared,
+    name := "runway-microservice",
+    description := "Project: Runway -- microservice",
+    libraryDependencies ++= scalastic.value,
+    libraryDependencies ++= scalatest.value
+  )
+  .dependsOn(
+    Evaluator
+  )
+
+val scalaTestVersion = "3.0.5"
+def scalastic = Def.setting {
+  scalaBinaryVersion.value match {
+    case "2.10" => Nil
+    case _      => ("org.scalactic" %% "scalactic" % scalaTestVersion) :: Nil
+  }
 }
 
-libraryDependencies ++= {
-  val jpmmlVersion = "1.4.0"
-  Seq(
-    "org.jpmml" % "pmml-evaluator" % jpmmlVersion,
-    "org.jpmml" % "pmml-evaluator-extension" % jpmmlVersion
-  )
-}
-libraryDependencies += "org.slf4j" % "slf4j-api" % "1.7.25"
-libraryDependencies += "junit" % "junit" % "4.12" % Test
-libraryDependencies += "com.novocode" % "junit-interface" % "0.11" % Test
-
-libraryDependencies ++= {
-  val scalaTestVersion = "3.0.5"
-  Seq(
-    "org.scalactic" %% "scalactic" % scalaTestVersion,
-    "org.scalatest" %% "scalatest" % scalaTestVersion % Test
-  )
+def scalatest = Def.setting {
+  scalaBinaryVersion.value match {
+    case "2.10" => Nil
+    case _      => ("org.scalatest" %% "scalatest" % scalaTestVersion % Test) :: Nil
+  }
 }
