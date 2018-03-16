@@ -58,17 +58,10 @@ Projects can be listed by simply running the projects* command in sbt
 ```
 sbt:Project: Runway >  project Evaluator
 sbt:Project: Runway - Evaluator >  test
-
 ```
-
-
-```
-Give an example
-```
-
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+Coming soon.
 
 ## Built With
 
