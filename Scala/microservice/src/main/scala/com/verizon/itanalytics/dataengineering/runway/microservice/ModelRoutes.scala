@@ -13,9 +13,9 @@ import akka.http.scaladsl.server.directives.MethodDirectives.get
 import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import akka.http.scaladsl.server.directives.PathDirectives.path
 import akka.pattern.ask
+import akka.stream.Materializer
 import akka.stream.scaladsl.FileIO
 import akka.util.Timeout
-
 import com.verizon.itanalytics.dataengineering.runway.evaluator.Manager.readPMML
 import com.verizon.itanalytics.dataengineering.runway.microservice.ModelRegistryActor._
 
@@ -34,7 +34,7 @@ trait ModelRoutes extends JsonSupport {
   lazy val modelRoutes: Route =
     pathPrefix("models") {
       extractRequestContext { ctx =>
-        implicit val materializer = ctx.materializer
+        implicit val materializer: Materializer = ctx.materializer
         concat(
           pathEnd {
             concat(
@@ -54,7 +54,7 @@ trait ModelRoutes extends JsonSupport {
                         onSuccess(uploaded) { file =>
                           // todo: this should live in another handler
                           file.status match {
-                            case Success(_) => {
+                            case Success(_) =>
                               val filePath = s"$path/${metadata.fileName}"
                               val pMML = readPMML(new File(filePath))
                               val algorithm = pMML.getModels.get(0).getAlgorithmName
@@ -66,7 +66,6 @@ trait ModelRoutes extends JsonSupport {
                                 log.info(performed.description)
                                 complete(s"uploaded '${metadata.fileName}' and created model '$id'")
                               }
-                            }
                             case Failure(e) => throw e // Need msg. to client and graceful fail here.
                           }
                         }
