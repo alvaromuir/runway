@@ -12,7 +12,7 @@ import com.typesafe.config.ConfigFactory
 import scala.concurrent.ExecutionContextExecutor
 import scala.io.StdIn
 
-object RestServer extends App with ProjectRoutes with ModelRoutes {
+object MicroService extends App with ProjectRoutes with ModelRoutes {
 
   val config = ConfigFactory.load()
   val host = config.getString("http.host")
