@@ -1,0 +1,317 @@
+<?xml version="1.0"?>
+<PMML version="4.2" xmlns="http://www.dmg.org/PMML-4_2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2/pmml-4-2.xsd">
+ <Header copyright="Copyright (c) 2018 MADDUAV" description="Multinomial Logistic Model">
+  <Extension name="user" value="MADDUAV" extender="Rattle/PMML"/>
+  <Application name="Rattle/PMML" version="1.4"/>
+  <Timestamp>2018-03-15 18:59:45</Timestamp>
+ </Header>
+ <DataDictionary numberOfFields="43">
+  <DataField name="trouble_category" optype="continuous" dataType="double"/>
+  <DataField name="alarm_count" optype="continuous" dataType="double"/>
+  <DataField name="acfail_cleared" optype="continuous" dataType="double"/>
+  <DataField name="acfail_generated" optype="continuous" dataType="double"/>
+  <DataField name="batterypwr_cleared" optype="continuous" dataType="double"/>
+  <DataField name="batterypwr_generated" optype="continuous" dataType="double"/>
+  <DataField name="dg_cleared" optype="continuous" dataType="double"/>
+  <DataField name="dg_generated" optype="continuous" dataType="double"/>
+  <DataField name="inactsfu_cleared" optype="continuous" dataType="double"/>
+  <DataField name="inactsfu_generated" optype="continuous" dataType="double"/>
+  <DataField name="inactsoho_cleared" optype="continuous" dataType="double"/>
+  <DataField name="inactsoho_generated" optype="continuous" dataType="double"/>
+  <DataField name="lanlos_cleared" optype="continuous" dataType="double"/>
+  <DataField name="lanlos_generated" optype="continuous" dataType="double"/>
+  <DataField name="lopldg_cleared" optype="continuous" dataType="double"/>
+  <DataField name="lopldg_generated" optype="continuous" dataType="double"/>
+  <DataField name="lopllos_cleared" optype="continuous" dataType="double"/>
+  <DataField name="lopllos_generated" optype="continuous" dataType="double"/>
+  <DataField name="mocalol_cleared" optype="continuous" dataType="double"/>
+  <DataField name="mocalol_generated" optype="continuous" dataType="double"/>
+  <DataField name="mocaltdlnk_cleared" optype="continuous" dataType="double"/>
+  <DataField name="mocaltdlnk_generated" optype="continuous" dataType="double"/>
+  <DataField name="ontestop_cleared" optype="continuous" dataType="double"/>
+  <DataField name="ontestop_generated" optype="continuous" dataType="double"/>
+  <DataField name="ontlos_cleared" optype="continuous" dataType="double"/>
+  <DataField name="ontlos_generated" optype="continuous" dataType="double"/>
+  <DataField name="pwrandbatt_cleared" optype="continuous" dataType="double"/>
+  <DataField name="pwrandbatt_generated" optype="continuous" dataType="double"/>
+  <DataField name="pwrlos_cleared" optype="continuous" dataType="double"/>
+  <DataField name="pwrlos_generated" optype="continuous" dataType="double"/>
+  <DataField name="dtp_touchpoint" optype="categorical" dataType="string">
+   <Value value="0"/>
+   <Value value="1"/>
+  </DataField>
+  <DataField name="dtp_lastchannel_vzspeedtest_desktop" optype="categorical" dataType="string">
+   <Value value="0"/>
+   <Value value="1"/>
+  </DataField>
+  <DataField name="dtp_lastchannel_IMG" optype="categorical" dataType="string">
+   <Value value="0"/>
+   <Value value="1"/>
+  </DataField>
+  <DataField name="dtp_lastchannel_vzcomvmapp" optype="categorical" dataType="string">
+   <Value value="0"/>
+   <Value value="1"/>
+  </DataField>
+  <DataField name="dtp_lastchannel_vzcommyvz" optype="categorical" dataType="string">
+   <Value value="0"/>
+   <Value value="1"/>
+  </DataField>
+  <DataField name="dtp_lastchanne_ihaicadmobile" optype="categorical" dataType="string">
+   <Value value="0"/>
+   <Value value="1"/>
+  </DataField>
+  <DataField name="dtp_lastchanne_ihaicadWEB" optype="categorical" dataType="string">
+   <Value value="0"/>
+   <Value value="1"/>
+  </DataField>
+  <DataField name="dtp_lastchanne_VZCOM" optype="categorical" dataType="string">
+   <Value value="0"/>
+   <Value value="1"/>
+  </DataField>
+  <DataField name="dtp_lastchanne_AEDW" optype="categorical" dataType="string">
+   <Value value="0"/>
+   <Value value="1"/>
+  </DataField>
+  <DataField name="dtp_lastchanne_HNM" optype="categorical" dataType="string">
+   <Value value="0"/>
+   <Value value="1"/>
+  </DataField>
+  <DataField name="DTP_LASTCHANNEL_OTHERS" optype="categorical" dataType="string">
+   <Value value="0"/>
+   <Value value="1"/>
+  </DataField>
+  <DataField name="dtp_touchpoint_count" optype="continuous" dataType="double"/>
+  <DataField name="dtp_count_of_channel_visited" optype="continuous" dataType="double"/>
+ </DataDictionary>
+ <RegressionModel modelName="multinom_Model" functionName="classification" algorithmName="multinom" normalizationMethod="softmax">
+  <MiningSchema>
+   <MiningField name="trouble_category" usageType="predicted"/>
+   <MiningField name="alarm_count" usageType="active"/>
+   <MiningField name="acfail_cleared" usageType="active"/>
+   <MiningField name="acfail_generated" usageType="active"/>
+   <MiningField name="batterypwr_cleared" usageType="active"/>
+   <MiningField name="batterypwr_generated" usageType="active"/>
+   <MiningField name="dg_cleared" usageType="active"/>
+   <MiningField name="dg_generated" usageType="active"/>
+   <MiningField name="inactsfu_cleared" usageType="active"/>
+   <MiningField name="inactsfu_generated" usageType="active"/>
+   <MiningField name="inactsoho_cleared" usageType="active"/>
+   <MiningField name="inactsoho_generated" usageType="active"/>
+   <MiningField name="lanlos_cleared" usageType="active"/>
+   <MiningField name="lanlos_generated" usageType="active"/>
+   <MiningField name="lopldg_cleared" usageType="active"/>
+   <MiningField name="lopldg_generated" usageType="active"/>
+   <MiningField name="lopllos_cleared" usageType="active"/>
+   <MiningField name="lopllos_generated" usageType="active"/>
+   <MiningField name="mocalol_cleared" usageType="active"/>
+   <MiningField name="mocalol_generated" usageType="active"/>
+   <MiningField name="mocaltdlnk_cleared" usageType="active"/>
+   <MiningField name="mocaltdlnk_generated" usageType="active"/>
+   <MiningField name="ontestop_cleared" usageType="active"/>
+   <MiningField name="ontestop_generated" usageType="active"/>
+   <MiningField name="ontlos_cleared" usageType="active"/>
+   <MiningField name="ontlos_generated" usageType="active"/>
+   <MiningField name="pwrandbatt_cleared" usageType="active"/>
+   <MiningField name="pwrandbatt_generated" usageType="active"/>
+   <MiningField name="pwrlos_cleared" usageType="active"/>
+   <MiningField name="pwrlos_generated" usageType="active"/>
+   <MiningField name="dtp_touchpoint" usageType="active"/>
+   <MiningField name="dtp_lastchannel_vzspeedtest_desktop" usageType="active"/>
+   <MiningField name="dtp_lastchannel_IMG" usageType="active"/>
+   <MiningField name="dtp_lastchannel_vzcomvmapp" usageType="active"/>
+   <MiningField name="dtp_lastchannel_vzcommyvz" usageType="active"/>
+   <MiningField name="dtp_lastchanne_ihaicadmobile" usageType="active"/>
+   <MiningField name="dtp_lastchanne_ihaicadWEB" usageType="active"/>
+   <MiningField name="dtp_lastchanne_VZCOM" usageType="active"/>
+   <MiningField name="dtp_lastchanne_AEDW" usageType="active"/>
+   <MiningField name="dtp_lastchanne_HNM" usageType="active"/>
+   <MiningField name="DTP_LASTCHANNEL_OTHERS" usageType="active"/>
+   <MiningField name="dtp_touchpoint_count" usageType="active"/>
+   <MiningField name="dtp_count_of_channel_visited" usageType="active"/>
+  </MiningSchema>
+  <Output>
+   <OutputField name="Predicted_trouble_category" feature="predictedValue"/>
+  </Output>
+  <RegressionTable intercept="-0.966750927448669" targetCategory="2">
+   <NumericPredictor name="alarm_count" exponent="1" coefficient="0.228708196333475"/>
+   <NumericPredictor name="acfail_cleared" exponent="1" coefficient="1.34924665937006"/>
+   <NumericPredictor name="acfail_generated" exponent="1" coefficient="0.612063397706649"/>
+   <NumericPredictor name="batterypwr_cleared" exponent="1" coefficient="-0.882151222257948"/>
+   <NumericPredictor name="batterypwr_generated" exponent="1" coefficient="0.655600897953808"/>
+   <NumericPredictor name="dg_cleared" exponent="1" coefficient="-0.362050647170442"/>
+   <NumericPredictor name="dg_generated" exponent="1" coefficient="0.299245534018833"/>
+   <NumericPredictor name="inactsfu_cleared" exponent="1" coefficient="-2.18578051450544"/>
+   <NumericPredictor name="inactsfu_generated" exponent="1" coefficient="1.94072334549986"/>
+   <NumericPredictor name="inactsoho_cleared" exponent="1" coefficient="-1.32460052392383"/>
+   <NumericPredictor name="inactsoho_generated" exponent="1" coefficient="1.93434987034437"/>
+   <NumericPredictor name="lanlos_cleared" exponent="1" coefficient="-0.478066984918814"/>
+   <NumericPredictor name="lanlos_generated" exponent="1" coefficient="-0.34615692888853"/>
+   <NumericPredictor name="lopldg_cleared" exponent="1" coefficient="-1.48525626808019"/>
+   <NumericPredictor name="lopldg_generated" exponent="1" coefficient="1.03019408413134"/>
+   <NumericPredictor name="lopllos_cleared" exponent="1" coefficient="-2.34671284108987"/>
+   <NumericPredictor name="lopllos_generated" exponent="1" coefficient="1.91591961284965"/>
+   <NumericPredictor name="mocalol_cleared" exponent="1" coefficient="-0.435292334383546"/>
+   <NumericPredictor name="mocalol_generated" exponent="1" coefficient="-0.51963497179965"/>
+   <NumericPredictor name="mocaltdlnk_cleared" exponent="1" coefficient="-0.435102317827482"/>
+   <NumericPredictor name="mocaltdlnk_generated" exponent="1" coefficient="-0.0247065036198526"/>
+   <NumericPredictor name="ontestop_cleared" exponent="1" coefficient="0.295399803965759"/>
+   <NumericPredictor name="ontestop_generated" exponent="1" coefficient="1.32130009482698"/>
+   <NumericPredictor name="ontlos_cleared" exponent="1" coefficient="-1.86601999666689"/>
+   <NumericPredictor name="ontlos_generated" exponent="1" coefficient="1.41252895922224"/>
+   <NumericPredictor name="pwrandbatt_cleared" exponent="1" coefficient="-1.29665667510259"/>
+   <NumericPredictor name="pwrandbatt_generated" exponent="1" coefficient="1.01604062526734"/>
+   <NumericPredictor name="pwrlos_cleared" exponent="1" coefficient="-0.330596440568221"/>
+   <NumericPredictor name="pwrlos_generated" exponent="1" coefficient="0.764880514514037"/>
+   <NumericPredictor name="dtp_touchpoint_count" exponent="1" coefficient="-0.0145026281911102"/>
+   <NumericPredictor name="dtp_count_of_channel_visited" exponent="1" coefficient="-0.0533774191579065"/>
+   <CategoricalPredictor name="dtp_touchpoint" value="1" coefficient="-0.0880377041449832"/>
+   <CategoricalPredictor name="dtp_lastchannel_vzspeedtest_desktop" value="1" coefficient="-4.61706949851046"/>
+   <CategoricalPredictor name="dtp_lastchannel_IMG" value="1" coefficient="1.21782136821134"/>
+   <CategoricalPredictor name="dtp_lastchannel_vzcomvmapp" value="1" coefficient="0.231391557898765"/>
+   <CategoricalPredictor name="dtp_lastchannel_vzcommyvz" value="1" coefficient="0.206665129113454"/>
+   <CategoricalPredictor name="dtp_lastchanne_ihaicadmobile" value="1" coefficient="-0.041113923905757"/>
+   <CategoricalPredictor name="dtp_lastchanne_ihaicadWEB" value="1" coefficient="0.0593935330518093"/>
+   <CategoricalPredictor name="dtp_lastchanne_VZCOM" value="1" coefficient="0.199149990641475"/>
+   <CategoricalPredictor name="dtp_lastchanne_AEDW" value="1" coefficient="0.665134827248501"/>
+   <CategoricalPredictor name="dtp_lastchanne_HNM" value="1" coefficient="0.762551646778193"/>
+   <CategoricalPredictor name="DTP_LASTCHANNEL_OTHERS" value="1" coefficient="0.349324442386219"/>
+   <CategoricalPredictor name="dtp_touchpoint" value="_count" coefficient="-0.0145026281911102"/>
+  </RegressionTable>
+  <RegressionTable intercept="-0.757916422782675" targetCategory="3">
+   <NumericPredictor name="alarm_count" exponent="1" coefficient="-0.238610189049829"/>
+   <NumericPredictor name="acfail_cleared" exponent="1" coefficient="-1.60098092799559"/>
+   <NumericPredictor name="acfail_generated" exponent="1" coefficient="-1.75415730788141"/>
+   <NumericPredictor name="batterypwr_cleared" exponent="1" coefficient="0.259403905559225"/>
+   <NumericPredictor name="batterypwr_generated" exponent="1" coefficient="0.449379856174508"/>
+   <NumericPredictor name="dg_cleared" exponent="1" coefficient="0.13855889674238"/>
+   <NumericPredictor name="dg_generated" exponent="1" coefficient="0.152525999294146"/>
+   <NumericPredictor name="inactsfu_cleared" exponent="1" coefficient="0.403691854797072"/>
+   <NumericPredictor name="inactsfu_generated" exponent="1" coefficient="-0.120067777046456"/>
+   <NumericPredictor name="inactsoho_cleared" exponent="1" coefficient="1.22388288973313"/>
+   <NumericPredictor name="inactsoho_generated" exponent="1" coefficient="-1.38672198884595"/>
+   <NumericPredictor name="lanlos_cleared" exponent="1" coefficient="0.196653093762544"/>
+   <NumericPredictor name="lanlos_generated" exponent="1" coefficient="0.262799214769454"/>
+   <NumericPredictor name="lopldg_cleared" exponent="1" coefficient="0.239756887116895"/>
+   <NumericPredictor name="lopldg_generated" exponent="1" coefficient="-0.176180101721127"/>
+   <NumericPredictor name="lopllos_cleared" exponent="1" coefficient="0.394898812130053"/>
+   <NumericPredictor name="lopllos_generated" exponent="1" coefficient="0.0947587609622405"/>
+   <NumericPredictor name="mocalol_cleared" exponent="1" coefficient="0.212738400735108"/>
+   <NumericPredictor name="mocalol_generated" exponent="1" coefficient="0.00359603244161011"/>
+   <NumericPredictor name="mocaltdlnk_cleared" exponent="1" coefficient="0.165988221140467"/>
+   <NumericPredictor name="mocaltdlnk_generated" exponent="1" coefficient="0.33881209325509"/>
+   <NumericPredictor name="ontestop_cleared" exponent="1" coefficient="-1.07771323268891"/>
+   <NumericPredictor name="ontestop_generated" exponent="1" coefficient="-0.113067552046227"/>
+   <NumericPredictor name="ontlos_cleared" exponent="1" coefficient="0.57094433413244"/>
+   <NumericPredictor name="ontlos_generated" exponent="1" coefficient="-0.245393241409564"/>
+   <NumericPredictor name="pwrandbatt_cleared" exponent="1" coefficient="0.0236554986989089"/>
+   <NumericPredictor name="pwrandbatt_generated" exponent="1" coefficient="0.0824399020365811"/>
+   <NumericPredictor name="pwrlos_cleared" exponent="1" coefficient="0.459067258676194"/>
+   <NumericPredictor name="pwrlos_generated" exponent="1" coefficient="0.56212001646438"/>
+   <NumericPredictor name="dtp_touchpoint_count" exponent="1" coefficient="0.00619000231042671"/>
+   <NumericPredictor name="dtp_count_of_channel_visited" exponent="1" coefficient="0.0431483327861637"/>
+   <CategoricalPredictor name="dtp_touchpoint" value="1" coefficient="0.169095276297706"/>
+   <CategoricalPredictor name="dtp_lastchannel_vzspeedtest_desktop" value="1" coefficient="-2.20936048924067"/>
+   <CategoricalPredictor name="dtp_lastchannel_IMG" value="1" coefficient="2.39590990365158"/>
+   <CategoricalPredictor name="dtp_lastchannel_vzcomvmapp" value="1" coefficient="-1.19373493557175"/>
+   <CategoricalPredictor name="dtp_lastchannel_vzcommyvz" value="1" coefficient="-0.992800079859854"/>
+   <CategoricalPredictor name="dtp_lastchanne_ihaicadmobile" value="1" coefficient="-0.650030670849295"/>
+   <CategoricalPredictor name="dtp_lastchanne_ihaicadWEB" value="1" coefficient="-0.196651011968282"/>
+   <CategoricalPredictor name="dtp_lastchanne_VZCOM" value="1" coefficient="-0.813599849336521"/>
+   <CategoricalPredictor name="dtp_lastchanne_AEDW" value="1" coefficient="-0.817124403064938"/>
+   <CategoricalPredictor name="dtp_lastchanne_HNM" value="1" coefficient="4.08707467786606"/>
+   <CategoricalPredictor name="DTP_LASTCHANNEL_OTHERS" value="1" coefficient="-0.367599563998499"/>
+   <CategoricalPredictor name="dtp_touchpoint" value="_count" coefficient="0.00619000231042671"/>
+  </RegressionTable>
+  <RegressionTable intercept="-0.547277867712537" targetCategory="4">
+   <NumericPredictor name="alarm_count" exponent="1" coefficient="-0.0812163107352509"/>
+   <NumericPredictor name="acfail_cleared" exponent="1" coefficient="0.428643491779586"/>
+   <NumericPredictor name="acfail_generated" exponent="1" coefficient="-0.0242021884455801"/>
+   <NumericPredictor name="batterypwr_cleared" exponent="1" coefficient="-0.195658684710864"/>
+   <NumericPredictor name="batterypwr_generated" exponent="1" coefficient="0.00959220557850041"/>
+   <NumericPredictor name="dg_cleared" exponent="1" coefficient="-0.186118278608498"/>
+   <NumericPredictor name="dg_generated" exponent="1" coefficient="-0.885793322790151"/>
+   <NumericPredictor name="inactsfu_cleared" exponent="1" coefficient="0.80605318948716"/>
+   <NumericPredictor name="inactsfu_generated" exponent="1" coefficient="-0.287285839453486"/>
+   <NumericPredictor name="inactsoho_cleared" exponent="1" coefficient="1.62986759405307"/>
+   <NumericPredictor name="inactsoho_generated" exponent="1" coefficient="0.287722073108132"/>
+   <NumericPredictor name="lanlos_cleared" exponent="1" coefficient="-0.397311251108692"/>
+   <NumericPredictor name="lanlos_generated" exponent="1" coefficient="-0.165057342920671"/>
+   <NumericPredictor name="lopldg_cleared" exponent="1" coefficient="-0.0278502246123004"/>
+   <NumericPredictor name="lopldg_generated" exponent="1" coefficient="-0.294705772583656"/>
+   <NumericPredictor name="lopllos_cleared" exponent="1" coefficient="0.120594846327447"/>
+   <NumericPredictor name="lopllos_generated" exponent="1" coefficient="0.0627904988432116"/>
+   <NumericPredictor name="mocalol_cleared" exponent="1" coefficient="-0.369087728281634"/>
+   <NumericPredictor name="mocalol_generated" exponent="1" coefficient="-0.430847742363807"/>
+   <NumericPredictor name="mocaltdlnk_cleared" exponent="1" coefficient="-0.9392829718069"/>
+   <NumericPredictor name="mocaltdlnk_generated" exponent="1" coefficient="0.989106794810619"/>
+   <NumericPredictor name="ontestop_cleared" exponent="1" coefficient="0.0112396991922833"/>
+   <NumericPredictor name="ontestop_generated" exponent="1" coefficient="-0.21188452277476"/>
+   <NumericPredictor name="ontlos_cleared" exponent="1" coefficient="0.216924648840282"/>
+   <NumericPredictor name="ontlos_generated" exponent="1" coefficient="-0.0578196650323697"/>
+   <NumericPredictor name="pwrandbatt_cleared" exponent="1" coefficient="-0.487475623268258"/>
+   <NumericPredictor name="pwrandbatt_generated" exponent="1" coefficient="-0.113218394969136"/>
+   <NumericPredictor name="pwrlos_cleared" exponent="1" coefficient="0.496510206922198"/>
+   <NumericPredictor name="pwrlos_generated" exponent="1" coefficient="-0.0666620143305954"/>
+   <NumericPredictor name="dtp_touchpoint_count" exponent="1" coefficient="-0.093130367591508"/>
+   <NumericPredictor name="dtp_count_of_channel_visited" exponent="1" coefficient="0.0766958025496312"/>
+   <CategoricalPredictor name="dtp_touchpoint" value="1" coefficient="-0.111519564578588"/>
+   <CategoricalPredictor name="dtp_lastchannel_vzspeedtest_desktop" value="1" coefficient="-3.07691827943776"/>
+   <CategoricalPredictor name="dtp_lastchannel_IMG" value="1" coefficient="0.774981410355839"/>
+   <CategoricalPredictor name="dtp_lastchannel_vzcomvmapp" value="1" coefficient="-0.569715380217247"/>
+   <CategoricalPredictor name="dtp_lastchannel_vzcommyvz" value="1" coefficient="-0.165097379531397"/>
+   <CategoricalPredictor name="dtp_lastchanne_ihaicadmobile" value="1" coefficient="-0.15957638572488"/>
+   <CategoricalPredictor name="dtp_lastchanne_ihaicadWEB" value="1" coefficient="1.42824390266153"/>
+   <CategoricalPredictor name="dtp_lastchanne_VZCOM" value="1" coefficient="0.659108005714274"/>
+   <CategoricalPredictor name="dtp_lastchanne_AEDW" value="1" coefficient="0.49409924811031"/>
+   <CategoricalPredictor name="dtp_lastchanne_HNM" value="1" coefficient="-0.154303631041518"/>
+   <CategoricalPredictor name="DTP_LASTCHANNEL_OTHERS" value="1" coefficient="0.221900620982354"/>
+   <CategoricalPredictor name="dtp_touchpoint" value="_count" coefficient="-0.093130367591508"/>
+  </RegressionTable>
+  <RegressionTable intercept="0.29675311604789" targetCategory="5">
+   <NumericPredictor name="alarm_count" exponent="1" coefficient="0.020395874893998"/>
+   <NumericPredictor name="acfail_cleared" exponent="1" coefficient="-0.0817176003941478"/>
+   <NumericPredictor name="acfail_generated" exponent="1" coefficient="1.26037657617952"/>
+   <NumericPredictor name="batterypwr_cleared" exponent="1" coefficient="0.0089471884962814"/>
+   <NumericPredictor name="batterypwr_generated" exponent="1" coefficient="0.169374401606996"/>
+   <NumericPredictor name="dg_cleared" exponent="1" coefficient="0.115773018467063"/>
+   <NumericPredictor name="dg_generated" exponent="1" coefficient="-0.329916572947775"/>
+   <NumericPredictor name="inactsfu_cleared" exponent="1" coefficient="-0.220207493864913"/>
+   <NumericPredictor name="inactsfu_generated" exponent="1" coefficient="-0.119107095246093"/>
+   <NumericPredictor name="inactsoho_cleared" exponent="1" coefficient="1.15923482255256"/>
+   <NumericPredictor name="inactsoho_generated" exponent="1" coefficient="-0.708760724267187"/>
+   <NumericPredictor name="lanlos_cleared" exponent="1" coefficient="-0.00844376687147596"/>
+   <NumericPredictor name="lanlos_generated" exponent="1" coefficient="-0.0389834428670299"/>
+   <NumericPredictor name="lopldg_cleared" exponent="1" coefficient="0.00819779977218437"/>
+   <NumericPredictor name="lopldg_generated" exponent="1" coefficient="-0.195491409258656"/>
+   <NumericPredictor name="lopllos_cleared" exponent="1" coefficient="0.0642827967625716"/>
+   <NumericPredictor name="lopllos_generated" exponent="1" coefficient="-0.104397872519134"/>
+   <NumericPredictor name="mocalol_cleared" exponent="1" coefficient="-0.0315391655109953"/>
+   <NumericPredictor name="mocalol_generated" exponent="1" coefficient="-0.197987109647463"/>
+   <NumericPredictor name="mocaltdlnk_cleared" exponent="1" coefficient="-0.0903949627719641"/>
+   <NumericPredictor name="mocaltdlnk_generated" exponent="1" coefficient="0.0828900895380815"/>
+   <NumericPredictor name="ontestop_cleared" exponent="1" coefficient="-1.07252235071738"/>
+   <NumericPredictor name="ontestop_generated" exponent="1" coefficient="0.362119226076441"/>
+   <NumericPredictor name="ontlos_cleared" exponent="1" coefficient="-0.17938249543842"/>
+   <NumericPredictor name="ontlos_generated" exponent="1" coefficient="-0.146845447187795"/>
+   <NumericPredictor name="pwrandbatt_cleared" exponent="1" coefficient="-0.0814967885605323"/>
+   <NumericPredictor name="pwrandbatt_generated" exponent="1" coefficient="-0.216447843326242"/>
+   <NumericPredictor name="pwrlos_cleared" exponent="1" coefficient="0.546711229832889"/>
+   <NumericPredictor name="pwrlos_generated" exponent="1" coefficient="0.0661308596362645"/>
+   <NumericPredictor name="dtp_touchpoint_count" exponent="1" coefficient="-0.0481998344204995"/>
+   <NumericPredictor name="dtp_count_of_channel_visited" exponent="1" coefficient="0.177413050835723"/>
+   <CategoricalPredictor name="dtp_touchpoint" value="1" coefficient="0.504533230328959"/>
+   <CategoricalPredictor name="dtp_lastchannel_vzspeedtest_desktop" value="1" coefficient="0.610086754587402"/>
+   <CategoricalPredictor name="dtp_lastchannel_IMG" value="1" coefficient="0.631381868056416"/>
+   <CategoricalPredictor name="dtp_lastchannel_vzcomvmapp" value="1" coefficient="-0.718163695624851"/>
+   <CategoricalPredictor name="dtp_lastchannel_vzcommyvz" value="1" coefficient="-0.694519691310092"/>
+   <CategoricalPredictor name="dtp_lastchanne_ihaicadmobile" value="1" coefficient="-1.60519891182614"/>
+   <CategoricalPredictor name="dtp_lastchanne_ihaicadWEB" value="1" coefficient="0.126686117453911"/>
+   <CategoricalPredictor name="dtp_lastchanne_VZCOM" value="1" coefficient="-0.184719831469375"/>
+   <CategoricalPredictor name="dtp_lastchanne_AEDW" value="1" coefficient="-0.643355539765227"/>
+   <CategoricalPredictor name="dtp_lastchanne_HNM" value="1" coefficient="2.97750669590886"/>
+   <CategoricalPredictor name="DTP_LASTCHANNEL_OTHERS" value="1" coefficient="-0.202950648232772"/>
+   <CategoricalPredictor name="dtp_touchpoint" value="_count" coefficient="-0.0481998344204995"/>
+  </RegressionTable>
+  <RegressionTable intercept="0.0" targetCategory="1"/>
+ </RegressionModel>
+</PMML>

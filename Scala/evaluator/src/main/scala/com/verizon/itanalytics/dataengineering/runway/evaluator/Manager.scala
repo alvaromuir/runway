@@ -53,6 +53,8 @@ object Manager {
   }
 
 
+
+
   // todo: Write better arguments class. This one is demo-specific
   def getArguments(line: String,
                        inputFields: util.List[InputField],

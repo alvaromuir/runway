@@ -27,11 +27,7 @@ object Evaluator extends App {
 
   // Score data set
   val inputFields = evaluator.getInputFields
-  val arguments = getArguments(line, inputFields, evaluator)
-  val results = evaluator.evaluate(arguments)
-  val outputFields = evaluator.getOutputFields
 
-  // return results
   for(line <- data.getLines) {
     breakable {
       if(line.startsWith("sepal_length")) break

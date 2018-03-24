@@ -2,7 +2,7 @@ package com.verizon.itanalytics.dataengineering.runway.microservice.utils
 
 //sourced from https://gist.github.com/sam/5213151
 
-object Slug {
+object Slugify {
   def apply(input:String): String = slugify(input)
 
   def slugify(input: String): String = {

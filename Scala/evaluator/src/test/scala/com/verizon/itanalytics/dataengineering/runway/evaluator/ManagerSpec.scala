@@ -72,7 +72,7 @@ class ManagerSpec extends FlatSpec with Builder {
     assert(dataFields(4).toString === "Petal.Width")
   }
 
-  "the test PMML data when scoring observations" should
+  "the test data when scoring observations" should
     "have 5 fields that match the model, including the target variable" in {
     val data = Source.fromFile(filesBuffer(1))
     val fields = data.getLines.take(1).toList.head.split(",")
@@ -92,6 +92,17 @@ class ManagerSpec extends FlatSpec with Builder {
 
     // The test file is a random forest
     assert(evaluator.getSummary === "Ensemble model")
+  }
+
+  it should "be able to describe the required data set of an observation" in {
+    val pMML: PMML = readPMML(new File(filesBuffer.head))
+    val evaluator = getEvaluator(pMML)
+
+    val inputFields = evaluator.getInputFields
+    for (inputField <- inputFields) {
+      assert(inputField.getDataType === DOUBLE)
+      assert(inputField.getOpType === CONTINUOUS)
+    }
   }
 
   it should "read the input pMML as 4 CONTINUOUS features of type DOUBLE" in {
