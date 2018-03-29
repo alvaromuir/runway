@@ -16,20 +16,24 @@ import akka.pattern.ask
 import akka.stream._
 import akka.stream.alpakka.csv.scaladsl.{CsvParsing, CsvToMap}
 import akka.stream.scaladsl.{FileIO, Flow, Framing}
-import akka.util.Timeout
-import com.verizon.itanalytics.dataengineering.runway.evaluator.Manager.{getEvaluator, readPMML}
-import com.verizon.itanalytics.dataengineering.runway.microservice.ModelRegistryActor._
-import com.verizon.itanalytics.dataengineering.runway.microservice.utils._
+import akka.util.{Timeout, ByteString}
+
 import org.jpmml.evaluator.Evaluator
-import spray.json.JsValue
-import akka.util.ByteString
+
+import spray.json._
 
 import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 import scala.concurrent._
-import ExecutionContext.Implicits.global
+
+import com.verizon.itanalytics.dataengineering.runway.evaluator.Manager.{getEvaluator, readPMML}
+import com.verizon.itanalytics.dataengineering.runway.microservice.ModelRegistryActor._
+import com.verizon.itanalytics.dataengineering.runway.microservice.utils._
+
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
+
+import ExecutionContext.Implicits.global
 
 
 trait ModelRoutes extends JsonSupport {
@@ -171,10 +175,14 @@ trait ModelRoutes extends JsonSupport {
                   val maybeEvaluator: Future[Evaluator] = maybeModel.map { model => getEvaluator(readPMML(new File(model.get.path))) }
 
                   entity(as[JsValue]) { observation =>
-                    val futureEstimate: Future[Future[ModelRegistryActor.ModelActionPerformed]] = maybeEvaluator.map { evaluator =>
-                      (modelRegistryActor ? GetEstimate(Listify(observation).mkString(","), evaluator)).mapTo[ModelActionPerformed]
+                    onComplete(maybeEvaluator) {
+                      case Success(evaluator) =>
+                        onComplete((modelRegistryActor ? GetEstimate(Listify(observation).mkString(","), evaluator)).mapTo[ModelActionPerformed]) {
+                          case Success(results) => complete(HttpEntity(ContentTypes.`application/json`, results.description))
+                          case Failure(ex) => complete(s"error performing prediction: ${ex.getMessage}")
+                        }
+                      case Failure(ex) => complete(s"error, model not found: ${ex.getMessage}")
                     }
-                    complete(futureEstimate)
                   }
                 },
                 delete {

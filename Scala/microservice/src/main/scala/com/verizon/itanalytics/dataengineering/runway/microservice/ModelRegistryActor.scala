@@ -1,20 +1,16 @@
 package com.verizon.itanalytics.dataengineering.runway.microservice
 
-
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.logging.Logger
 
 import akka.actor.{Actor, ActorLogging, Props}
-import akka.stream.scaladsl.Framing
-import akka.util.ByteString
-import com.verizon.itanalytics.dataengineering.runway.evaluator.Manager.{getArguments, getEvaluator, readPMML}
-import org.jpmml.evaluator.{Evaluator, FieldValue, InvalidResultException}
-import spray.json._
+import com.verizon.itanalytics.dataengineering.runway.evaluator.Manager.getArguments
+import org.jpmml.evaluator.Evaluator
 
-import scala.collection.JavaConversions._
-import scala.concurrent.Future
+import collection.JavaConverters._
+import spray.json._
+import DefaultJsonProtocol._
+
 
 final case class InputField(name: String, dataType: String, opType: String)
 final case class Model(id:          String,
@@ -91,15 +87,40 @@ class ModelRegistryActor extends Actor with ActorLogging {
       sender() ! ModelActionPerformed(s"Model $id deleted.")
 
     case GetEstimate(observation: String, evaluator: Evaluator) =>
-      // todo: improve json result
-      val results = try {
-        evaluator.evaluate(getArguments(observation,
-          evaluator.getInputFields,
-          evaluator))
+      implicit object AnyJsonFormat extends JsonFormat[Any] {
+        def write(x: Any) = x match {
+          case d: java.lang.Double => JsNumber(d)
+          case i: java.lang.Integer => JsNumber(i)
+          case s: java.lang.String => JsString(s)
+          case b: java.lang.Boolean if b => JsTrue
+          case b: java.lang.Boolean if !b => JsFalse
+          case p: org.jpmml.evaluator.Classification[Any] => JsString(p.toString)
+        }
+        def read(value: JsValue) = value match {
+          case JsNumber(d) => d.doubleValue()
+          case JsNumber(i) => i.intValue()
+          case JsString(s) => s
+          case JsTrue => true
+          case JsFalse => false
+        }
       }
-      catch {
-        case e: Exception => log.info(e.getMessage)
+      
+      val estimate = Option(evaluator
+        .evaluate(getArguments(observation, evaluator.getInputFields, evaluator).asJava)
+          .asScala
+        .toMap
+        .map {
+          case (k, map: Map[String, Any]) => k.toString -> map
+          case (k, v) => k.toString -> v
+        }
+      )
+
+      if(estimate.isDefined) {
+
+        val results = estimate.get
+        sender() ! ModelActionPerformed(s"${results.toJson}")
+      } else {
+        sender() ! ModelActionPerformed(s"""{"results":"error"}""")
       }
-      sender() ! ModelActionPerformed(s"$results")
   }
 }

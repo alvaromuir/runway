@@ -10,8 +10,6 @@ import akka.testkit.TestDuration
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{Matchers, WordSpec}
 
-import spray.json._
-
 import scala.concurrent.duration._
 import scala.io.Source
 
