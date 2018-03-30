@@ -4,6 +4,7 @@ organization  := "com.verizon.itanalytics.dataengineering.runway"
 version       := "0.0.1"
 scalaVersion  := "2.11.8"
 
+
 libraryDependencies ++= {
   val jpmmlVersion = "1.4.0"
   Seq(
@@ -24,9 +25,10 @@ libraryDependencies ++= {
 }
 
 mainClass in assembly := some("com.verizon.itanalytics.dataengineering.runway.microservice.Microservice")
-assemblyJarName := "runway-microsoerver-0.01-SNAPSHOT.jar"
+assemblyJarName in assembly := "project_runway-microserver-0.01-SNAPSHOT.jar"
 
 val meta = """META.INF(.)*""".r
+
 assemblyMergeStrategy in assembly := {
   case PathList("javax", "servlet", xs @ _*) => MergeStrategy.first
   case PathList(ps @ _*) if ps.last endsWith ".html" => MergeStrategy.first
