@@ -1,3 +1,4 @@
+
 name          := "Project: Runway - Evaluator"
 organization  := "com.verizon.itanalytics.dataengineering.runway"
 version       := "0.0.1"
@@ -20,4 +21,17 @@ libraryDependencies ++= {
     "org.scalactic" %% "scalactic" % scalaTestVersion,
     "org.scalatest" %% "scalatest" % scalaTestVersion % Test
   )
+}
+
+mainClass in assembly := some("com.verizon.itanalytics.dataengineering.runway.microservice.Microservice")
+assemblyJarName := "runway-microsoerver-0.01-SNAPSHOT.jar"
+
+val meta = """META.INF(.)*""".r
+assemblyMergeStrategy in assembly := {
+  case PathList("javax", "servlet", xs @ _*) => MergeStrategy.first
+  case PathList(ps @ _*) if ps.last endsWith ".html" => MergeStrategy.first
+  case n if n.startsWith("reference.conf") => MergeStrategy.concat
+  case n if n.endsWith(".conf") => MergeStrategy.concat
+  case meta(_) => MergeStrategy.discard
+  case x => MergeStrategy.first
 }

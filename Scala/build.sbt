@@ -1,7 +1,7 @@
 name := "Project: Runway"
 
 val shared = Seq(
-  scalacOptions ++=  Seq(
+  scalacOptions ++= Seq(
     "-unchecked",
     "-feature",
     "-language:existentials",
@@ -19,7 +19,7 @@ val shared = Seq(
   ),
   organization := "com.verizon.itanalytics.dataengineering",
   version := "0.1",
-  scalaVersion    := "2.11.8"
+  scalaVersion := "2.11.8"
 )
 
 lazy val Runway = (project in file("."))
@@ -27,7 +27,8 @@ lazy val Runway = (project in file("."))
   .settings(
     shared,
     name := "Project: Runway"
-  ).aggregate(
+  )
+  .aggregate(
     Evaluator,
     MicroService
   )
