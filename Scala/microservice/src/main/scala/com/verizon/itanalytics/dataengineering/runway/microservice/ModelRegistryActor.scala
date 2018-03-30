@@ -4,24 +4,28 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 import akka.actor.{Actor, ActorLogging, Props}
-import com.verizon.itanalytics.dataengineering.runway.evaluator.Manager.getArguments
+
 import org.jpmml.evaluator.Evaluator
 
 import collection.JavaConverters._
+
 import spray.json._
 import DefaultJsonProtocol._
 
+import com.verizon.itanalytics.dataengineering.runway.evaluator.Manager.getArguments
 
 final case class InputField(name: String, dataType: String, opType: String)
-final case class Model(id:          String,
-                       project:     Option[String]  = Some(""),
-                       description: Option[String]  = Some(""),
-                       path:        String,
-                       algorithm:   Option[String]  = Some(""),
-                       inputFields: Option[List[InputField]] = None,
-                       createdOn:   Option[String]  = Some(new SimpleDateFormat("MM/dd/yyyy HH:mm:ss z").format(new Date)),
-                       lastUpdated: Option[String]  = Some(new SimpleDateFormat("MM/dd/yyyy HH:mm:ss z").format(new Date))
-                      )
+final case class Model(
+    id: String,
+    project: Option[String] = Some(""),
+    description: Option[String] = Some(""),
+    path: String,
+    algorithm: Option[String] = Some(""),
+    inputFields: Option[List[InputField]] = None,
+    createdOn: Option[String] = Some(
+      new SimpleDateFormat("MM/dd/yyyy HH:mm:ss z").format(new Date)),
+    lastUpdated: Option[String] = Some(
+      new SimpleDateFormat("MM/dd/yyyy HH:mm:ss z").format(new Date)))
 
 final case class Models(models: Seq[Model])
 
@@ -46,34 +50,35 @@ class ModelRegistryActor extends Actor with ActorLogging {
       sender() ! Models(models.toSeq)
 
     case CreateModel(model) =>
+      val timeStamp: Option[String] = Some(
+        new SimpleDateFormat("MM/dd/yyyy HH:mm:ss z").format(new Date))
 
-      val timeStamp: Option[String] = Some(new SimpleDateFormat("MM/dd/yyyy HH:mm:ss z").format(new Date))
-
-      val newModel = Model(id = model.id,
+      val newModel = Model(
+        id = model.id,
         project = model.project match {
           case None => Some("")
-          case _ => model.project
+          case _    => model.project
         },
         description = model.description match {
           case None => Some("")
-          case _ => model.description
+          case _    => model.description
         },
         path = model.path,
         algorithm = model.algorithm match {
           case None => Some("")
-          case _ => model.algorithm
+          case _    => model.algorithm
         },
         inputFields = model.inputFields match {
           case None => None
-          case _ => model.inputFields
+          case _    => model.inputFields
         },
         createdOn = model.createdOn match {
           case None => timeStamp
-          case _ => model.createdOn
+          case _    => model.createdOn
         },
         model.lastUpdated match {
           case None => timeStamp
-          case _ => model.lastUpdated
+          case _    => model.lastUpdated
         }
       )
       models += newModel
@@ -83,44 +88,53 @@ class ModelRegistryActor extends Actor with ActorLogging {
       sender() ! models.find(_.id == id)
 
     case DeleteModel(id) =>
-      models.find(_.id == id) foreach { model => models -= model }
+      models.find(_.id == id) foreach { model =>
+        models -= model
+      }
       sender() ! ModelActionPerformed(s"Model $id deleted.")
 
     case GetEstimate(observation: String, evaluator: Evaluator) =>
       implicit object AnyJsonFormat extends JsonFormat[Any] {
         def write(x: Any) = x match {
-          case d: java.lang.Double => JsNumber(d)
-          case i: java.lang.Integer => JsNumber(i)
-          case s: java.lang.String => JsString(s)
-          case b: java.lang.Boolean if b => JsTrue
+          case d: java.lang.Double        => JsNumber(d)
+          case i: java.lang.Integer       => JsNumber(i)
+          case s: java.lang.String        => JsString(s)
+          case b: java.lang.Boolean if b  => JsTrue
           case b: java.lang.Boolean if !b => JsFalse
-          case p: org.jpmml.evaluator.Classification[Any] => JsString(p.toString)
+          case _                          => JsString(x.toString)
         }
         def read(value: JsValue) = value match {
           case JsNumber(d) => d.doubleValue()
           case JsNumber(i) => i.intValue()
           case JsString(s) => s
-          case JsTrue => true
-          case JsFalse => false
+          case JsTrue      => true
+          case JsFalse     => false
         }
       }
-      
-      val estimate = Option(evaluator
-        .evaluate(getArguments(observation, evaluator.getInputFields, evaluator).asJava)
-          .asScala
-        .toMap
-        .map {
-          case (k, map: Map[String, Any]) => k.toString -> map
-          case (k, v) => k.toString -> v
-        }
-      )
-
-      if(estimate.isDefined) {
-
-        val results = estimate.get
-        sender() ! ModelActionPerformed(s"${results.toJson}")
+      if (observation.split(",").exists(_.isEmpty)) {
+        val e = "bad data, check inputs"
+        sender() ! ModelActionPerformed(s"""{"results":"error: $e"}""")
       } else {
-        sender() ! ModelActionPerformed(s"""{"results":"error"}""")
+        try {
+          val estimate = Option(
+            evaluator
+              .evaluate(getArguments(observation,
+                                     evaluator.getInputFields,
+                                     evaluator).asJava)
+              .asScala
+              .toMap
+              .filterNot(m => m._2.isInstanceOf[org.jpmml.evaluator.Computable])
+              .map {
+                case (k, map: Map[String, Any]) => k.toString -> map
+                case (k, v)                     => k.toString -> v
+              }).get.toJson
+
+          sender() ! ModelActionPerformed(s"${estimate}")
+
+        } catch {
+          case e: Exception =>
+            sender() ! ModelActionPerformed(s"""{"results":"error: $e"}""")
+        }
       }
   }
 }
