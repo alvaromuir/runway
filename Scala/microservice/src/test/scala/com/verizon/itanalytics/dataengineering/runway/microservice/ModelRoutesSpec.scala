@@ -141,11 +141,7 @@ class ModelRoutesSpec
       }
     }
 
-//    "be able to evaluate a multiple observations via cvs (POST /models/{id}/batch)" in {
-//      implicit val timeout: RouteTestTimeout =
-//        RouteTestTimeout(3.seconds dilated)
-//      assert(true)
-//    }
+    //todo: test for batch encoding
 
     "be able to remove models (DELETE /models/{id})" in {
       val request = Delete(uri = s"/models/$id")
