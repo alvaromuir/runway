@@ -15,10 +15,7 @@ libraryDependencies ++= {
     "com.typesafe.akka"           %% "akka-http-xml"            % akkaHttpVersion,
     "com.typesafe.akka"           %% "akka-stream"              % akkaVersion,
     "com.typesafe.akka"           %% "akka-http-spray-json"     % akkaVersion,
-    "com.lightbend.akka"          %% "akka-stream-alpakka-csv"  % alpakkaVersion,
-    "com.fasterxml.jackson.core"    % "jackson-databind"        % jacksonVersion,
-    "com.fasterxml.jackson.module" %% "jackson-module-scala"    % jacksonVersion,
-
+    "com.lightbend.akka"          %% "akka-stream-alpakka-csv"  % alpakkaVersion
 
     "com.typesafe.akka"           %% "akka-http-testkit"        % akkaHttpVersion   % Test,
     "com.typesafe.akka"           %% "akka-testkit"             % akkaVersion       % Test,

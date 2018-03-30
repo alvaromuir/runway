@@ -7,8 +7,12 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.{RouteTestTimeout, ScalatestRouteTest}
 import akka.testkit.TestDuration
+
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{Matchers, WordSpec}
+
+import spray.json._
+import DefaultJsonProtocol._
 
 import scala.concurrent.duration._
 import scala.io.Source
@@ -53,7 +57,7 @@ class ModelRoutesSpec
       val formProj = Multipart.FormData.BodyPart.Strict("project", project.get)
 
       val formDesc =
-        Multipart.FormData.BodyPart.Strict("results", descrip.get)
+        Multipart.FormData.BodyPart.Strict("description", descrip.get)
 
       val pmmlFile = new File(s"$sourceDir/$fileName").toPath
 
@@ -66,11 +70,11 @@ class ModelRoutesSpec
       request ~> routes ~> check {
         status should ===(StatusCodes.Created)
         contentType should ===(ContentTypes.`application/json`)
-        entityAs[String] should ===(s"""{"results":"Model $id created."}""")
+        entityAs[String] should ===(s"""{"description":"Model $id created."}""")
       }
     }
 
-    "be able retrieve a specifc model (GET /models/{id})" in {
+    "be able retrieve a specific model (GET /models/{id})" in {
       implicit val timeout: RouteTestTimeout =
         RouteTestTimeout(3.seconds dilated)
 
@@ -122,35 +126,35 @@ class ModelRoutesSpec
              HttpEntity(MediaTypes.`application/json`, testObservation))
 
       request ~> routes ~> check {
-//        val response = entityAs[String].stripMargin.parseJson.asJsObject
-        val response = entityAs[String]
-        println(response.stripMargin)
-//        val results = response.getClass.getDeclaredFields
-//          .map(_.getName)
-//          .zip(response.productIterator.to)
-//          .toMap
-//          .get("fields")
-//          .head
-//          .asInstanceOf[Map[String, Any]]
-        assert(true)
-//        assert(results.contains("result"))
+        val response = entityAs[String].stripMargin.parseJson.asJsObject
+        val results = response.getClass.getDeclaredFields
+          .map(_.getName)
+          .zip(response.productIterator.to)
+          .toMap
+          .get("fields")
+          .head
+          .asInstanceOf[Map[String, Any]]
+        assert(results.contains("Predicted_Species"))
+        assert(results.contains("Probability_setosa"))
+        assert(results.contains("Probability_versicolor"))
+        assert(results.contains("Probability_virginica"))
       }
     }
-//
+
 //    "be able to evaluate a multiple observations via cvs (POST /models/{id}/batch)" in {
 //      implicit val timeout: RouteTestTimeout =
 //        RouteTestTimeout(3.seconds dilated)
 //      assert(true)
 //    }
-//
-//    "be able to remove models (DELETE /models/{id})" in {
-//      val request = Delete(uri = s"/models/$id")
-//      request ~> routes ~> check {
-//        status should ===(StatusCodes.OK)
-//        contentType should ===(ContentTypes.`application/json`)
-//        entityAs[String] should ===(s"""{"results":"Model $id deleted."}""")
-//      }
-//    }
+
+    "be able to remove models (DELETE /models/{id})" in {
+      val request = Delete(uri = s"/models/$id")
+      request ~> routes ~> check {
+        status should ===(StatusCodes.OK)
+        contentType should ===(ContentTypes.`application/json`)
+        entityAs[String] should ===(s"""{"description":"Model $id deleted."}""")
+      }
+    }
 
   }
 }
