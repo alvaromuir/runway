@@ -15,6 +15,7 @@ libraryDependencies ++= {
     "com.typesafe.akka"           %% "akka-http-xml"            % akkaHttpVersion,
     "com.typesafe.akka"           %% "akka-stream"              % akkaVersion,
     "com.typesafe.akka"           %% "akka-http-spray-json"     % akkaVersion,
+    "com.typesafe.akka"           %% "akka-slf4j"               % akkaVersion,
     "com.lightbend.akka"          %% "akka-stream-alpakka-csv"  % alpakkaVersion,
 
     "com.typesafe.akka"           %% "akka-http-testkit"        % akkaHttpVersion   % Test,
