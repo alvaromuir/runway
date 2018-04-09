@@ -54,13 +54,14 @@ trait ModelRoutes extends JsonSupport {
   private val log = Logger.getLogger(this.getClass.getName)
 
   def modelRegistryActor: ActorRef
+
   final case class ActionPerformed(description: String)
 
   val readLine: Flow[ByteString, String, NotUsed] = Flow[ByteString]
     .via(
       Framing.delimiter(ByteString("\n"),
-                        maximumFrameLength = dataLineLimit,
-                        allowTruncation = true))
+        maximumFrameLength = dataLineLimit,
+        allowTruncation = true))
     .map(_.utf8String)
 
   implicit def routesExceptionHandler: ExceptionHandler =
@@ -69,14 +70,15 @@ trait ModelRoutes extends JsonSupport {
         log.info(s"Exception $e at\n${e.getStackTrace}")
         complete(
           HttpResponse(StatusCodes.InternalServerError,
-                       entity = s"""{"error":"${e.getMessage}"}"""))
+            entity = s"""{"error":"${e.getMessage}"}"""))
     }
 
   lazy val modelRoutes: Route =
     pathPrefix("models") {
-      extractRequestContext { ctx =>
-        implicit val materializer: Materializer = ctx.materializer
-        pathEnd {
+      handleExceptions(routesExceptionHandler) {
+        extractRequestContext { ctx =>
+          implicit val materializer: Materializer = ctx.materializer
+          pathEnd {
             concat(
               get {
                 val models = (modelRegistryActor ? GetModels).mapTo[Models]
@@ -110,14 +112,14 @@ trait ModelRoutes extends JsonSupport {
                                         i.getOpType.toString)
                                     }
 
-                                  val maybeAlgorithm: Future[String] =  Future(pMML.getModels.get(0).getAlgorithmName)
+                                  val maybeAlgorithm: Future[String] = Future(pMML.getModels.get(0).getAlgorithmName)
 
                                   onSuccess(maybeAlgorithm) {
                                     algorithm =>
                                       println(algorithm)
                                       println(algorithm.isEmpty)
                                       algorithm.isEmpty match {
-                                          // this indicates the pMML file is messed up
+                                        // this indicates the pMML file is messed up
                                         case false => val modelCreated
                                         : Future[ModelActionPerformed] =
                                           (modelRegistryActor ? CreateModel(
@@ -154,134 +156,134 @@ trait ModelRoutes extends JsonSupport {
                   }
                 }
               }
-            )œ
+            )
+          } ~
+            path(Segments) { segments =>
+              val id = segments.head
+              segments.size match {
+                case 2 => {
+                  val action = segments(1)
+                  action match {
+                    case "batch" =>
+                      toStrictEntity(2 seconds) {
+                        post {
+                          val maybeModel: Future[Option[Model]] =
+                            (modelRegistryActor ? GetModel(id))
+                              .mapTo[Option[Model]]
+                          val maybeEvaluator: Future[Evaluator] = maybeModel.map {
+                            model =>
+                              getEvaluator(readPMML(new File(model.get.path)))
+                          }
+                          case class Observation(data: String,
+                                                 evaluator: Evaluator)
+                          formFields("fields".?) { (fields) =>
+                            //todo: implement fields for alpakka
+                            fileUpload("csv") {
+                              case (metadata, byteSource) =>
+                                //todo: test this, compact this, convert to flows
+                                val uploadDir = "/tmp"
+                                val filePath = s"$uploadDir/${metadata.fileName}"
 
-        } ~
-          path(Segments) { segments =>
-            val id = segments.head
-            segments.size match {
-              case 2 => {
-                val action = segments(1)
-                action match {
-                  case "batch" =>
-                    toStrictEntity(2 seconds) {
-                      post {
-                        val maybeModel: Future[Option[Model]] =
-                          (modelRegistryActor ? GetModel(id))
-                            .mapTo[Option[Model]]
-                        val maybeEvaluator: Future[Evaluator] = maybeModel.map {
-                          model =>
-                            getEvaluator(readPMML(new File(model.get.path)))
-                        }
-                        case class Observation(data: String,
-                                               evaluator: Evaluator)
-                        formFields("fields".?) { (fields) =>
-                          //todo: implement fields for alpakka
-                          fileUpload("csv") {
-                            case (metadata, byteSource) =>
-                              //todo: test this, compact this, convert to flows
-                              val uploadDir = "/tmp"
-                              val filePath = s"$uploadDir/${metadata.fileName}"
+                                val sink = FileIO.toPath(
+                                  Paths.get(uploadDir) resolve metadata.fileName)
+                                val uploaded = byteSource.runWith(sink)
 
-                              val sink = FileIO.toPath(
-                                Paths.get(uploadDir) resolve metadata.fileName)
-                              val uploaded = byteSource.runWith(sink)
+                                onComplete(uploaded) {
+                                  case Success(_) =>
+                                    onComplete(maybeEvaluator) {
+                                      case Success(evaluator) =>
+                                        // todo: change this to a runnable graph
+                                        val source =
+                                          FileIO
+                                            .fromPath(Paths.get(filePath))
+                                            .via(CsvParsing.lineScanner())
+                                            .via(CsvToMap.toMap())
+                                            .map(_.mapValues(_.utf8String.trim))
+                                            .map(_.values)
+                                            .map(_.mkString(","))
+                                            .map(str => (str, evaluator))
+                                            .mapAsync(2)(params => {
+                                              (modelRegistryActor ? GetEstimate(
+                                                params._1,
+                                                params._2))
+                                                .mapTo[ModelActionPerformed]
+                                            })
+                                            .map(_.description)
+                                            .map(s => s + "\n")
+                                            .map(ByteString(_))
 
-                              onComplete(uploaded) {
-                                case Success(_) =>
-                                  onComplete(maybeEvaluator) {
-                                    case Success(evaluator) =>
-                                      // todo: change this to a runnable graph
-                                      val source =
-                                        FileIO
-                                          .fromPath(Paths.get(filePath))
-                                          .via(CsvParsing.lineScanner())
-                                          .via(CsvToMap.toMap())
-                                          .map(_.mapValues(_.utf8String.trim))
-                                          .map(_.values)
-                                          .map(_.mkString(","))
-                                          .map(str => (str, evaluator))
-                                          .mapAsync(2)(params => {
-                                            (modelRegistryActor ? GetEstimate(
-                                              params._1,
-                                              params._2))
-                                              .mapTo[ModelActionPerformed]
-                                          })
-                                          .map(_.description)
-                                          .map(s => s + "\n")
-                                          .map(ByteString(_))
+                                        complete(
+                                          HttpEntity(
+                                            ContentTypes.`application/json`,
+                                            source))
 
-                                      complete(
-                                        HttpEntity(
-                                          ContentTypes.`application/json`,
-                                          source))
-
-                                    case Failure(_) =>
-                                      complete(
-                                        s"An error occurred parsing the file: model '$id' does not exist")
-                                  }
-                                case Failure(ex) =>
-                                  complete(
-                                    s"An error occurred uploading the file: ${ex.getMessage}")
-                              }
+                                      case Failure(_) =>
+                                        complete(
+                                          s"An error occurred parsing the file: model '$id' does not exist")
+                                    }
+                                  case Failure(ex) =>
+                                    complete(
+                                      s"An error occurred uploading the file: ${ex.getMessage}")
+                                }
+                            }
                           }
                         }
                       }
-                    }
-                  case _ => complete(action)
-                }
-              }
-              case _ =>
-                concat(
-                  get {
-                    val maybeModel: Future[Option[Model]] =
-                      (modelRegistryActor ? GetModel(id)).mapTo[Option[Model]]
-                    rejectEmptyResponse {
-                      complete(maybeModel)
-                    }
-                  },
-                  post {
-                    val maybeModel: Future[Option[Model]] =
-                      (modelRegistryActor ? GetModel(id)).mapTo[Option[Model]]
-                    val maybeEvaluator: Future[Evaluator] = maybeModel.map {
-                      model =>
-                        getEvaluator(readPMML(new File(model.get.path)))
-                    }
-
-                    entity(as[JsValue]) {
-                      observation =>
-                        onComplete(maybeEvaluator) {
-                          case Success(evaluator) =>
-                            onComplete(
-                              (modelRegistryActor ? GetEstimate(
-                                Listify(observation).mkString(","),
-                                evaluator)).mapTo[ModelActionPerformed]) {
-                              case Success(results) =>
-                                complete(
-                                  HttpEntity(ContentTypes.`application/json`,
-                                             results.description))
-                              case Failure(ex) =>
-                                complete(
-                                  s"error performing prediction: ${ex.getMessage}")
-                            }
-                          case Failure(ex) =>
-                            complete(
-                              s"error, model not found: ${ex.getMessage}")
-                        }
-                    }
-                  },
-                  delete {
-                    val modelDeleted: Future[ModelActionPerformed] =
-                      (modelRegistryActor ? DeleteModel(id))
-                        .mapTo[ModelActionPerformed]
-                    onSuccess(modelDeleted) { performed =>
-                      log.info(s"${performed.description}")
-                      complete((StatusCodes.OK, performed))
-                    }
+                    case _ => complete(action)
                   }
-                )
+                }
+                case _ =>
+                  concat(
+                    get {
+                      val maybeModel: Future[Option[Model]] =
+                        (modelRegistryActor ? GetModel(id)).mapTo[Option[Model]]
+                      rejectEmptyResponse {
+                        complete(maybeModel)
+                      }
+                    },
+                    post {
+                      val maybeModel: Future[Option[Model]] =
+                        (modelRegistryActor ? GetModel(id)).mapTo[Option[Model]]
+                      val maybeEvaluator: Future[Evaluator] = maybeModel.map {
+                        model =>
+                          getEvaluator(readPMML(new File(model.get.path)))
+                      }
+
+                      entity(as[JsValue]) {
+                        observation =>
+                          onComplete(maybeEvaluator) {
+                            case Success(evaluator) =>
+                              onComplete(
+                                (modelRegistryActor ? GetEstimate(
+                                  Listify(observation).mkString(","),
+                                  evaluator)).mapTo[ModelActionPerformed]) {
+                                case Success(results) =>
+                                  complete(
+                                    HttpEntity(ContentTypes.`application/json`,
+                                      results.description))
+                                case Failure(ex) =>
+                                  complete(
+                                    s"error performing prediction: ${ex.getMessage}")
+                              }
+                            case Failure(ex) =>
+                              complete(
+                                s"error, model not found: ${ex.getMessage}")
+                          }
+                      }
+                    },
+                    delete {
+                      val modelDeleted: Future[ModelActionPerformed] =
+                        (modelRegistryActor ? DeleteModel(id))
+                          .mapTo[ModelActionPerformed]
+                      onSuccess(modelDeleted) { performed =>
+                        log.info(s"${performed.description}")
+                        complete((StatusCodes.OK, performed))
+                      }
+                    }
+                  )
+              }
             }
-          }
+        }
       }
     }
 }
