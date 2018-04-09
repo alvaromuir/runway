@@ -1,6 +1,6 @@
 package com.verizon.itanalytics.dataengineering.runway.microservice
 
-import java.io.File
+import java.util.logging.Logger
 
 import akka.actor.{ActorRef, ActorSystem}
 import akka.http.scaladsl.Http
@@ -10,7 +10,6 @@ import akka.stream.ActorMaterializer
 import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.ExecutionContextExecutor
-import scala.io.StdIn
 
 
 object MicroService extends App with ModelRoutes {
@@ -32,4 +31,6 @@ object MicroService extends App with ModelRoutes {
   lazy val routes: Route = modelRoutes
 
   Http().bindAndHandle(routes, host, port)
+  private val log = Logger.getLogger(this.getClass.getName)
+  log.info(s"Server listening on $host:$port")
 }
