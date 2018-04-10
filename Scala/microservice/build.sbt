@@ -1,5 +1,5 @@
 name := "Project: Runway - MicroService"
-version := "0.0.3"
+version := "0.0.4"
 organization    := "com.verizon.itanalytics.dataengineering.runway"
 scalaVersion    := "2.11.8"
 assemblyJarName in assembly := s"runway-microservice-${version.value}.jar"

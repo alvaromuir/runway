@@ -74,7 +74,7 @@ at `microservice/src/main/resources/application.conf`. This can be copied to som
 
 Deployment with a config is:
 ```
-$ java -Dconfig.file=<path/to/your/>.conf -jar 'Project: Runway - MicroService-assembly-0.0.1.jar'
+$ java -Dconfig.file=<path/to/your/>.conf -jar 'Project: Runway - MicroService-assembly-0.0.4.jar'
 ```
 
 
