@@ -6,43 +6,35 @@ import java.util.logging.Logger
 
 import akka.NotUsed
 import akka.actor.{ActorRef, ActorSystem}
-import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.model.{
-  ContentTypes,
-  HttpEntity,
-  HttpResponse,
-  StatusCodes
-}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse, StatusCodes}
 import akka.http.scaladsl.server.{ExceptionHandler, Route}
-import akka.http.scaladsl.server.directives.MethodDirectives.delete
-import akka.http.scaladsl.server.directives.MethodDirectives.get
-import akka.http.scaladsl.server.directives.RouteDirectives.complete
-import akka.http.scaladsl.server.directives.PathDirectives.path
 import akka.pattern.ask
 import akka.stream._
 import akka.stream.alpakka.csv.scaladsl.{CsvParsing, CsvToMap}
 import akka.stream.scaladsl.{FileIO, Flow, Framing}
 import akka.util.{ByteString, Timeout}
+
 import com.typesafe.config.{Config, ConfigFactory}
+
 import org.jpmml.evaluator.Evaluator
+
 import spray.json._
+
+import com.verizon.itanalytics.dataengineering.runway.evaluator.Manager.{getEvaluator, readPMML}
+import com.verizon.itanalytics.dataengineering.runway.microservice.ModelRegistryActor._
+import com.verizon.itanalytics.dataengineering.runway.microservice.utils._
 
 import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 import scala.concurrent._
-import com.verizon.itanalytics.dataengineering.runway.evaluator.Manager.{
-  getEvaluator,
-  readPMML
-}
-import com.verizon.itanalytics.dataengineering.runway.microservice.ModelRegistryActor._
-import com.verizon.itanalytics.dataengineering.runway.microservice.utils._
-
-import scala.concurrent.Future
 import scala.util.{Failure, Success}
-import ExecutionContext.Implicits.global
 import scala.util.control.NonFatal
+import ExecutionContext.Implicits.global
+
 
 trait ModelRoutes extends JsonSupport {
+  import akka.http.scaladsl.server.Directives._
+
   implicit def system: ActorSystem
 
   private val config: Config = ConfigFactory.load()
@@ -73,7 +65,9 @@ trait ModelRoutes extends JsonSupport {
             entity = s"""{"error":"${e.getMessage}"}"""))
     }
 
-  lazy val modelRoutes: Route =
+  def modelRoutes: Route = {
+    import akka.http.scaladsl.server.Directives._
+
     pathPrefix("models") {
       handleExceptions(routesExceptionHandler) {
         extractRequestContext { ctx =>
@@ -156,7 +150,7 @@ trait ModelRoutes extends JsonSupport {
               }
             )
           } ~
-            path(Segments) { segments =>
+          path(Segments) { segments =>
               val id = segments.head
               segments.size match {
                 case 2 => {
@@ -284,4 +278,6 @@ trait ModelRoutes extends JsonSupport {
         }
       }
     }
+  }
+
 }

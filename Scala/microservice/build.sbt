@@ -16,9 +16,14 @@ libraryDependencies ++= {
     "com.typesafe.akka"           %% "akka-stream"              % akkaVersion,
     "com.typesafe.akka"           %% "akka-http-spray-json"     % akkaVersion,
     "com.typesafe.akka"           %% "akka-slf4j"               % akkaVersion,
+
     "com.lightbend.akka"          %% "akka-stream-alpakka-csv"  % alpakkaVersion,
 
-    "com.typesafe.akka"           %% "akka-http-testkit"        % akkaHttpVersion   % Test,
+    "ch.qos.logback"              % "logback-classic"           % "1.1.7",
+    "de.heikoseeberger"           %% "accessus"                 % "0.1.0",
+
+
+    "com.typesafe.akka"           %% "akka-http-testkit"         % akkaHttpVersion   % Test,
     "com.typesafe.akka"           %% "akka-testkit"             % akkaVersion       % Test,
     "com.typesafe.akka"           %% "akka-stream-testkit"      % akkaVersion       % Test,
     "org.scalatest"               %% "scalatest"                % scalaTestVersion  % Test
