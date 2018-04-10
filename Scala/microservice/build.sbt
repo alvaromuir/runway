@@ -1,7 +1,8 @@
 name := "Project: Runway - MicroService"
-version := "0.0.1"
+version := "0.0.3"
 organization    := "com.verizon.itanalytics.dataengineering.runway"
 scalaVersion    := "2.11.8"
+assemblyJarName in assembly := s"runway-microservice-${version.value}.jar"
 
 libraryDependencies ++= {
   lazy val akkaHttpVersion = "10.1.0"
@@ -23,7 +24,7 @@ libraryDependencies ++= {
     "de.heikoseeberger"           %% "accessus"                 % "0.1.0",
 
 
-    "com.typesafe.akka"           %% "akka-http-testkit"         % akkaHttpVersion   % Test,
+    "com.typesafe.akka"           %% "akka-http-testkit"        % akkaHttpVersion   % Test,
     "com.typesafe.akka"           %% "akka-testkit"             % akkaVersion       % Test,
     "com.typesafe.akka"           %% "akka-stream-testkit"      % akkaVersion       % Test,
     "org.scalatest"               %% "scalatest"                % scalaTestVersion  % Test
