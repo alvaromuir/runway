@@ -9,9 +9,7 @@ import akka.http.scaladsl.common.{EntityStreamingSupport, JsonEntityStreamingSup
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
-
-import com.typesafe.config.ConfigFactory
-
+import com.typesafe.config.{Config, ConfigFactory}
 import de.heikoseeberger.accessus.Accessus._
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
@@ -19,18 +17,26 @@ import scala.util.{Failure, Success}
 
 
 object MicroService extends ModelRoutes {
+  private val config: Config = ConfigFactory.load()
+  private val interface: String  = config.getString("http.host")
+  private val port:Int = config.getInt("http.port")
+  private val logPath: String  = config.getString("http.logPath")
+  private val logLevel: String = config.getString("akka.logLevel")
+
+  System.setProperty("LOG_PATH", logPath)
+  System.setProperty("LOG_LEVEL", logLevel)
 
   implicit val system: ActorSystem = ActorSystem("runwayRestServer")
   val modelRegistryActor: ActorRef = system.actorOf(ModelRegistryActor.props, "modelRegistryActor")
+
+
 
   def main(args: Array[String]): Unit = {
 
     implicit val jsonStreamingSupport: JsonEntityStreamingSupport =
       EntityStreamingSupport.json().withParallelMarshalling(parallelism = 8, unordered = false)
 
-    val config = ConfigFactory.load()
-    val interface = config.getString("http.host")
-    val port = config.getInt("http.port")
+
 
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     implicit val executionContext: ExecutionContextExecutor = system.dispatcher

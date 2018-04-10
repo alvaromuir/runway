@@ -38,7 +38,7 @@ trait ModelRoutes extends JsonSupport {
   implicit def system: ActorSystem
 
   private val config: Config = ConfigFactory.load()
-  private val dataUploadDir: String = config.getString("http.dataUploadDir")
+  private val dataUploadPath: String = config.getString("http.dataUploadPath")
   private val timeOut: Int = config.getInt("http.timeOut")
   private val dataLineLimit: Int = config.getInt("http.dataLineLimit")
 
@@ -84,16 +84,15 @@ trait ModelRoutes extends JsonSupport {
                     (id, project, description) =>
                       fileUpload("file") {
                         case (metadata, byteSource) =>
-                          val uploadDir = dataUploadDir
                           val sink = FileIO.toPath(
-                            Paths.get(uploadDir) resolve metadata.fileName)
+                            Paths.get(dataUploadPath) resolve metadata.fileName)
                           val uploaded = byteSource.runWith(sink)
                           onSuccess(uploaded) {
                             file =>
                               // todo: this should live in another handler
                               file.status match {
                                 case Success(_) =>
-                                  val path = s"$uploadDir/${metadata.fileName}"
+                                  val path = s"$dataUploadPath/${metadata.fileName}"
                                   val pMML = readPMML(new File(path))
                                   val evaluator = getEvaluator(pMML)
                                   var inputFields = Set.empty[InputField]
@@ -173,11 +172,10 @@ trait ModelRoutes extends JsonSupport {
                             fileUpload("csv") {
                               case (metadata, byteSource) =>
                                 //todo: test this, compact this, convert to flows
-                                val uploadDir = "/tmp"
-                                val filePath = s"$uploadDir/${metadata.fileName}"
+                                val filePath = s"$dataUploadPath/${metadata.fileName}"
 
                                 val sink = FileIO.toPath(
-                                  Paths.get(uploadDir) resolve metadata.fileName)
+                                  Paths.get(dataUploadPath) resolve metadata.fileName)
                                 val uploaded = byteSource.runWith(sink)
 
                                 onComplete(uploaded) {
