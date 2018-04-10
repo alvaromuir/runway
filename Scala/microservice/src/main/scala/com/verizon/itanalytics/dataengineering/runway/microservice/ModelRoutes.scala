@@ -116,8 +116,6 @@ trait ModelRoutes extends JsonSupport {
 
                                   onSuccess(maybeAlgorithm) {
                                     algorithm =>
-                                      println(algorithm)
-                                      println(algorithm.isEmpty)
                                       algorithm.isEmpty match {
                                         // this indicates the pMML file is messed up
                                         case false => val modelCreated

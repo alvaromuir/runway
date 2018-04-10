@@ -4,15 +4,12 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 import akka.actor.{Actor, ActorLogging, Props}
-
 import org.jpmml.evaluator.Evaluator
 
 import collection.JavaConverters._
-
 import spray.json._
-import DefaultJsonProtocol._
-
 import com.verizon.itanalytics.dataengineering.runway.evaluator.Manager.getArguments
+
 
 final case class InputField(name: String, dataType: String, opType: String)
 final case class Model(
@@ -94,24 +91,21 @@ class ModelRegistryActor extends Actor with ActorLogging {
       sender() ! ModelActionPerformed(s"Model $id deleted.")
 
     case GetEstimate(observation: String, evaluator: Evaluator) =>
-      implicit object AnyJsonFormat extends JsonFormat[Any] {
-        def write(x: Any) = x match {
-          case d: java.lang.Double        => JsNumber(d)
-          case i: java.lang.Integer       => JsNumber(i)
-          case s: java.lang.String        => JsString(s)
-          case b: java.lang.Boolean if b  => JsTrue
-          case b: java.lang.Boolean if !b => JsFalse
-          case _                          => JsString(x.toString)
+      // todo: move this somwhere else
+      implicit object MapJsonFormat extends JsonFormat[Map[String, Any]] {
+        def write(m: Map[String, Any]): JsValue = {
+          JsObject(m.mapValues {
+            case v: String => JsString(v)
+            case v: Int => JsNumber(v)
+            case v: Map[_, _] => write(v.asInstanceOf[Map[String, Any]])
+            case v: Any => JsString(v.toString)
+          })
         }
-        def read(value: JsValue) = value match {
-          case JsNumber(d) => d.doubleValue()
-          case JsNumber(i) => i.intValue()
-          case JsString(s) => s
-          case JsTrue      => true
-          case JsFalse     => false
-        }
+
+        def read(value: JsValue) = ???
       }
-      if (observation.split(",").exists(_.isEmpty)) {
+
+        if (observation.split(",").exists(_.isEmpty)) {
         val e = "bad data, check inputs"
         sender() ! ModelActionPerformed(s"""{"results":"error: $e"}""")
       } else {
@@ -119,17 +113,29 @@ class ModelRegistryActor extends Actor with ActorLogging {
           val estimate = Option(
             evaluator
               .evaluate(getArguments(observation,
-                                     evaluator.getInputFields,
-                                     evaluator).asJava)
+                evaluator.getInputFields, evaluator)
+                .asJava)
               .asScala
               .toMap
-              .filterNot(m => m._2.isInstanceOf[org.jpmml.evaluator.Computable])
-              .map {
-                case (k, map: Map[String, Any]) => k.toString -> map
-                case (k, v)                     => k.toString -> v
-              }).get.toJson
+            )
 
-          sender() ! ModelActionPerformed(s"${estimate}")
+
+          val results = estimate
+            .get
+            .map {
+            case (k, v: java.lang.Double  ) => k.toString -> v.toDouble
+            case (k, v: java.lang.Integer ) => k.toString -> v.toInt
+            case (k, v: java.lang.String  ) => k.toString -> v.toString
+            case (k, v: java.lang.Boolean ) => k.toString -> v.booleanValue()
+              //todo: not pretty, fix this
+            case (k, v)      =>  k.toString -> Map(v.getClass.getSimpleName ->
+              v.toString.split('{').tail.map (_.split('}').head).head.split('=').grouped(2)
+                .map { case Array(k, v) => k -> v }
+                .toMap
+            )
+          }.toJson
+
+          sender() ! ModelActionPerformed(results.toString())
 
         } catch {
           case e: Exception =>
