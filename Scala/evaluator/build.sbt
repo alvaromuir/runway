@@ -3,7 +3,7 @@ name          := "Project: Runway - Evaluator"
 organization  := "com.verizon.itanalytics.dataengineering.runway"
 version       := "0.0.1"
 scalaVersion  := "2.11.8"
-
+assemblyJarName in assembly := s"runway-evaluator-${version.value}.jar"
 
 libraryDependencies ++= {
   val jpmmlVersion = "1.4.0"

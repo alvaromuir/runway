@@ -22,6 +22,8 @@ class ModelRoutesSpec
     with ScalaFutures
     with ScalatestRouteTest
     with ModelRoutes {
+
+
   override val modelRegistryActor: ActorRef =
     system.actorOf(ModelRegistryActor.props, "modelRegistry")
 

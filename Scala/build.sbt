@@ -68,3 +68,5 @@ def scalatest = Def.setting {
     case _      => ("org.scalatest" %% "scalatest" % scalaTestVersion % Test) :: Nil
   }
 }
+
+assemblyJarName in assembly := s"runway-${version.value}.jar"
