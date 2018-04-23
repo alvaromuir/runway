@@ -1,0 +1,281 @@
+<PMML xmlns="http://www.dmg.org/PMML-4_3" version="4.3">
+    <Header copyright="DMG.org"/>
+    <DataDictionary numberOfFields="8">
+        <DataField dataType="double" name="C1" optype="continuous"/>
+        <DataField dataType="double" name="C2" optype="continuous"/>
+        <DataField dataType="double" name="C3" optype="continuous"/>
+        <DataField dataType="double" name="C4" optype="continuous"/>
+        <DataField dataType="string" name="D1" optype="categorical">
+            <Value value="0"/>
+            <Value value="1"/>
+        </DataField>
+        <DataField dataType="string" name="D2" optype="categorical">
+            <Value value="0"/>
+            <Value value="1"/>
+            <Value value="2"/>
+        </DataField>
+        <DataField dataType="string" name="D3" optype="categorical">
+            <Value value="0"/>
+            <Value value="1"/>
+        </DataField>
+        <DataField dataType="string" name="D4" optype="categorical">
+            <Value value="0"/>
+            <Value value="1"/>
+        </DataField>
+    </DataDictionary>
+    <BayesianNetworkModel modelName="BN Example" functionName="regression">
+        <MiningSchema>
+            <MiningField name="D4" usageType="active"/>
+            <MiningField name="C4" usageType="active"/>
+            <MiningField name="D1" usageType="target"/>
+            <MiningField name="D2" usageType="target"/>
+            <MiningField name="D3" usageType="target"/>
+            <MiningField name="C1" usageType="target"/>
+            <MiningField name="C2" usageType="target"/>
+            <MiningField name="C3" usageType="target"/>
+        </MiningSchema>
+        <BayesianNetworkNodes>
+            <!--  -->
+            <DiscreteNode name="D1">
+                <ValueProbability value="0" probability="0.3"/>
+                <ValueProbability value="1" probability="0.7"/>
+            </DiscreteNode>
+            <!--  -->
+            <DiscreteNode name="D2">
+                <ValueProbability value="0" probability="0.6"/>
+                <ValueProbability value="1" probability="0.3"/>
+                <ValueProbability value="2" probability="0.1"/>
+            </DiscreteNode>
+            <!--  -->
+            <DiscreteNode name="D3">
+                <DiscreteConditionalProbability>
+                    <ParentValue parent="D1" value="0"/>
+                    <ParentValue parent="D2" value="0"/>
+                    <ValueProbability value="0" probability="0.1"/>
+                    <ValueProbability value="1" probability="0.9"/>
+                </DiscreteConditionalProbability>
+                <DiscreteConditionalProbability>
+                    <ParentValue parent="D1" value="0"/>
+                    <ParentValue parent="D2" value="1"/>
+                    <ValueProbability value="0" probability="0.3"/>
+                    <ValueProbability value="1" probability="0.7"/>
+                </DiscreteConditionalProbability>
+                <DiscreteConditionalProbability>
+                    <ParentValue parent="D1" value="0"/>
+                    <ParentValue parent="D2" value="2"/>
+                    <ValueProbability value="0" probability="0.4"/>
+                    <ValueProbability value="1" probability="0.6"/>
+                </DiscreteConditionalProbability>
+                <DiscreteConditionalProbability>
+                    <ParentValue parent="D1" value="1"/>
+                    <ParentValue parent="D2" value="0"/>
+                    <ValueProbability value="0" probability="0.6"/>
+                    <ValueProbability value="1" probability="0.4"/>
+                </DiscreteConditionalProbability>
+                <DiscreteConditionalProbability>
+                    <ParentValue parent="D1" value="1"/>
+                    <ParentValue parent="D2" value="1"/>
+                    <ValueProbability value="0" probability="0.8"/>
+                    <ValueProbability value="1" probability="0.2"/>
+                </DiscreteConditionalProbability>
+                <DiscreteConditionalProbability>
+                    <ParentValue parent="D1" value="1"/>
+                    <ParentValue parent="D2" value="2"/>
+                    <ValueProbability value="0" probability="0.9"/>
+                    <ValueProbability value="1" probability="0.1"/>
+                </DiscreteConditionalProbability>
+            </DiscreteNode>
+            <!--  -->
+            <ContinuousNode name="C1">
+                <ContinuousConditionalProbability>
+                    <ParentValue parent="D1" value="0"/>
+                    <ContinuousDistribution>
+                        <NormalDistributionForBN>
+                            <Mean>
+                                <Constant dataType="double">10</Constant>
+                            </Mean>
+                            <Variance>
+                                <Constant dataType="double">2</Constant>
+                            </Variance>
+                        </NormalDistributionForBN>
+                    </ContinuousDistribution>
+                </ContinuousConditionalProbability>
+                <ContinuousConditionalProbability>
+                    <ParentValue parent="D1" value="1"/>
+                    <ContinuousDistribution>
+                        <NormalDistributionForBN>
+                            <Mean>
+                                <Constant dataType="double">14</Constant>
+                            </Mean>
+                            <Variance>
+                                <Constant dataType="double">2</Constant>
+                            </Variance>
+                        </NormalDistributionForBN>
+                    </ContinuousDistribution>
+                </ContinuousConditionalProbability>
+            </ContinuousNode>
+            <!--  -->
+            <ContinuousNode name="C2">
+                <ContinuousConditionalProbability>
+                    <ParentValue parent="D2" value="0"/>
+                    <ContinuousDistribution>
+                        <NormalDistributionForBN>
+                            <Mean>
+                                <Constant dataType="double">6</Constant>
+                            </Mean>
+                            <Variance>
+                                <Constant dataType="double">1</Constant>
+                            </Variance>
+                        </NormalDistributionForBN>
+                    </ContinuousDistribution>
+                </ContinuousConditionalProbability>
+                <ContinuousConditionalProbability>
+                    <ParentValue parent="D2" value="1"/>
+                    <ContinuousDistribution>
+                        <NormalDistributionForBN>
+                            <Mean>
+                                <Constant dataType="double">8</Constant>
+                            </Mean>
+                            <Variance>
+                                <Constant dataType="double">1</Constant>
+                            </Variance>
+                        </NormalDistributionForBN>
+                    </ContinuousDistribution>
+                </ContinuousConditionalProbability>
+                <ContinuousConditionalProbability>
+                    <ParentValue parent="D2" value="2"/>
+                    <ContinuousDistribution>
+                        <NormalDistributionForBN>
+                            <Mean>
+                                <Constant dataType="double">14</Constant>
+                            </Mean>
+                            <Variance>
+                                <Constant dataType="double">1</Constant>
+                            </Variance>
+                        </NormalDistributionForBN>
+                    </ContinuousDistribution>
+                </ContinuousConditionalProbability>
+            </ContinuousNode>
+            <!--  -->
+            <ContinuousNode name="C4">
+                <ContinuousConditionalProbability>
+                    <ContinuousDistribution>
+                        <NormalDistributionForBN>
+                            <Mean>
+                                <Apply function="+">
+                                    <Apply function="*">
+                                        <Constant dataType="double">0.1</Constant>
+                                        <Apply function="pow">
+                                            <FieldRef field="C2"/>
+                                            <Constant dataType="integer">2</Constant>
+                                        </Apply>
+                                    </Apply>
+                                    <Apply function="+">
+                                        <Apply function="*">
+                                            <Constant dataType="double">0.6</Constant>
+                                            <FieldRef field="C2"/>
+                                        </Apply>
+                                        <Constant dataType="integer">1</Constant>
+                                    </Apply>
+                                </Apply>
+                            </Mean>
+                            <Variance>
+                                <Constant dataType="double">2</Constant>
+                            </Variance>
+                        </NormalDistributionForBN>
+                    </ContinuousDistribution>
+                </ContinuousConditionalProbability>
+            </ContinuousNode>
+            <!--  -->
+            <ContinuousNode name="C3">
+                <ContinuousConditionalProbability>
+                    <ParentValue parent="D3" value="0"/>
+                    <ContinuousDistribution>
+                        <NormalDistributionForBN>
+                            <Mean>
+                                <Apply function="*">
+                                    <Constant dataType="double">0.15</Constant>
+                                    <Apply function="pow">
+                                        <FieldRef field="C2"/>
+                                        <Constant dataType="integer">2</Constant>
+                                    </Apply>
+                                </Apply>
+                            </Mean>
+                            <Variance>
+                                <Constant dataType="double">2</Constant>
+                            </Variance>
+                        </NormalDistributionForBN>
+                    </ContinuousDistribution>
+                </ContinuousConditionalProbability>
+                <ContinuousConditionalProbability>
+                    <ParentValue parent="D3" value="1"/>
+                    <ContinuousDistribution>
+                        <NormalDistributionForBN>
+                            <Mean>
+                                <Apply function="*">
+                                    <Constant dataType="double">1.5</Constant>
+                                    <FieldRef field="C2"/>
+                                </Apply>
+                            </Mean>
+                            <Variance>
+                                <Constant dataType="double">1</Constant>
+                            </Variance>
+                        </NormalDistributionForBN>
+                    </ContinuousDistribution>
+                </ContinuousConditionalProbability>
+            </ContinuousNode>
+            <!--  -->
+            <DiscreteNode name="D4">
+                <DerivedField name="C3_Discretized" optype="categorical" dataType="string">
+                    <Discretize field="C3">
+                        <DiscretizeBin binValue="0">
+                            <Interval closure="openClosed" rightMargin="9"/>
+                        </DiscretizeBin>
+                        <DiscretizeBin binValue="1">
+                            <Interval closure="openClosed" leftMargin="9" rightMargin="11"/>
+                        </DiscretizeBin>
+                        <DiscretizeBin binValue="2">
+                            <Interval closure="openOpen" leftMargin="11"/>
+                        </DiscretizeBin>
+                    </Discretize>
+                </DerivedField>
+                <DiscreteConditionalProbability>
+                    <ParentValue parent="D3" value="0"/>
+                    <ParentValue parent="C3_Discretized" value="0"/>
+                    <ValueProbability value="0" probability="0.4"/>
+                    <ValueProbability value="1" probability="0.6"/>
+                </DiscreteConditionalProbability>
+                <DiscreteConditionalProbability>
+                    <ParentValue parent="D3" value="0"/>
+                    <ParentValue parent="C3_Discretized" value="1"/>
+                    <ValueProbability value="0" probability="0.3"/>
+                    <ValueProbability value="1" probability="0.7"/>
+                </DiscreteConditionalProbability>
+                <DiscreteConditionalProbability>
+                    <ParentValue parent="D3" value="0"/>
+                    <ParentValue parent="C3_Discretized" value="2"/>
+                    <ValueProbability value="0" probability="0.6"/>
+                    <ValueProbability value="1" probability="0.4"/>
+                </DiscreteConditionalProbability>
+                <DiscreteConditionalProbability>
+                    <ParentValue parent="D3" value="1"/>
+                    <ParentValue parent="C3_Discretized" value="0"/>
+                    <ValueProbability value="0" probability="0.4"/>
+                    <ValueProbability value="1" probability="0.6"/>
+                </DiscreteConditionalProbability>
+                <DiscreteConditionalProbability>
+                    <ParentValue parent="D3" value="1"/>
+                    <ParentValue parent="C3_Discretized" value="1"/>
+                    <ValueProbability value="0" probability="0.1"/>
+                    <ValueProbability value="1" probability="0.9"/>
+                </DiscreteConditionalProbability>
+                <DiscreteConditionalProbability>
+                    <ParentValue parent="D3" value="1"/>
+                    <ParentValue parent="C3_Discretized" value="2"/>
+                    <ValueProbability value="0" probability="0.3"/>
+                    <ValueProbability value="1" probability="0.7"/>
+                </DiscreteConditionalProbability>
+            </DiscreteNode>
+        </BayesianNetworkNodes>
+    </BayesianNetworkModel>
+</PMML>
