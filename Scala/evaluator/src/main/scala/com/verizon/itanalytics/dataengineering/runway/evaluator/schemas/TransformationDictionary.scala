@@ -34,16 +34,20 @@ trait TransformationDictionary extends Statistics {
 
   case class FieldRef(field: String, mapMissingTo: Option[String] = None)
 
-  case class NormContinous(
+  case class NormContinuous(
       mapMissingTo: Option[Int] = None,
       field: String,
       outliers: String = "asIs" // see outlier treatments in MiningSchema
   )
   case class LinearNorm(orig: Double, norm: Double)
 
-  case class NormDescrete(field: String,value: String, mapMissingTo: Option[Int] = None)
+  case class NormDiscrete(field: String,
+                          value: String,
+                          mapMissingTo: Option[Int] = None)
 
-  case class Discretization(field: String, mapMissingTo: Option[String] = None, defaultValue: Option[String] = None,
+  case class Discretization(field: String,
+                            mapMissingTo: Option[String] = None,
+                            defaultValue: Option[String] = None,
                             dataType: Option[String] = None)
 
   case class DiscretizeBin(binValue: String, interval: Interval)

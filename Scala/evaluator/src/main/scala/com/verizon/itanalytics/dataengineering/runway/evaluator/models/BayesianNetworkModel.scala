@@ -1,7 +1,6 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.models
 
 import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas._
-import com.verizon.itanalytics.dataengineering.runway.schemas._
 
 // http://dmg.org/pmml/v4-3/BayesianNetwork.html
 trait BayesianNetworkModel
@@ -42,7 +41,7 @@ trait BayesianNetworkModel
 
   case class ContinuousConditionalProbability(
       count: Option[Double] = None,
-      parentValue:  Option[ParentValue] = None,
+      parentValue: Option[ParentValue] = None,
       continuousDistribution: ContinuousDistribution)
 
   case class ValueProbability(value: String, probability: Double)

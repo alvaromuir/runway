@@ -14,15 +14,16 @@ trait TestDistributions extends TransformationDictionary {
       alternate: Option[Alternate] = None
   )
 
-  case class Baseline(fieldRefs: Seq[FieldRef],
-                      continuousDistribution: Option[String] = None, // should be choice of ContinuousDistribution see below
-                      countTable: Option[CountTable] = None,
-                      normalizedCountTable: Option[CountTable])
+  case class Baseline(
+      fieldRefs: Seq[FieldRef],
+      continuousDistribution: Option[String] = None, // should be choice of ContinuousDistribution see below
+      countTable: Option[CountTable] = None,
+      normalizedCountTable: Option[CountTable])
 
   case class ContinuousDistribution(
       anyDistribution: Option[AnyDistribution] = None,
       gaussianDistribution: Option[GaussianDistribution] = None,
-      logormalDistribution: Option[LognormalDistribution] = None,
+      lognormalDistribution: Option[LognormalDistribution] = None,
       poissonDistribution: Option[PoissonDistribution] = None,
       triangularDistribution: Option[TriangularDistribution] = None,
       uniformDistribution: Option[UniformDistribution] = None)
@@ -38,10 +39,9 @@ trait TestDistributions extends TransformationDictionary {
                                   normalizedCountTable: Option[CountTable],
                                   countTable: Option[CountTable])
 
-
   case class CountTable(fieldValues: Option[Seq[FieldValue]],
-                            fieldValueCounts: Option[Seq[FieldValueCount]],
-                            sample: Option[Double] = None)
+                        fieldValueCounts: Option[Seq[FieldValueCount]],
+                        sample: Option[Double] = None)
 
   case class FieldValue(field: String, value: String)
 

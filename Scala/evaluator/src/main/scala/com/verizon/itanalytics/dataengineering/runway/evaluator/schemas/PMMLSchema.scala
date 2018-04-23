@@ -1,7 +1,6 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 
 import com.verizon.itanalytics.dataengineering.runway.evaluator.models._
-import com.verizon.itanalytics.dataengineering.runway.models._
 
 // http://dmg.org/pmml/v4-3/GeneralStructure.html
 trait PMMLSchema

@@ -5,20 +5,26 @@ import java.text.SimpleDateFormat
 import java.util
 import java.util.{Date, Locale}
 
-import com.verizon.itanalytics.dataengineering.runway.evaluator.parsers.{AssociationModelParser, BaselineModelParser}
+import com.verizon.itanalytics.dataengineering.runway.evaluator.parsers.{
+  AssociationModelParser,
+  BaselineModelParser
+}
 import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas.PMMLSchema
-import com.verizon.itanalytics.dataengineering.runway.parsers.{AssociationModelParser, BaselineModelParser}
+
 import javax.xml.bind.JAXBException
 import org.dmg.pmml.{FieldName, Model, PMML}
-import org.jpmml.evaluator.{ModelEvaluator, ModelEvaluatorFactory, ReportingValueFactoryFactory, ValueFactoryFactory}
+import org.jpmml.evaluator.{
+  ModelEvaluator,
+  ModelEvaluatorFactory,
+  ReportingValueFactoryFactory,
+  ValueFactoryFactory
+}
 import org.jpmml.model.PMMLUtil
 import org.slf4j.{Logger, LoggerFactory}
-import com.verizon.itanalytics.dataengineering.runway.schemas._
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.util.control.ControlThrowable
-
 
 trait Evaluator
     extends Utils
@@ -32,7 +38,7 @@ trait Evaluator
     * @param file an input file stream
     * @throws JAXBException when there are problems parsing the pMML file
     * @throws FileNotFoundException when files are not available in file system
-    * @return a valid PMML object
+    * @return a valid pMML object
     */
   @throws[JAXBException]
   @throws[FileNotFoundException]
@@ -275,7 +281,8 @@ trait Evaluator
     * @param features a immutable Map[Any, Any]
     * @return LinkedHashMap[FieldName, FieldValue]
     */
-  def createArguments(pmmlModel: PMMLSchema, features: Map[Any, Any]): util.Map[FieldName, Any] = {
+  def createArguments(pmmlModel: PMMLSchema,
+                      features: Map[Any, Any]): util.Map[FieldName, Any] = {
     val arguments = new mutable.LinkedHashMap[FieldName, Any]
 
     pmmlModel.associationModel match {

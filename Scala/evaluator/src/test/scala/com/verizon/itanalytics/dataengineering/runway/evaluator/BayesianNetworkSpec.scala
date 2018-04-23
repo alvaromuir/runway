@@ -6,7 +6,11 @@ import org.dmg.pmml.{Model, PMML}
 import org.jpmml.evaluator.{ModelEvaluator, UnsupportedElementException}
 import org.scalatest.FlatSpec
 
-class BayesianNetworkSpec extends FlatSpec with Builder with testutils.Utils with Evaluator {
+class BayesianNetworkSpec
+    extends FlatSpec
+    with Builder
+    with testutils.Utils
+    with Evaluator {
 
   val testModelPath = mapModels("bayesianNetwork")
 

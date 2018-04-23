@@ -1,7 +1,6 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.models
 
 import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas._
-import com.verizon.itanalytics.dataengineering.runway.schemas._
 
 // http://dmg.org/pmml/v4-3/BaselineModel.html
 trait BaselineModel

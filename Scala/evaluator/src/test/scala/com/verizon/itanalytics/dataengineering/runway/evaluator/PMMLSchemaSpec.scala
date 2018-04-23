@@ -8,7 +8,11 @@ import org.dmg.pmml.{Model, PMML}
 import org.jpmml.evaluator.ModelEvaluator
 import org.scalatest.FlatSpec
 
-class PMMLSchemaSpec extends FlatSpec with Builder with testutils.Utils with Evaluator {
+class PMMLSchemaSpec
+    extends FlatSpec
+    with Builder
+    with testutils.Utils
+    with Evaluator {
   val testModelPath = mapModels("association")
 
   "the evaluator" should
@@ -24,7 +28,11 @@ class PMMLSchemaSpec extends FlatSpec with Builder with testutils.Utils with Eva
     val evaluatedPmml = evaluatePmml(unevaluatedPmml)
 
     val miningFunction = "associationRules"
-    assert(evaluatedPmml.getPMML.getModels.get(0).getMiningFunction.value() == miningFunction)
+    assert(
+      evaluatedPmml.getPMML.getModels
+        .get(0)
+        .getMiningFunction
+        .value() == miningFunction)
   }
 
   it should "parse association pMML files to a PmmlModel case class" in {
@@ -55,13 +63,19 @@ class PMMLSchemaSpec extends FlatSpec with Builder with testutils.Utils with Eva
     assert(Some(pmmlModel.header.annotations).isDefined)
     assert(Some(pmmlModel.header.timeStamp).isDefined)
 
-    assert(Some(pmmlModel.header.copyright).contains(Some("Copyright (c) 2012 DMG")))
-    assert(Some(pmmlModel.header.description).contains(Some("arules association rules model")))
+    assert(
+      Some(pmmlModel.header.copyright).contains(Some("Copyright (c) 2012 DMG")))
+    assert(
+      Some(pmmlModel.header.description)
+        .contains(Some("arules association rules model")))
     assert(Some(pmmlModel.header.modelVersion).get.isEmpty)
     assert(Some(pmmlModel.header.application.get.name).contains("Rattle/PMML"))
-    assert(Some(pmmlModel.header.application.get.version).contains(Some("1.2.30")))
+    assert(
+      Some(pmmlModel.header.application.get.version).contains(Some("1.2.30")))
     assert(Some(pmmlModel.header.annotations).get.get.isEmpty)
-    assert(Some(pmmlModel.header.timeStamp.get.dropRight(3)).contains(dateFormat.format(timeStamp)))
+    assert(
+      Some(pmmlModel.header.timeStamp.get.dropRight(3))
+        .contains(dateFormat.format(timeStamp)))
   }
 
   it should "have mining build tasks with appropriate value-pairs" in {
