@@ -4,7 +4,7 @@ import org.scalatest.{BeforeAndAfterEach, Suite}
 
 trait Builder extends BeforeAndAfterEach {
   this: Suite =>
-  val srcDirPath = "resources/"
+  val srcDirPath = "./evaluator/src/test/resources"
   val mapModels = Map("association" -> s"$srcDirPath/ShoppingAssocRules.xml",
                       "bayesianNetwork" -> s"$srcDirPath/BayesianTest.xml")
 
