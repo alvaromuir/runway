@@ -7,7 +7,8 @@ import java.util.{Date, Locale}
 
 import com.verizon.itanalytics.dataengineering.runway.evaluator.parsers.{
   AssociationModelParser,
-  BaselineModelParser
+  BaselineModelParser,
+  BayesianNetworkModelParser
 }
 import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas.PMMLSchema
 
@@ -30,7 +31,8 @@ trait Evaluator
     extends Utils
     with PMMLSchema
     with AssociationModelParser
-    with BaselineModelParser {
+    with BaselineModelParser
+    with BayesianNetworkModelParser {
   val log: Logger = LoggerFactory.getLogger(getClass.getName)
 
   /** Returns a pMML file from input stream
@@ -269,7 +271,7 @@ trait Evaluator
         case _               => None
       },
       bayesianNetworkModel = modelFunction match {
-        case "bayesianNetworkModel" => None
+        case "bayesianNetworkModel" => Option(parseBayesianNetworkModel(pMML))
         case _                      => None
       }
     )
