@@ -12,7 +12,7 @@ trait ClusterModels
     with TransformationDictionary
     with ModelVerification {
 
-  case class ClusteringModel(
+  case class ClusteringModels(
       modelName: Option[String] = None,
       functionName: String,
       algorithmName: Option[String] = None,

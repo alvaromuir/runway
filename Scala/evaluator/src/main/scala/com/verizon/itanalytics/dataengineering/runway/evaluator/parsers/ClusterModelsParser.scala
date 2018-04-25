@@ -7,12 +7,12 @@ import scala.collection.JavaConverters._
 
 trait ClusterModelsParser extends ClusterModels {
 
-  def parseClusteringModel(pMML: PMML): ClusteringModel = {
+  def parseClusteringModel(pMML: PMML): ClusteringModels = {
     val clusteringModel = pMML.getModels
       .get(0)
       .asInstanceOf[org.dmg.pmml.clustering.ClusteringModel]
 
-    ClusteringModel(
+    ClusteringModels(
       modelName = clusteringModel.getModelName match {
         case null => None
         case _    => Option(clusteringModel.getModelName)
