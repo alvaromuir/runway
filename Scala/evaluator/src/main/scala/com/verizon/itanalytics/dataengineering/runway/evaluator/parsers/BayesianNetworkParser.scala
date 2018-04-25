@@ -12,12 +12,12 @@ trait BayesianNetworkParser extends BayesianNetwork {
     * @param pMML a valid pMML file
     * @return BayesianNetworkModel Schema
     */
-  def parseBayesianNetworkModel(pMML: PMML): BayesianNetworkModel = {
+  def parseBayesianNetworkModel(pMML: PMML): BayesianNetwork = {
     val bayesianNetworkModel = pMML.getModels
       .get(0)
       .asInstanceOf[org.dmg.pmml.bayesian_network.BayesianNetworkModel]
 
-    BayesianNetworkModel(
+    BayesianNetwork(
       modelName = bayesianNetworkModel.getModelName match {
         case null => None
         case _    => Option(bayesianNetworkModel.getModelName)

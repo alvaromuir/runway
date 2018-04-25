@@ -27,7 +27,7 @@ class BayesianNetworkSpec
     val pMML: PMML = readPMML(new File(testModelPath))
 
     intercept[UnsupportedElementException] {
-      val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
+      evaluatePmml(pMML)
     }
   }
 

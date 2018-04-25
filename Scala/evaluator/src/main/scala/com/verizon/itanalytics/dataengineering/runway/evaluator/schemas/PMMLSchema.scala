@@ -33,7 +33,7 @@ trait PMMLSchema
                          version: String,
                          associationModel: Option[AssociationRules] = None,
                          baselineModel: Option[BaselineModels] = None,
-                         bayesianNetworkModel: Option[BayesianNetworkModel] = None,
+                         bayesianNetworkModel: Option[BayesianNetwork] = None,
                          clusteringModel: Option[ClusteringModel] = None,
                          gaussianProcessModel: Option[GaussianProcess] = None,
                          generalRegressionModel: Option[GeneralRegressionModel] = None,

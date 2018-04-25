@@ -13,7 +13,7 @@ trait BayesianNetwork
     with TestDistributions
     with ModelVerification {
 
-  case class BayesianNetworkModel(
+  case class BayesianNetwork(
       modelName: Option[String] = None,
       functionName: String,
       algorithmName: Option[String] = None,
