@@ -1,57 +1,39 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.parsers
 
-import com.verizon.itanalytics.dataengineering.runway.evaluator.models.AssociationModel
+import com.verizon.itanalytics.dataengineering.runway.evaluator.models.BayesianNetwork
 import org.dmg.pmml.PMML
 
 import scala.collection.JavaConverters._
 
-trait AssociationModelParser extends AssociationModel {
+trait BayesianNetworkParser extends BayesianNetwork {
 
-  /** Parses provided pMML file as an Association Model
+  /** Parses provided pMML file as an Baseline Model
     *
     * @param pMML a valid pMML file
-    * @return AssociationModel Schema
+    * @return BayesianNetworkModel Schema
     */
-  def parseAssociationModel(pMML:   PMML): AssociationModel = {
-    val associationModel = pMML.getModels
+  def parseBayesianNetworkModel(pMML: PMML): BayesianNetworkModel = {
+    val bayesianNetworkModel = pMML.getModels
       .get(0)
-      .asInstanceOf[org.dmg.pmml.association.AssociationModel]
+      .asInstanceOf[org.dmg.pmml.bayesian_network.BayesianNetworkModel]
 
-    AssociationModel(
-      modelName = associationModel.getModelName match {
+    BayesianNetworkModel(
+      modelName = bayesianNetworkModel.getModelName match {
         case null => None
-        case _    => Option(associationModel.getModelName)
+        case _    => Option(bayesianNetworkModel.getModelName)
       },
-      functionName = associationModel.getMiningFunction.value(),
-      algorithmName = associationModel.getAlgorithmName match {
+      functionName = bayesianNetworkModel.getMiningFunction.value(),
+      algorithmName = bayesianNetworkModel.getAlgorithmName match {
         case null => None
-        case _ => Option(associationModel.getAlgorithmName)
+        case _ => Option(bayesianNetworkModel.getAlgorithmName)
       },
-      numberOfTransactions = associationModel.getNumberOfTransactions,
-      maxNumberOfItemsPerTA = associationModel.getAvgNumberOfItemsPerTA match {
-        case null => None
-        case _    => Option(associationModel.getAvgNumberOfItemsPerTA.toInt)
-      },
-      avgNumberOfItemsPerTA = associationModel.getAvgNumberOfItemsPerTA match {
-        case null => None
-        case _    => Option(associationModel.getAvgNumberOfItemsPerTA.toDouble)
-      },
-      minimumSupport = associationModel.getMinimumSupport,
-      minimumConfidence = associationModel.getMinimumConfidence,
-      lengthLimit = associationModel.getLengthLimit match {
-        case null => None
-        case _    => Option(associationModel.getLengthLimit)
-      },
-      numberOfItems = associationModel.getNumberOfItems,
-      numberOfItemsets = associationModel.getNumberOfItemsets,
-      numberOfRules = associationModel.getNumberOfRules,
-      isScorable = Option(associationModel.isScorable),
+      isScorable = Option(bayesianNetworkModel.isScorable),
       miningSchema = MiningSchema(
-        miningFields = associationModel.getMiningSchema.getMiningFields match {
+        miningFields = bayesianNetworkModel.getMiningSchema.getMiningFields match {
           case null => None
           case _ =>
             Option(
-              associationModel.getMiningSchema.getMiningFields.asScala.map {
+              bayesianNetworkModel.getMiningSchema.getMiningFields.asScala.map {
                 f =>
                   MiningField(
                     name = f.getName.getValue,
@@ -86,12 +68,12 @@ trait AssociationModelParser extends AssociationModel {
                   )
               })
         }),
-      output = associationModel.getOutput match {
+      output = bayesianNetworkModel.getOutput match {
         case null => None
         case _ =>
           Option(
             Output(
-              outputFields = associationModel.getOutput.getOutputFields.asScala
+              outputFields = bayesianNetworkModel.getOutput.getOutputFields.asScala
                 .map {
                   o =>
                     OutputField(
@@ -112,17 +94,17 @@ trait AssociationModelParser extends AssociationModel {
                     )
                 }))
       },
-      modelStats = associationModel.getModelStats match {
+      modelStats = bayesianNetworkModel.getModelStats match {
         case null => None
         case _ =>
           Option(
             ModelStats(
               univariateStats =
-                associationModel.getModelStats.getUnivariateStats match {
+                bayesianNetworkModel.getModelStats.getUnivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      associationModel.getModelStats.getUnivariateStats.asScala
+                      bayesianNetworkModel.getModelStats.getUnivariateStats.asScala
                         .map {
                           u =>
                             UnivariateStats(
@@ -236,11 +218,11 @@ trait AssociationModelParser extends AssociationModel {
                         })
                 },
               multivariateStats =
-                associationModel.getModelStats.getMultivariateStats match {
+                bayesianNetworkModel.getModelStats.getMultivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      associationModel.getModelStats.getMultivariateStats.asScala
+                      bayesianNetworkModel.getModelStats.getMultivariateStats.asScala
                         .map {
                           m =>
                             MultivariateStats(
@@ -325,16 +307,164 @@ trait AssociationModelParser extends AssociationModel {
                 }
             ))
       },
-      localTransformation = associationModel.getLocalTransformations match {
+      modelExplanation = bayesianNetworkModel.getModelExplanation match {
+        case null => None
+        case _ =>
+          val me = bayesianNetworkModel.getModelExplanation
+          Option(
+            ModelExplanation(
+              correlations = me.getCorrelations match {
+                case null => None
+                case _ =>
+                  Option(
+                    Correlations(
+                      correlationFields = {
+                        val cf =
+                          me.getCorrelations.getCorrelationFields.getArray
+                        CorrelationFields(n = cf.getN.toString,
+                          `type` = cf.getType.value(),
+                          value = cf.getValue)
+                      },
+                      correlationValues = {
+                        val mtx =
+                          me.getCorrelations.getCorrelationValues.getMatrix
+                        Matrix(
+                          kind = mtx.getKind.value(),
+                          nbCols = mtx.getNbCols match {
+                            case null => None
+                            case _    => Option(mtx.getNbCols)
+                          },
+                          nbRows = mtx.getNbRows match {
+                            case null => None
+                            case _    => Option(mtx.getNbRows)
+                          },
+                          diagDefault = mtx.getDiagDefault match {
+                            case null => None
+                            case _    => Option(mtx.getDiagDefault)
+                          },
+                          offDiagDefault = mtx.getOffDiagDefault match {
+                            case null => None
+                            case _    => Option(mtx.getOffDiagDefault)
+                          },
+                          matCells = mtx.getMatCells match {
+                            case null => None
+                            case _ =>
+                              Option(mtx.getMatCells.asScala.map { c =>
+                                MatCell(row = c.getRow,
+                                  col = c.getCol,
+                                  value = c.getValue)
+                              })
+                          }
+                        )
+                      },
+                      correlationMethods =
+                        me.getCorrelations.getCorrelationMethods match {
+                          case null => None
+                          case _ =>
+                            val mtx =
+                              me.getCorrelations.getCorrelationMethods.getMatrix
+                            Option(
+                              Matrix(
+                                kind = mtx.getKind.value(),
+                                nbCols = mtx.getNbCols match {
+                                  case null => None
+                                  case _    => Option(mtx.getNbCols)
+                                },
+                                nbRows = mtx.getNbRows match {
+                                  case null => None
+                                  case _    => Option(mtx.getNbRows)
+                                },
+                                diagDefault = mtx.getDiagDefault match {
+                                  case null => None
+                                  case _    => Option(mtx.getDiagDefault)
+                                },
+                                offDiagDefault = mtx.getOffDiagDefault match {
+                                  case null => None
+                                  case _    => Option(mtx.getOffDiagDefault)
+                                },
+                                matCells = mtx.getMatCells match {
+                                  case null => None
+                                  case _ =>
+                                    Option(mtx.getMatCells.asScala.map { c =>
+                                      MatCell(row = c.getRow,
+                                        col = c.getCol,
+                                        value = c.getValue)
+                                    })
+                                }
+                              ))
+                        }
+                    ))
+              },
+              predictiveModelQuality = None,
+              clusteringModelQuality = None
+            ))
+      },
+      targets = bayesianNetworkModel.getTargets match {
+        case null => None
+        case _ =>
+          Option(bayesianNetworkModel.getTargets.asScala.map {
+            t =>
+              Target(
+                field = t.getField match {
+                  case null => None
+                  case _    => Option(t.getField.getValue)
+                },
+                optype = t.getOpType match {
+                  case null => None
+                  case _    => Option(t.getOpType.value())
+                },
+                castInteger = t.getCastInteger match {
+                  case null => None
+                  case _    => Option(t.getCastInteger.value())
+                },
+                min = t.getMin match {
+                  case null => None
+                  case _    => Option(t.getMin)
+                },
+                max = t.getMax match {
+                  case null => None
+                  case _    => Option(t.getMax)
+                },
+                rescaleConstant = t.getRescaleConstant.toDouble,
+                rescaleFactor = t.getRescaleFactor.toDouble,
+                targetValues = t.getTargetValues match {
+                  case null => None
+                  case _ =>
+                    Option(t.getTargetValues.asScala.map {
+                      v =>
+                        TargetValue(
+                          value = v.getValue match {
+                            case null => None
+                            case _    => Option(v.getValue)
+                          },
+                          displayValue = v.getDisplayValue match {
+                            case null => None
+                            case _    => Option(v.getDisplayValue)
+                          },
+                          priorProbability = v.getPriorProbability match {
+                            case null => None
+                            case _    => Option(v.getPriorProbability)
+                          },
+                          defaultValue = v.getDefaultValue match {
+                            case null => None
+                            case _    => Option(v.getDefaultValue)
+                          }
+                        )
+                    })
+                }
+              )
+          }) // this is an Iterable, not a Seq
+      },
+      localTransformation = bayesianNetworkModel.getLocalTransformations match {
         case null => None
         case _ =>
           Option(
             LocalTransformation(derivedFields =
-              associationModel.getLocalTransformations.getDerivedFields match {
+              bayesianNetworkModel.getLocalTransformations.getDerivedFields match {
                 case null => None
                 case _ =>
                   Option(
-                    associationModel.getLocalTransformations.getDerivedFields.asScala
+                    bayesianNetworkModel.getLocalTransformations.getDerivedFields.asScala
                       .map { d =>
                         DerivedField(
                           name = d.getName match {
@@ -348,80 +478,11 @@ trait AssociationModelParser extends AssociationModel {
                       })
               }))
       },
-      items = associationModel.getItems match {
+      bayesianNetworkNodes = bayesianNetworkModel.getBayesianNetworkNodes.toString,
+      modelVerification = bayesianNetworkModel.getModelVerification match {
         case null => None
         case _ =>
-          Option(
-            associationModel.getItems.asScala
-              .map {
-                i =>
-                  Item(
-                    id = i.getId,
-                    value = i.getValue,
-                    field = i.getField match {
-                      case null => None
-                      case _    => Option(i.getField.getValue)
-                    },
-                    category = Option(i.getCategory),
-                    mappedValue = Option(i.getMappedValue),
-                    weight = i.getWeight match {
-                      case null => None
-                      case _    => Option(i.getWeight.toDouble)
-                    }
-                  )
-              })
-      },
-      itemSets = associationModel.getItemsets match {
-        case null => None
-        case _ =>
-          Option(
-            associationModel.getItemsets.asScala
-              .map { s =>
-                ItemSet(
-                  id = s.getId,
-                  support = s.getSupport match {
-                    case null => None
-                    case _    => Option(s.getSupport.toDouble)
-                  },
-                  numberOfItems = Option(s.getNumberOfItems.toInt),
-                  itemRefs = s.getItemRefs.asScala.map { r =>
-                    ItemRef(r.getItemRef)
-                  }
-                )
-              })
-      },
-      associationRules = associationModel.getAssociationRules match {
-        case null => None
-        case _ =>
-          Option(
-            associationModel.getAssociationRules.asScala
-              .map {
-                a =>
-                  AssociationRule(
-                    antecedent = a.getAntecedent,
-                    consequent = a.getConsequent,
-                    support = a.getSupport,
-                    confidence = a.getConfidence,
-                    lift = a.getLift match {
-                      case null => None
-                      case _    => Option(a.getLift)
-                    },
-                    leverage = a.getLeverage match {
-                      case null => None
-                      case _    => Option(a.getLeverage.toDouble)
-                    },
-                    affinity = a.getAffinity match {
-                      case null => None
-                      case _    => Option(a.getAffinity.toDouble)
-                    },
-                    id = Option(a.getId)
-                  )
-              })
-      },
-      modelVerification = associationModel.getModelVerification match {
-        case null => None
-        case _ =>
-          val v = associationModel.getModelVerification
+          val v = bayesianNetworkModel.getModelVerification
           Option(
             ModelVerification(
               recordCount = v.getRecordCount match {

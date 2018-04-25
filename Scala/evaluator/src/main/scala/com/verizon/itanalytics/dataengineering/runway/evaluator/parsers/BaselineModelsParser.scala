@@ -1,11 +1,11 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.parsers
 
-import com.verizon.itanalytics.dataengineering.runway.evaluator.models.BaselineModel
+import com.verizon.itanalytics.dataengineering.runway.evaluator.models.BaselineModels
 import org.dmg.pmml.PMML
 
 import scala.collection.JavaConverters._
 
-trait BaselineModelParser extends BaselineModel {
+trait BaselineModelsParser extends BaselineModels {
 
   /** Parses provided pMML file as an Baseline Model
     *

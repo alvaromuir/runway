@@ -6,10 +6,10 @@ import java.util
 import java.util.{Date, Locale}
 
 import com.verizon.itanalytics.dataengineering.runway.evaluator.parsers.{
-  AssociationModelParser,
-  BaselineModelParser,
-  BayesianNetworkModelParser,
-  ClusteringModelParser
+  AssociationRulesParser,
+  BaselineModelsParser,
+  BayesianNetworkParser,
+  ClusterModelsParser
 }
 import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas.PMMLSchema
 import javax.xml.bind.JAXBException
@@ -30,10 +30,10 @@ import scala.util.control.ControlThrowable
 trait Evaluator
     extends Utils
     with PMMLSchema
-    with AssociationModelParser
-    with BaselineModelParser
-    with BayesianNetworkModelParser
-    with ClusteringModelParser {
+    with AssociationRulesParser
+    with BaselineModelsParser
+    with BayesianNetworkParser
+    with ClusterModelsParser {
   val log: Logger = LoggerFactory.getLogger(getClass.getName)
 
   /** Returns a pMML file from input stream

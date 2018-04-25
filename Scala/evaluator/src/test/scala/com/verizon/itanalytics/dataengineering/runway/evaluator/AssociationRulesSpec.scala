@@ -9,7 +9,7 @@ import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._
 
-class AssociationModelSpec extends FlatSpec with Builder with TestUtils with Evaluator {
+class AssociationRulesSpec extends FlatSpec with Builder with TestUtils with Evaluator {
 
   val testModelPath = mapModels("association")
 

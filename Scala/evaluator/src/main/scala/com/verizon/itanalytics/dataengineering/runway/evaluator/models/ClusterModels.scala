@@ -3,7 +3,7 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.models
 import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas._
 
 // http://dmg.org/pmml/v4-3/ClusteringModel.html
-trait ClusteringModel
+trait ClusterModels
     extends MiningSchema
     with Output
     with Statistics

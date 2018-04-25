@@ -6,12 +6,12 @@ import com.verizon.itanalytics.dataengineering.runway.evaluator.models._
 trait PMMLSchema
     extends Taxonomy
     with DataDictionary
-    with AssociationModel
-    with BayesianNetworkModel
-    with BaselineModel
-    with ClusteringModel
+    with AssociationRules
+    with BayesianNetwork
+    with BaselineModels
+    with ClusterModels
     with GeneralRegressionModel
-    with GaussianProcessModel
+    with GaussianProcess
     with MiningModel
     with NaiveBayesModel
     with NearestNeighborModel
@@ -26,29 +26,29 @@ trait PMMLSchema
     with TreeModel {
 
   case class PMMLSchema(
-      header: Header,
-      miningBuildTask: Option[String] = None,
-      dataDictionary: DataDictionary,
-      transformationDictionary: Option[TransformationDictionary] = None,
-      version: String,
-      associationModel: Option[AssociationModel] = None,
-      baselineModel: Option[BaselineModel] = None,
-      bayesianNetworkModel: Option[BayesianNetworkModel] = None,
-      clusteringModel: Option[ClusteringModel] = None,
-      gaussianProcessModel: Option[GaussianProcessModel] = None,
-      generalRegressionModel: Option[GeneralRegressionModel] = None,
-      miningModel: Option[MiningModel] = None,
-      naiveBayesModel: Option[NaiveBayesModel] = None,
-      nearestNeighborModel: Option[NearestNeighborModel] = None,
-      neuralNetwork: Option[NeuralNetworkModel] = None,
-      regressionModel: Option[RegressionModel] = None,
-      ruleSetModel: Option[RuleSetModel] = None,
-      sequenceModel: Option[SequenceModel] = None,
-      scorecard: Option[Scorecard] = None,
-      supportVectorMachineModel: Option[SupportVectorMachineModel] = None,
-      textModel: Option[TextModel] = None,
-      timeSeriesModel: Option[TimeSeriesModel] = None,
-      treeModel: Option[TreeModel] = None
+                         header: Header,
+                         miningBuildTask: Option[String] = None,
+                         dataDictionary: DataDictionary,
+                         transformationDictionary: Option[TransformationDictionary] = None,
+                         version: String,
+                         associationModel: Option[AssociationModel] = None,
+                         baselineModel: Option[BaselineModel] = None,
+                         bayesianNetworkModel: Option[BayesianNetworkModel] = None,
+                         clusteringModel: Option[ClusteringModel] = None,
+                         gaussianProcessModel: Option[GaussianProcess] = None,
+                         generalRegressionModel: Option[GeneralRegressionModel] = None,
+                         miningModel: Option[MiningModel] = None,
+                         naiveBayesModel: Option[NaiveBayesModel] = None,
+                         nearestNeighborModel: Option[NearestNeighborModel] = None,
+                         neuralNetwork: Option[NeuralNetworkModel] = None,
+                         regressionModel: Option[RegressionModel] = None,
+                         ruleSetModel: Option[RuleSetModel] = None,
+                         sequenceModel: Option[SequenceModel] = None,
+                         scorecard: Option[Scorecard] = None,
+                         supportVectorMachineModel: Option[SupportVectorMachineModel] = None,
+                         textModel: Option[TextModel] = None,
+                         timeSeriesModel: Option[TimeSeriesModel] = None,
+                         treeModel: Option[TreeModel] = None
   )
 
   case class Extension(extender: Option[String] = None,

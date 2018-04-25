@@ -3,7 +3,7 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.models
 import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas._
 
 // http://dmg.org/pmml/v4-3/AssociationRules.html
-trait AssociationModel
+trait AssociationRules
     extends Statistics
     with TransformationDictionary
     with MiningSchema

@@ -9,7 +9,7 @@ import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._
 
-class ClusteringModelSpec
+class ClusterModelsSpec
     extends FlatSpec
     with Builder
     with TestUtils

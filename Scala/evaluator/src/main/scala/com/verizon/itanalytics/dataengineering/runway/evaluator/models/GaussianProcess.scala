@@ -1,3 +1,3 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.models
 
-trait GaussianProcessModel {}
+trait GaussianProcess {}

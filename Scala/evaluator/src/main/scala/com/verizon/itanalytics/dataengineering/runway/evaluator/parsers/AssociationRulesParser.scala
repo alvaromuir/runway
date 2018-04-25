@@ -1,36 +1,57 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.parsers
 
-import com.verizon.itanalytics.dataengineering.runway.evaluator.models.ClusteringModel
+import com.verizon.itanalytics.dataengineering.runway.evaluator.models.AssociationRules
 import org.dmg.pmml.PMML
 
 import scala.collection.JavaConverters._
 
-trait ClusteringModelParser extends ClusteringModel {
+trait AssociationRulesParser extends AssociationRules {
 
-  def parseClusteringModel(pMML: PMML): ClusteringModel = {
-    val clusteringModel = pMML.getModels
+  /** Parses provided pMML file as an Association Model
+    *
+    * @param pMML a valid pMML file
+    * @return AssociationModel Schema
+    */
+  def parseAssociationModel(pMML:   PMML): AssociationModel = {
+    val associationModel = pMML.getModels
       .get(0)
-      .asInstanceOf[org.dmg.pmml.clustering.ClusteringModel]
+      .asInstanceOf[org.dmg.pmml.association.AssociationModel]
 
-    ClusteringModel(
-      modelName = clusteringModel.getModelName match {
+    AssociationModel(
+      modelName = associationModel.getModelName match {
         case null => None
-        case _    => Option(clusteringModel.getModelName)
+        case _    => Option(associationModel.getModelName)
       },
-      functionName = clusteringModel.getMiningFunction.value(),
-      algorithmName = clusteringModel.getAlgorithmName match {
+      functionName = associationModel.getMiningFunction.value(),
+      algorithmName = associationModel.getAlgorithmName match {
         case null => None
-        case _ => Option(clusteringModel.getAlgorithmName)
+        case _ => Option(associationModel.getAlgorithmName)
       },
-      modelClass = clusteringModel.getModelClass.value(),
-      numberOfClusters = clusteringModel.getNumberOfClusters,
-      isScorable = Option(clusteringModel.isScorable),
+      numberOfTransactions = associationModel.getNumberOfTransactions,
+      maxNumberOfItemsPerTA = associationModel.getAvgNumberOfItemsPerTA match {
+        case null => None
+        case _    => Option(associationModel.getAvgNumberOfItemsPerTA.toInt)
+      },
+      avgNumberOfItemsPerTA = associationModel.getAvgNumberOfItemsPerTA match {
+        case null => None
+        case _    => Option(associationModel.getAvgNumberOfItemsPerTA.toDouble)
+      },
+      minimumSupport = associationModel.getMinimumSupport,
+      minimumConfidence = associationModel.getMinimumConfidence,
+      lengthLimit = associationModel.getLengthLimit match {
+        case null => None
+        case _    => Option(associationModel.getLengthLimit)
+      },
+      numberOfItems = associationModel.getNumberOfItems,
+      numberOfItemsets = associationModel.getNumberOfItemsets,
+      numberOfRules = associationModel.getNumberOfRules,
+      isScorable = Option(associationModel.isScorable),
       miningSchema = MiningSchema(
-        miningFields = clusteringModel.getMiningSchema.getMiningFields match {
+        miningFields = associationModel.getMiningSchema.getMiningFields match {
           case null => None
           case _ =>
             Option(
-              clusteringModel.getMiningSchema.getMiningFields.asScala.map {
+              associationModel.getMiningSchema.getMiningFields.asScala.map {
                 f =>
                   MiningField(
                     name = f.getName.getValue,
@@ -65,12 +86,12 @@ trait ClusteringModelParser extends ClusteringModel {
                   )
               })
         }),
-      output = clusteringModel.getOutput match {
+      output = associationModel.getOutput match {
         case null => None
         case _ =>
           Option(
             Output(
-              outputFields = clusteringModel.getOutput.getOutputFields.asScala
+              outputFields = associationModel.getOutput.getOutputFields.asScala
                 .map {
                   o =>
                     OutputField(
@@ -91,17 +112,17 @@ trait ClusteringModelParser extends ClusteringModel {
                     )
                 }))
       },
-      modelStats = clusteringModel.getModelStats match {
+      modelStats = associationModel.getModelStats match {
         case null => None
         case _ =>
           Option(
             ModelStats(
               univariateStats =
-                clusteringModel.getModelStats.getUnivariateStats match {
+                associationModel.getModelStats.getUnivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      clusteringModel.getModelStats.getUnivariateStats.asScala
+                      associationModel.getModelStats.getUnivariateStats.asScala
                         .map {
                           u =>
                             UnivariateStats(
@@ -215,11 +236,11 @@ trait ClusteringModelParser extends ClusteringModel {
                         })
                 },
               multivariateStats =
-                clusteringModel.getModelStats.getMultivariateStats match {
+                associationModel.getModelStats.getMultivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      clusteringModel.getModelStats.getMultivariateStats.asScala
+                      associationModel.getModelStats.getMultivariateStats.asScala
                         .map {
                           m =>
                             MultivariateStats(
@@ -304,164 +325,16 @@ trait ClusteringModelParser extends ClusteringModel {
                 }
             ))
       },
-      modelExplanation = clusteringModel.getModelExplanation match {
-        case null => None
-        case _ =>
-          val me = clusteringModel.getModelExplanation
-          Option(
-            ModelExplanation(
-              correlations = me.getCorrelations match {
-                case null => None
-                case _ =>
-                  Option(
-                    Correlations(
-                      correlationFields = {
-                        val cf =
-                          me.getCorrelations.getCorrelationFields.getArray
-                        CorrelationFields(n = cf.getN.toString,
-                          `type` = cf.getType.value(),
-                          value = cf.getValue)
-                      },
-                      correlationValues = {
-                        val mtx =
-                          me.getCorrelations.getCorrelationValues.getMatrix
-                        Matrix(
-                          kind = mtx.getKind.value(),
-                          nbCols = mtx.getNbCols match {
-                            case null => None
-                            case _    => Option(mtx.getNbCols)
-                          },
-                          nbRows = mtx.getNbRows match {
-                            case null => None
-                            case _    => Option(mtx.getNbRows)
-                          },
-                          diagDefault = mtx.getDiagDefault match {
-                            case null => None
-                            case _    => Option(mtx.getDiagDefault)
-                          },
-                          offDiagDefault = mtx.getOffDiagDefault match {
-                            case null => None
-                            case _    => Option(mtx.getOffDiagDefault)
-                          },
-                          matCells = mtx.getMatCells match {
-                            case null => None
-                            case _ =>
-                              Option(mtx.getMatCells.asScala.map { c =>
-                                MatCell(row = c.getRow,
-                                  col = c.getCol,
-                                  value = c.getValue)
-                              })
-                          }
-                        )
-                      },
-                      correlationMethods =
-                        me.getCorrelations.getCorrelationMethods match {
-                          case null => None
-                          case _ =>
-                            val mtx =
-                              me.getCorrelations.getCorrelationMethods.getMatrix
-                            Option(
-                              Matrix(
-                                kind = mtx.getKind.value(),
-                                nbCols = mtx.getNbCols match {
-                                  case null => None
-                                  case _    => Option(mtx.getNbCols)
-                                },
-                                nbRows = mtx.getNbRows match {
-                                  case null => None
-                                  case _    => Option(mtx.getNbRows)
-                                },
-                                diagDefault = mtx.getDiagDefault match {
-                                  case null => None
-                                  case _    => Option(mtx.getDiagDefault)
-                                },
-                                offDiagDefault = mtx.getOffDiagDefault match {
-                                  case null => None
-                                  case _    => Option(mtx.getOffDiagDefault)
-                                },
-                                matCells = mtx.getMatCells match {
-                                  case null => None
-                                  case _ =>
-                                    Option(mtx.getMatCells.asScala.map { c =>
-                                      MatCell(row = c.getRow,
-                                        col = c.getCol,
-                                        value = c.getValue)
-                                    })
-                                }
-                              ))
-                        }
-                    ))
-              },
-              predictiveModelQuality = None,
-              clusteringModelQuality = None
-            ))
-      },
-      targets = clusteringModel.getTargets match {
-        case null => None
-        case _ =>
-          Option(clusteringModel.getTargets.asScala.map {
-            t =>
-              Target(
-                field = t.getField match {
-                  case null => None
-                  case _    => Option(t.getField.getValue)
-                },
-                optype = t.getOpType match {
-                  case null => None
-                  case _    => Option(t.getOpType.value())
-                },
-                castInteger = t.getCastInteger match {
-                  case null => None
-                  case _    => Option(t.getCastInteger.value())
-                },
-                min = t.getMin match {
-                  case null => None
-                  case _    => Option(t.getMin)
-                },
-                max = t.getMax match {
-                  case null => None
-                  case _    => Option(t.getMax)
-                },
-                rescaleConstant = t.getRescaleConstant.toDouble,
-                rescaleFactor = t.getRescaleFactor.toDouble,
-                targetValues = t.getTargetValues match {
-                  case null => None
-                  case _ =>
-                    Option(t.getTargetValues.asScala.map {
-                      v =>
-                        TargetValue(
-                          value = v.getValue match {
-                            case null => None
-                            case _    => Option(v.getValue)
-                          },
-                          displayValue = v.getDisplayValue match {
-                            case null => None
-                            case _    => Option(v.getDisplayValue)
-                          },
-                          priorProbability = v.getPriorProbability match {
-                            case null => None
-                            case _    => Option(v.getPriorProbability)
-                          },
-                          defaultValue = v.getDefaultValue match {
-                            case null => None
-                            case _    => Option(v.getDefaultValue)
-                          }
-                        )
-                    })
-                }
-              )
-          }) // this is an Iterable, not a Seq
-      },
-      localTransformation = clusteringModel.getLocalTransformations match {
+      localTransformation = associationModel.getLocalTransformations match {
         case null => None
         case _ =>
           Option(
             LocalTransformation(derivedFields =
-              clusteringModel.getLocalTransformations.getDerivedFields match {
+              associationModel.getLocalTransformations.getDerivedFields match {
                 case null => None
                 case _ =>
                   Option(
-                    clusteringModel.getLocalTransformations.getDerivedFields.asScala
+                    associationModel.getLocalTransformations.getDerivedFields.asScala
                       .map { d =>
                         DerivedField(
                           name = d.getName match {
@@ -475,107 +348,80 @@ trait ClusteringModelParser extends ClusteringModel {
                       })
               }))
       },
-      comparisonMeasure = ComparisonMeasure(
-        kind = clusteringModel.getComparisonMeasure.getKind.value(),
-        compareFunction = clusteringModel.getComparisonMeasure.getCompareFunction.value(),
-        minimum = clusteringModel.getComparisonMeasure.getMinimum match {
-          case null => None
-          case _ => Option(clusteringModel.getComparisonMeasure.getMinimum)
-        },
-        maximum = clusteringModel.getComparisonMeasure.getMaximum match {
-          case null => None
-          case _ => Option(clusteringModel.getComparisonMeasure.getMaximum)
-        },
-        measure = clusteringModel.getComparisonMeasure.getMeasure match {
-          case null => None
-          case _ => Option(clusteringModel.getComparisonMeasure.getMeasure
-            .toString
-          .split("org.dmg.pmml.")
-          .tail.head.split("@").head) // this should be of "Measure" type and RegEx
-        }
-      ),
-      clusteringFields = clusteringModel.getClusteringFields.asScala.map {
-        f => ClusteringField(
-          field = f.getField.getValue,
-          isCenterField = f.getCenterField.value(),
-          fieldWeight = f.getFieldWeight,
-          similarityScale = f.getSimilarityScale match {
-            case null => None
-            case _ => Option(f.getSimilarityScale)
-          },
-          compareFunction = f.getCompareFunction match {
-            case null => None
-            case _ => Option(f.getCompareFunction.value())
-          })
-      },
-      missingValueWeights = clusteringModel.getMissingValueWeights match {
-        case null => None
-        case _ => Option(MissingValueWeights(
-          n = clusteringModel.getMissingValueWeights.getArray.getN.toInt,
-          `type` = clusteringModel.getMissingValueWeights.getArray.getType.value(),
-          value = clusteringModel.getMissingValueWeights.getArray.getValue
-        ))
-      },
-      clusters = clusteringModel.getClusters.asScala.map {
-        c => Cluster(
-          id = c.getId match {
-            case null => None
-            case _ => Option(c.getId)
-          },
-          name = c.getName match {
-            case null => None
-            case _ => Option(c.getName)
-          },
-          size = c.getSize match {
-            case null => None
-            case _ => Option(c.getSize)
-          },
-          covariances = c.getCovariances match {
-            case null => None
-            case _ =>
-              val mtx = c.getCovariances.getMatrix
-              Option(Matrix(
-                kind = mtx.getKind.value(),
-                nbCols = mtx.getNbCols match {
-                  case null => None
-                  case _    => Option(mtx.getNbCols)
-                },
-                nbRows = mtx.getNbRows match {
-                  case null => None
-                  case _    => Option(mtx.getNbRows)
-                },
-                diagDefault = mtx.getDiagDefault match {
-                  case null => None
-                  case _    => Option(mtx.getDiagDefault)
-                },
-                offDiagDefault = mtx.getOffDiagDefault match {
-                  case null => None
-                  case _    => Option(mtx.getOffDiagDefault)
-                },
-                matCells = mtx.getMatCells match {
-                  case null => None
-                  case _ =>
-                    Option(mtx.getMatCells.asScala.map { c =>
-                      MatCell(row = c.getRow,
-                        col = c.getCol,
-                        value = c.getValue)
-                    })
-                }
-              ))
-          },
-          kohonenMap = c.getKohonenMap match {
-            case null => None
-            case _ => Option(KohonenMap(
-              coord1 = Option(c.getKohonenMap.getCoord1),
-              coord2 = Option(c.getKohonenMap.getCoord2),
-              coord3 = Option(c.getKohonenMap.getCoord3)
-            ))
-          })
-      },
-      modelVerification = clusteringModel.getModelVerification match {
+      items = associationModel.getItems match {
         case null => None
         case _ =>
-          val v = clusteringModel.getModelVerification
+          Option(
+            associationModel.getItems.asScala
+              .map {
+                i =>
+                  Item(
+                    id = i.getId,
+                    value = i.getValue,
+                    field = i.getField match {
+                      case null => None
+                      case _    => Option(i.getField.getValue)
+                    },
+                    category = Option(i.getCategory),
+                    mappedValue = Option(i.getMappedValue),
+                    weight = i.getWeight match {
+                      case null => None
+                      case _    => Option(i.getWeight.toDouble)
+                    }
+                  )
+              })
+      },
+      itemSets = associationModel.getItemsets match {
+        case null => None
+        case _ =>
+          Option(
+            associationModel.getItemsets.asScala
+              .map { s =>
+                ItemSet(
+                  id = s.getId,
+                  support = s.getSupport match {
+                    case null => None
+                    case _    => Option(s.getSupport.toDouble)
+                  },
+                  numberOfItems = Option(s.getNumberOfItems.toInt),
+                  itemRefs = s.getItemRefs.asScala.map { r =>
+                    ItemRef(r.getItemRef)
+                  }
+                )
+              })
+      },
+      associationRules = associationModel.getAssociationRules match {
+        case null => None
+        case _ =>
+          Option(
+            associationModel.getAssociationRules.asScala
+              .map {
+                a =>
+                  AssociationRule(
+                    antecedent = a.getAntecedent,
+                    consequent = a.getConsequent,
+                    support = a.getSupport,
+                    confidence = a.getConfidence,
+                    lift = a.getLift match {
+                      case null => None
+                      case _    => Option(a.getLift)
+                    },
+                    leverage = a.getLeverage match {
+                      case null => None
+                      case _    => Option(a.getLeverage.toDouble)
+                    },
+                    affinity = a.getAffinity match {
+                      case null => None
+                      case _    => Option(a.getAffinity.toDouble)
+                    },
+                    id = Option(a.getId)
+                  )
+              })
+      },
+      modelVerification = associationModel.getModelVerification match {
+        case null => None
+        case _ =>
+          val v = associationModel.getModelVerification
           Option(
             ModelVerification(
               recordCount = v.getRecordCount match {
