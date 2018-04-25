@@ -32,7 +32,7 @@ trait PMMLSchema
                          transformationDictionary: Option[TransformationDictionary] = None,
                          version: String,
                          associationModel: Option[AssociationRules] = None,
-                         baselineModel: Option[BaselineModel] = None,
+                         baselineModel: Option[BaselineModels] = None,
                          bayesianNetworkModel: Option[BayesianNetworkModel] = None,
                          clusteringModel: Option[ClusteringModel] = None,
                          gaussianProcessModel: Option[GaussianProcess] = None,

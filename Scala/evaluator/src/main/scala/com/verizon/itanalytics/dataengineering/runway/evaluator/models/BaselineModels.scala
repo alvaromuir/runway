@@ -13,7 +13,7 @@ trait BaselineModels
     with TestDistributions
     with ModelVerification {
 
-  case class BaselineModel(
+  case class BaselineModels(
       modelName: Option[String] = None,
       functionName: String,
       algorithmName: Option[String] = None,

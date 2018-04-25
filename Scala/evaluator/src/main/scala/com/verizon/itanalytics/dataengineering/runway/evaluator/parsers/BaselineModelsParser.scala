@@ -12,12 +12,12 @@ trait BaselineModelsParser extends BaselineModels {
     * @param pMML a valid pMML file
     * @return BaselineModel Schema
     */
-  def parseBaselineModel(pMML: PMML): BaselineModel = {
+  def parseBaselineModel(pMML: PMML): BaselineModels= {
     val baselineModel = pMML.getModels
       .get(0)
       .asInstanceOf[org.dmg.pmml.baseline.BaselineModel]
 
-    BaselineModel(
+    BaselineModels(
       modelName = baselineModel.getModelName match {
         case null => None
         case _    => Option(baselineModel.getModelName)

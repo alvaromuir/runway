@@ -15,6 +15,6 @@ trait GaussianProcess
   case class GaussianProcess(
       modelName: Option[String] = None,
       functionName: String,
-      algorithmName: Option[String] = None,
+      algorithmName: Option[String] = None
   )
 }
