@@ -151,6 +151,14 @@ class ClusterModelsSpec
     assert(Some(pmmlModel.clusteringModel.get.modelStats).get.isEmpty)
   }
 
+  it should "provide information on model explanation if available" in {
+    val pMML: PMML = readPMML(new File(testModelPath))
+    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
+    val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
+
+    assert(pmmlModel.clusteringModel.get.modelExplanation.isEmpty)
+  }
+
   it should "provide information on the target fields if available" in {
     val pMML: PMML = readPMML(new File(testModelPath))
     val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
@@ -163,15 +171,7 @@ class ClusterModelsSpec
     assert(Some(targets.get(0).getMiningField).contains(null))
     assert(Some(targets.get(0).getTarget).contains(null))
   }
-
-  it should "provide information on model explanation if available" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-    val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
-
-    assert(pmmlModel.clusteringModel.get.modelExplanation.isEmpty)
-  }
-
+  
   it should "have local transformation information if available" in {
     val pMML: PMML = readPMML(new File(testModelPath))
     val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
