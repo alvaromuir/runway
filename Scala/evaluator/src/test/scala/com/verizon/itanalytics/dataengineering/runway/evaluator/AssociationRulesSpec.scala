@@ -218,8 +218,7 @@ class AssociationRulesSpec extends FlatSpec with Builder with TestUtils with Eva
     val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
     val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
 
-    assert(evaluator.verify().equals()) // is empty
-
+    assert(evaluator.verify().equals(())) // is empty
 
     val inputField = evaluator.getInputFields.get(0).getName.getValue
     val observations = Map(inputField -> List("beer", "softdrink")).toMap[Any, Any]

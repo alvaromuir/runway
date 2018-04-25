@@ -238,6 +238,8 @@ class ClusterModelsSpec
     val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
     val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
 
+    assert(evaluator.verify().equals(())) // is empty
+
     val inputFields = evaluator.getInputFields.asScala.map {
       _.getName.getValue
     }.toSet[Any]
