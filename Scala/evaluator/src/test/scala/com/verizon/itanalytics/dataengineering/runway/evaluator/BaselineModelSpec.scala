@@ -1,11 +1,12 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator
 
+import com.verizon.itanalytics.dataengineering.runway.evaluator.testutils.TestUtils
 import org.scalatest.FlatSpec
 
 class BaselineModelSpec
     extends FlatSpec
     with Builder
-    with testutils.Utils
+    with TestUtils
     with Evaluator {
 
   "the evaluator" should

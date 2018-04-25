@@ -2,6 +2,7 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator
 
 import java.io.File
 
+import com.verizon.itanalytics.dataengineering.runway.evaluator.testutils.TestUtils
 import org.dmg.pmml.{Model, PMML}
 import org.jpmml.evaluator.{ModelEvaluator, UnsupportedElementException}
 import org.scalatest.FlatSpec
@@ -9,7 +10,7 @@ import org.scalatest.FlatSpec
 class BayesianNetworkSpec
     extends FlatSpec
     with Builder
-    with testutils.Utils
+    with TestUtils
     with Evaluator {
 
   val testModelPath = mapModels("bayesianNetwork")

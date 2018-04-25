@@ -2,13 +2,14 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator
 
 import java.io.File
 
+import com.verizon.itanalytics.dataengineering.runway.evaluator.testutils.TestUtils
 import org.dmg.pmml.{Model, PMML}
 import org.jpmml.evaluator.ModelEvaluator
 import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._
 
-class AssociationModelSpec extends FlatSpec with Builder with testutils.Utils with Evaluator {
+class AssociationModelSpec extends FlatSpec with Builder with TestUtils with Evaluator {
 
   val testModelPath = mapModels("association")
 
@@ -48,7 +49,7 @@ class AssociationModelSpec extends FlatSpec with Builder with testutils.Utils wi
     assert(dataFields.tail.head.intervals.get.isEmpty)
   }
 
-  it should "identified as an Association Rules model in the PMMLSchema" in {
+  it should "identified as an Association Rules model in the PMML Schema" in {
     val pMML: PMML = readPMML(new File(testModelPath))
     val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
     val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
@@ -92,6 +93,7 @@ class AssociationModelSpec extends FlatSpec with Builder with testutils.Utils wi
     assert(Some(pmmlModel.associationModel.get.modelName).get.isEmpty)
     assert(Some(pmmlModel.associationModel.get.functionName).contains("associationRules"))
     assert(Some(pmmlModel.associationModel.get.algorithmName).get.isEmpty)
+    assert(Some(pmmlModel.associationModel.get.isScorable).get.contains(true))
   }
 
   it should "have basic numeric-based fields" in {
@@ -108,6 +110,27 @@ class AssociationModelSpec extends FlatSpec with Builder with testutils.Utils wi
     assert(Some(pmmlModel.associationModel.get.numberOfItems).contains(11))
     assert(Some(pmmlModel.associationModel.get.numberOfItemsets).contains(357))
     assert(Some(pmmlModel.associationModel.get.numberOfRules).contains(770))
+  }
+
+  it should "have schema information if available" in {
+    val pMML: PMML = readPMML(new File(testModelPath))
+    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
+    val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
+
+    val miningSchema = Some(pmmlModel.associationModel.get.miningSchema)
+    val miningFields = miningSchema.get.miningFields.get.toList
+
+    assert(miningFields.size.equals(2))
+    assert(miningFields.head.name.contains("transaction"))
+    assert(miningFields.head.usageType.contains("group"))
+    assert(miningFields.head.optype.isEmpty)
+    assert(miningFields.head.importance.isEmpty)
+    assert(miningFields.head.outliers.contains("asIs"))
+    assert(miningFields.head.lowValue.isEmpty)
+    assert(miningFields.head.highValue.isEmpty)
+    assert(miningFields.head.missingValueReplacement.isEmpty)
+    assert(miningFields.head.missingValueTreatment.isEmpty)
+    assert(miningFields.head.invalidValueTreatment.contains("returnInvalid"))
   }
 
   it should "have output information if available" in {
@@ -134,25 +157,12 @@ class AssociationModelSpec extends FlatSpec with Builder with testutils.Utils wi
     assert(Some(pmmlModel.associationModel.get.localTransformation).get.isEmpty)
   }
 
-  it should "have schema information if available" in {
+  it should "have information on the models verification" in {
     val pMML: PMML = readPMML(new File(testModelPath))
     val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
     val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
 
-    val miningSchema = Some(pmmlModel.associationModel.get.miningSchema)
-    val miningFields = miningSchema.get.miningFields.get.toList
-
-    assert(miningFields.size.equals(2))
-    assert(miningFields.head.name.contains("transaction"))
-    assert(miningFields.head.usageType.contains("group"))
-    assert(miningFields.head.optype.isEmpty)
-    assert(miningFields.head.importance.isEmpty)
-    assert(miningFields.head.outliers.contains("asIs"))
-    assert(miningFields.head.lowValue.isEmpty)
-    assert(miningFields.head.highValue.isEmpty)
-    assert(miningFields.head.missingValueReplacement.isEmpty)
-    assert(miningFields.head.missingValueTreatment.isEmpty)
-    assert(miningFields.head.invalidValueTreatment.contains("returnInvalid"))
+    assert(Some(pmmlModel.associationModel.get.modelVerification).get.isEmpty)
   }
 
   it should "have details on items" in {
@@ -203,30 +213,6 @@ class AssociationModelSpec extends FlatSpec with Builder with testutils.Utils wi
     assert(associationRules.get.head.id.isEmpty)
   }
 
-  it should "have information on the models verification" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-    val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
-
-    assert(Some(pmmlModel.associationModel.get.modelVerification).get.isEmpty)
-  }
-
-  it should "provide information on the target fields" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-
-    val targets = evaluator.getTargetFields
-    assert(targets.isEmpty)
-  }
-
-  it should "provide information on output fields" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-
-    val outputs = evaluator.getOutputFields
-    assert(outputs.isEmpty)
-  }
-
   it should "return results from observation inputs" in {
     val pMML: PMML = readPMML(new File(testModelPath))
     val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
@@ -236,17 +222,13 @@ class AssociationModelSpec extends FlatSpec with Builder with testutils.Utils wi
 
 
     val inputField = evaluator.getInputFields.get(0).getName.getValue
-    val observations = List("beer", "softdrink")
+    val observations = Map(inputField -> List("beer", "softdrink")).toMap[Any, Any]
 
-    val arguments = createArguments(pmmlModel, Map(inputField -> observations))
+    val arguments = createArguments(pmmlModel, observations)
 
     val results = evaluator.evaluate(arguments)
-    assert(Some(results.asScala.keys.head).contains(null)) // this text pmml is kinda a bad example . . .
-    assert(Some(results.get(null)
-      .toString
-      .replaceAll("^\\{|\\}$", "")
-      .replace("{","(")
-      .replace("}",")")
-    ).get.startsWith("antecedentFlags=(1, 2, 3)"))
+    assert(Some(results.asScala.keys.head).contains(null))
+    assert(results.asScala(null).toString.contains("antecedentFlags={1, 2, 3}"))
   }
+
 }

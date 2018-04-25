@@ -8,10 +8,10 @@ import java.util.{Date, Locale}
 import com.verizon.itanalytics.dataengineering.runway.evaluator.parsers.{
   AssociationModelParser,
   BaselineModelParser,
-  BayesianNetworkModelParser
+  BayesianNetworkModelParser,
+  ClusteringModelParser
 }
 import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas.PMMLSchema
-
 import javax.xml.bind.JAXBException
 import org.dmg.pmml.{FieldName, Model, PMML}
 import org.jpmml.evaluator.{
@@ -32,7 +32,8 @@ trait Evaluator
     with PMMLSchema
     with AssociationModelParser
     with BaselineModelParser
-    with BayesianNetworkModelParser {
+    with BayesianNetworkModelParser
+    with ClusteringModelParser {
   val log: Logger = LoggerFactory.getLogger(getClass.getName)
 
   /** Returns a pMML file from input stream
@@ -273,6 +274,10 @@ trait Evaluator
       bayesianNetworkModel = modelFunction match {
         case "bayesianNetworkModel" => Option(parseBayesianNetworkModel(pMML))
         case _                      => None
+      },
+      clusteringModel = modelFunction match {
+        case "clustering" => Option(parseClusteringModel(pMML))
+        case _                      => None
       }
     )
   }
@@ -288,9 +293,17 @@ trait Evaluator
     val arguments = new mutable.LinkedHashMap[FieldName, Any]
 
     pmmlModel.associationModel match {
-      case null =>
-      case _ =>
+      case None =>
+      case Some(_) =>
         features.mapValues(_.asInstanceOf[List[Any]].asJava).map {
+          case (k, v) => arguments.put(FieldName.create(k.toString), v)
+        }
+    }
+
+    pmmlModel.clusteringModel match {
+      case None =>
+      case Some(_) =>
+        features.map {
           case (k, v) => arguments.put(FieldName.create(k.toString), v)
         }
     }

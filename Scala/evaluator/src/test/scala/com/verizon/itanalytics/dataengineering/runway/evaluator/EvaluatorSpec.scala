@@ -2,13 +2,18 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator
 
 import java.io.File
 
+import com.verizon.itanalytics.dataengineering.runway.evaluator.testutils.TestUtils
 import org.dmg.pmml.{Model, PMML}
 import org.jpmml.evaluator.ModelEvaluator
 import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._
 
-class EvaluatorSpec extends FlatSpec with Builder with testutils.Utils with Evaluator {
+class EvaluatorSpec
+    extends FlatSpec
+    with Builder
+    with TestUtils
+    with Evaluator {
   "the evaluator" should
     "read create appropriate arguments for association models" in {
     val testModelPath = mapModels("association")

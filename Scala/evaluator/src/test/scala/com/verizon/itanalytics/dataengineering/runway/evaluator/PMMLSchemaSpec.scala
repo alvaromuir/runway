@@ -4,6 +4,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Locale}
 
+import com.verizon.itanalytics.dataengineering.runway.evaluator.testutils.TestUtils
 import org.dmg.pmml.{Model, PMML}
 import org.jpmml.evaluator.ModelEvaluator
 import org.scalatest.FlatSpec
@@ -11,7 +12,7 @@ import org.scalatest.FlatSpec
 class PMMLSchemaSpec
     extends FlatSpec
     with Builder
-    with testutils.Utils
+    with TestUtils
     with Evaluator {
   val testModelPath = mapModels("association")
 
