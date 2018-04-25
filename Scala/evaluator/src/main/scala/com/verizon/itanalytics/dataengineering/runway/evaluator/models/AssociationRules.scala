@@ -10,7 +10,7 @@ trait AssociationRules
     with ModelVerification
     with Output {
 
-  case class AssociationModel(
+  case class AssociationRules(
       modelName: Option[String] = None,
       functionName: String,
       algorithmName: Option[String] = None,

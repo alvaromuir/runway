@@ -12,12 +12,12 @@ trait AssociationRulesParser extends AssociationRules {
     * @param pMML a valid pMML file
     * @return AssociationModel Schema
     */
-  def parseAssociationModel(pMML:   PMML): AssociationModel = {
+  def parseAssociationModel(pMML:   PMML): AssociationRules = {
     val associationModel = pMML.getModels
       .get(0)
       .asInstanceOf[org.dmg.pmml.association.AssociationModel]
 
-    AssociationModel(
+    AssociationRules(
       modelName = associationModel.getModelName match {
         case null => None
         case _    => Option(associationModel.getModelName)
