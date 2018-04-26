@@ -18,14 +18,6 @@ class ClusterModelsSpec
   val testModelPath = mapModels("clustering")
   val testDataPath = mapData("clustering")
 
-  "the evaluator" should
-    "read Clustering models" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val miningFunction = "clustering"
-
-    assert(pMML.getModels.get(0).getMiningFunction.value() == miningFunction)
-  }
-
   it should "provide information on required input fields" in {
     val pMML: PMML = readPMML(new File(testModelPath))
     val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
@@ -171,7 +163,7 @@ class ClusterModelsSpec
     assert(Some(targets.get(0).getMiningField).contains(null))
     assert(Some(targets.get(0).getTarget).contains(null))
   }
-  
+
   it should "have local transformation information if available" in {
     val pMML: PMML = readPMML(new File(testModelPath))
     val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)

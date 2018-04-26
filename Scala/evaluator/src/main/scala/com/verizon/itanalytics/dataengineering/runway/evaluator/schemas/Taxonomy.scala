@@ -10,8 +10,8 @@ trait Taxonomy {
       parentField: String,
       parentLevelField: Option[String] = None,
       isRecursive: String = "false",
-      tableLocator: Option[String], //revisit, make Extensions (once we see one)
-      inlineTables: Option[Seq[Row]])
+      tableLocator: Option[String],
+      inlineTables: Option[Seq[Row]] = None)
 
   case class TableLocator()
 
