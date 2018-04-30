@@ -1,5 +1,11 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 
+/*
+* Project: Runway
+* Alvaro Muir, Verizon IT Analytics: Data Engineering
+* 04 24, 2018
+*/
+
 // http://dmg.org/pmml/v4-3/DataDictionary.html
 trait DataDictionary extends Taxonomy {
 

@@ -1,5 +1,12 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 
+/*
+* Project: Runway
+* Alvaro Muir, Verizon IT Analytics: Data Engineering
+* 04 24, 2018
+*/
+
+
 trait ModelExplanation {
   case class ModelExplanation(
       correlations: Option[Correlations],

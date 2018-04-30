@@ -1,5 +1,12 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 
+/*
+* Project: Runway
+* Alvaro Muir, Verizon IT Analytics: Data Engineering
+* 04 26, 2018
+*/
+
+
 // http://dmg.org/pmml/v4-3/Transformations.html
 trait TransformationDictionary extends Statistics {
   case class TransformationDictionary(

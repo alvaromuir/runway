@@ -1,6 +1,18 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.models
 
+/*
+* Project: Runway
+* Alvaro Muir, Verizon IT Analytics: Data Engineering
+* 04 29, 2018
+*/
+
 import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas._
+
+/*
+* Project: Runway
+* Alvaro Muir, Verizon IT Analytics: Data Engineering
+* 04 24, 2018
+*/
 
 // http://dmg.org/pmml/v4-3/AssociationRules.html
 trait AssociationRules

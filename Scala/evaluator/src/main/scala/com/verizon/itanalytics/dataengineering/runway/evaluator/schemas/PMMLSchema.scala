@@ -1,5 +1,11 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 
+/*
+* Project: Runway
+* Alvaro Muir, Verizon IT Analytics: Data Engineering
+* 04 24, 2018
+*/
+
 import com.verizon.itanalytics.dataengineering.runway.evaluator.models._
 
 // http://dmg.org/pmml/v4-3/GeneralStructure.html
@@ -10,7 +16,7 @@ trait PMMLSchema
     with BayesianNetwork
     with BaselineModels
     with ClusterModels
-    with GeneralRegressionModel
+    with GeneralRegression
     with GaussianProcess
     with MiningModel
     with NaiveBayesModel
@@ -36,7 +42,7 @@ trait PMMLSchema
                          bayesianNetworkModel: Option[BayesianNetwork] = None,
                          clusteringModel: Option[ClusteringModels] = None,
                          gaussianProcessModel: Option[GaussianProcess] = None,
-                         generalRegressionModel: Option[GeneralRegressionModel] = None,
+                         generalRegressionModel: Option[GeneralRegression] = None,
                          miningModel: Option[MiningModel] = None,
                          naiveBayesModel: Option[NaiveBayesModel] = None,
                          nearestNeighborModel: Option[NearestNeighborModel] = None,

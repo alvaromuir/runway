@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PMML version="3.0" xmlns="http://www.dmg.org/PMML-3_0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Header copyright="Copyright (c) Integral Solutions Ltd., 1994 - 2005. All rights reserved.">
+<Application name="Clementine" version="10.0"/>
+<Annotation>Exported with PMML extensions for use with SPSS SmartScore</Annotation>
+</Header>
+<DataDictionary numberOfFields="6">
+<DataField name="sepal length" optype="continuous" dataType="double">
+<Extension name="storageType" value="numeric"/>
+</DataField>
+<DataField name="sepal width" optype="continuous" dataType="double">
+<Extension name="storageType" value="numeric"/>
+</DataField>
+<DataField name="petal length" optype="continuous" dataType="double">
+<Extension name="storageType" value="numeric"/>
+</DataField>
+<DataField name="petal width" optype="continuous" dataType="double">
+<Extension name="storageType" value="numeric"/>
+</DataField>
+<DataField name="$L-SPECIES" optype="categorical" dataType="string">
+<Extension name="storageType" value="string"/>
+<Value value="Iris-setosa" property="valid"/>
+<Value value="Iris-versicolor" property="valid"/>
+<Value value="Iris-virginica" property="valid"/>
+</DataField>
+<DataField name="$LP-SPECIES" optype="continuous" dataType="double">
+<Extension name="storageType" value="numeric"/>
+</DataField>
+</DataDictionary>
+<GeneralRegressionModel modelName="IRIS_NOMREG" functionName="classification" modelType="multinomialLogistic" targetVariableName="$L-SPECIES">
+<MiningSchema>
+<MiningField name="sepal length" usageType="active"/>
+<MiningField name="sepal width" usageType="active"/>
+<MiningField name="petal length" usageType="active"/>
+<MiningField name="petal width" usageType="active"/>
+<MiningField name="$L-SPECIES" usageType="predicted"/>
+<MiningField name="$LP-SPECIES" usageType="supplementary"/>
+</MiningSchema>
+<ParameterList>
+<Parameter name="P0000001" label="&lt;&lt;Intercept&gt;&gt;"/>
+<Parameter name="P0000002" label="sepal length"/>
+<Parameter name="P0000003" label="sepal width"/>
+<Parameter name="P0000004" label="petal length"/>
+<Parameter name="P0000005" label="petal width"/>
+</ParameterList>
+<FactorList/>
+<CovariateList>
+<Predictor name="sepal length"/>
+<Predictor name="sepal width"/>
+<Predictor name="petal length"/>
+<Predictor name="petal width"/>
+</CovariateList>
+<PPMatrix>
+<PPCell value="1" predictorName="sepal length" parameterName="P0000002"/>
+<PPCell value="1" predictorName="sepal width" parameterName="P0000003"/>
+<PPCell value="1" predictorName="petal length" parameterName="P0000004"/>
+<PPCell value="1" predictorName="petal width" parameterName="P0000005"/>
+</PPMatrix>
+<ParamMatrix>
+<PCell targetCategory="Iris-setosa" parameterName="P0000001" beta="33.1502815864775" df="1"/>
+<PCell targetCategory="Iris-setosa" parameterName="P0000002" beta="11.8530707730586" df="1"/>
+<PCell targetCategory="Iris-setosa" parameterName="P0000003" beta="13.2994213721057" df="1"/>
+<PCell targetCategory="Iris-setosa" parameterName="P0000004" beta="-26.9142618701203" df="1"/>
+<PCell targetCategory="Iris-setosa" parameterName="P0000005" beta="-37.9971988784731" df="1"/>
+<PCell targetCategory="Iris-versicolor" parameterName="P0000001" beta="42.6378038141778" df="1"/>
+<PCell targetCategory="Iris-versicolor" parameterName="P0000002" beta="2.4652201952054" df="1"/>
+<PCell targetCategory="Iris-versicolor" parameterName="P0000003" beta="6.68088701421834" df="1"/>
+<PCell targetCategory="Iris-versicolor" parameterName="P0000004" beta="-9.42938515411859" df="1"/>
+<PCell targetCategory="Iris-versicolor" parameterName="P0000005" beta="-18.2861368882782" df="1"/>
+<PCell targetCategory="Iris-virginica" parameterName="P0000001" beta="0.0" df="1"/>
+</ParamMatrix>
+</GeneralRegressionModel>
+</PMML>

@@ -1,5 +1,11 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 
+/*
+* Project: Runway
+* Alvaro Muir, Verizon IT Analytics: Data Engineering
+* 04 24, 2018
+*/
+
 // http://dmg.org/pmml/v4-3/MiningSchema.html#xsdElement_MiningSchema
 trait MiningSchema {
   case class MiningSchema(miningFields: Option[Seq[MiningField]] = None)

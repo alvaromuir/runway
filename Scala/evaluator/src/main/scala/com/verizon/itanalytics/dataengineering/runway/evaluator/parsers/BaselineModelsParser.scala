@@ -1,5 +1,11 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.parsers
 
+/*
+* Project: Runway
+* Alvaro Muir, Verizon IT Analytics: Data Engineering
+* 04 24, 2018
+*/
+
 import com.verizon.itanalytics.dataengineering.runway.evaluator.models.BaselineModels
 import org.dmg.pmml.PMML
 

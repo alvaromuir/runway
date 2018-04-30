@@ -1,5 +1,11 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator
 
+/*
+ * Project: Runway
+ * Alvaro Muir, Verizon IT Analytics: Data Engineering
+ * 04 24, 2018
+ */
+
 import java.io.{File, FileInputStream, FileNotFoundException}
 import java.text.SimpleDateFormat
 import java.util
@@ -9,7 +15,9 @@ import com.verizon.itanalytics.dataengineering.runway.evaluator.parsers.{
   AssociationRulesParser,
   BaselineModelsParser,
   BayesianNetworkParser,
-  ClusterModelsParser
+  ClusterModelsParser,
+  GaussianProcessParser,
+  GeneralRegressionParser
 }
 import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas.PMMLSchema
 import javax.xml.bind.JAXBException
@@ -33,7 +41,9 @@ trait Evaluator
     with AssociationRulesParser
     with BaselineModelsParser
     with BayesianNetworkParser
-    with ClusterModelsParser {
+    with ClusterModelsParser
+    with GaussianProcessParser
+    with GeneralRegressionParser {
   val log: Logger = LoggerFactory.getLogger(getClass.getName)
 
   /** Returns a pMML file from input stream
@@ -277,7 +287,15 @@ trait Evaluator
       },
       clusteringModel = modelFunction match {
         case "clustering" => Option(parseClusteringModel(pMML))
-        case _                      => None
+        case _            => None
+      },
+      gaussianProcessModel = modelFunction match {
+        case "gaussianProcess" => Option(parseGaussianProcessModel(pMML))
+        case _                 => None
+      },
+      generalRegressionModel = modelFunction match {
+        case "classification" => Option(parseGeneralRegressionModel(pMML))
+        case _                => None
       }
     )
   }

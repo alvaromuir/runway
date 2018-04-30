@@ -1,5 +1,11 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator
 
+/*
+* Project: Runway
+* Alvaro Muir, Verizon IT Analytics: Data Engineering
+* 04 25, 2018
+*/
+
 import org.scalatest.{BeforeAndAfterEach, Suite}
 
 trait Builder extends BeforeAndAfterEach {
@@ -9,7 +15,8 @@ trait Builder extends BeforeAndAfterEach {
     "association" -> s"$modelsSrcPath/ShoppingAssocRules.xml",
     "bayesianNetwork" -> s"$modelsSrcPath/BayesianTest.xml",
     "clustering" -> s"$modelsSrcPath/single_audit_kmeans.xml",
-    "gaussian" -> s"$modelsSrcPath/GaussianTest.xml"
+    "gaussian" -> s"$modelsSrcPath/GaussianTest.xml",
+    "generalRegression" -> s"$modelsSrcPath/IRIS_NOMREG.xml"
   )
 
   val dataSrcPath = "./evaluator/src/test/resources/data"
@@ -17,7 +24,8 @@ trait Builder extends BeforeAndAfterEach {
     "association" -> s"$dataSrcPath/baskets1ntrans.csv",
     "bayesianNetwork" -> s"$dataSrcPath/ALARM10k.csv",
     "clustering" -> s"$dataSrcPath/Audit.csv",
-    "gaussian" -> s"$dataSrcPath/GaussianTest.csv"
+    "gaussian" -> s"$dataSrcPath/GaussianTest.csv",
+    "generalRegression" -> s"$modelsSrcPath/Iris.csv"
   )
 
   override def beforeEach() {
