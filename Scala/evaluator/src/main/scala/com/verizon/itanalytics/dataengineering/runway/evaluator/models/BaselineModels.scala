@@ -95,11 +95,20 @@ trait BaselineModels extends BaselineModel {
                     Extension(
                       extender = e.getExtender match {
                         case null => None
-                        case _ => Option(e.getExtender)
+                        case _    => Option(e.getExtender)
                       },
-                      name = None,
-                      value = None,
-                      content = None
+                      name = e.getName match {
+                        case null => None
+                        case _    => Option(e.getName)
+                      },
+                      value = e.getValue match {
+                        case null => None
+                        case _    => Option(e.getValue)
+                      },
+                      content = e.getContent match {
+                        case null => None
+                        case _ => Option(e.getContent.asScala.map { c => c.toString })
+                      }
                     )
                   })
               },

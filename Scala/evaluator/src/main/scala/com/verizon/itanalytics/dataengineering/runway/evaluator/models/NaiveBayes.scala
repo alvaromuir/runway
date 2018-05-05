@@ -1,34 +1,34 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.models
 
-import com.verizon.itanalytics.dataengineering.runway.evaluator.models.elements.MiningModel
+/*
+ * Project: Runway
+ * Alvaro Muir, Verizon IT Analytics: Data Engineering
+ * 05 05, 2018
+ */
+
+import com.verizon.itanalytics.dataengineering.runway.evaluator.models.elements.NaiveBayesModel
 import org.dmg.pmml.PMML
 
 import scala.collection.JavaConverters._
 
-/*
- * Project: Runway
- * Alvaro Muir, Verizon IT Analytics: Data Engineering
- * 04 30, 2018
- */
+trait NaiveBayes extends NaiveBayesModel {
 
-trait MiningModels extends MiningModel {
-
-  /** Parses provided pMML file as an Mining Model
+  /** Parses provided pMML file as an Baseline Model
     *
     * @param pMML a valid pMML file
-    * @return MiningModel Schema
+    * @return NaiveBayesModelSchema
     */
-  def parseMiningModel(pMML: PMML): MiningModel = {
+  def parseNaiveBayesModel(pMML: PMML): NaiveBayesModel = {
 
-    val miningModel = pMML.getModels
+    val naiveBayesModel = pMML.getModels
       .get(0)
-      .asInstanceOf[org.dmg.pmml.mining.MiningModel]
+      .asInstanceOf[org.dmg.pmml.naive_bayes.NaiveBayesModel]
 
-    MiningModel(
-      extension = miningModel.getExtensions match {
+    NaiveBayesModel(
+      extension = naiveBayesModel.getExtensions match {
         case null => None
         case _ =>
-          Option(miningModel.getExtensions.asScala.map { e =>
+          Option(naiveBayesModel.getExtensions.asScala.map { e =>
             Extension(
               extender = e.getExtender match {
                 case null => None
@@ -46,10 +46,10 @@ trait MiningModels extends MiningModel {
           })
       },
       miningSchema = MiningSchema(
-        miningFields = miningModel.getMiningSchema.getMiningFields match {
+        miningFields = naiveBayesModel.getMiningSchema.getMiningFields match {
           case null => None
           case _ =>
-            Option(miningModel.getMiningSchema.getMiningFields.asScala.map {
+            Option(naiveBayesModel.getMiningSchema.getMiningFields.asScala.map {
               f =>
                 MiningField(
                   name = f.getName.getValue,
@@ -83,15 +83,15 @@ trait MiningModels extends MiningModel {
                 )
             })
         }),
-      output = miningModel.getOutput match {
+      output = naiveBayesModel.getOutput match {
         case null => None
         case _ =>
           Option(
             Output(
-              extension = miningModel.getExtensions match {
+              extension = naiveBayesModel.getOutput .getExtensions match {
                 case null => None
                 case _ =>
-                  Option(miningModel.getExtensions.asScala.map { e =>
+                  Option(naiveBayesModel.getOutput .getExtensions.asScala.map { e =>
                     Extension(
                       extender = e.getExtender match {
                         case null => None
@@ -112,7 +112,7 @@ trait MiningModels extends MiningModel {
                     )
                   })
               },
-              outputField = miningModel.getOutput.getOutputFields.asScala
+              outputField = naiveBayesModel.getOutput.getOutputFields.asScala
                 .map {
                   o =>
                     OutputField(
@@ -134,17 +134,17 @@ trait MiningModels extends MiningModel {
                 }
             ))
       },
-      modelStats = miningModel.getModelStats match {
+      modelStats = naiveBayesModel.getModelStats match {
         case null => None
         case _ =>
           Option(
             ModelStats(
               univariateStats =
-                miningModel.getModelStats.getUnivariateStats match {
+                naiveBayesModel.getModelStats.getUnivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      miningModel.getModelStats.getUnivariateStats.asScala
+                      naiveBayesModel.getModelStats.getUnivariateStats.asScala
                         .map {
                           u =>
                             UnivariateStats(
@@ -258,11 +258,11 @@ trait MiningModels extends MiningModel {
                         })
                 },
               multivariateStats =
-                miningModel.getModelStats.getMultivariateStats match {
+                naiveBayesModel.getModelStats.getMultivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      miningModel.getModelStats.getMultivariateStats.asScala
+                      naiveBayesModel.getModelStats.getMultivariateStats.asScala
                         .map {
                           m =>
                             MultivariateStats(
@@ -347,45 +347,46 @@ trait MiningModels extends MiningModel {
                 }
             ))
       },
-      modelExplanation = miningModel.getModelExplanation match {
+      modelExplanation = naiveBayesModel.getModelExplanation match {
         case null => None
         case _ =>
           Option(
             ModelExplanation(
-              extension = miningModel.getModelExplanation.getExtensions match {
-                case null => None
-                case _ =>
-                  Option(
-                    miningModel.getModelExplanation.getExtensions.asScala.map {
-                      e =>
-                        Extension(
-                          extender = e.getExtender match {
-                            case null => None
-                            case _    => Option(e.getExtender)
-                          },
-                          name = e.getName match {
-                            case null => None
-                            case _    => Option(e.getName)
-                          },
-                          value = e.getValue match {
-                            case null => None
-                            case _    => Option(e.getValue)
-                          }
-                        )
-                    })
-              },
+              extension =
+                naiveBayesModel.getModelExplanation.getExtensions match {
+                  case null => None
+                  case _ =>
+                    Option(
+                      naiveBayesModel.getModelExplanation.getExtensions.asScala
+                        .map { e =>
+                          Extension(
+                            extender = e.getExtender match {
+                              case null => None
+                              case _    => Option(e.getExtender)
+                            },
+                            name = e.getName match {
+                              case null => None
+                              case _    => Option(e.getName)
+                            },
+                            value = e.getValue match {
+                              case null => None
+                              case _    => Option(e.getValue)
+                            }
+                          )
+                        })
+                },
               correlations =
-                miningModel.getModelExplanation.getCorrelations match {
+                naiveBayesModel.getModelExplanation.getCorrelations match {
                   case null => None
                   case _ =>
                     Option(
                       Correlations(
                         extension =
-                          miningModel.getModelExplanation.getCorrelations.getExtensions match {
+                          naiveBayesModel.getModelExplanation.getCorrelations.getExtensions match {
                             case null => None
                             case _ =>
                               Option(
-                                miningModel.getModelExplanation.getCorrelations.getExtensions.asScala
+                                naiveBayesModel.getModelExplanation.getCorrelations.getExtensions.asScala
                                   .map { e =>
                                     Extension(
                                       extender = e.getExtender match {
@@ -405,16 +406,16 @@ trait MiningModels extends MiningModel {
                           },
                         correlationFields = Array(
                           n =
-                            miningModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
+                            naiveBayesModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
                           `type` =
-                            miningModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType
+                            naiveBayesModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType
                               .value(),
                           value =
-                            miningModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
+                            naiveBayesModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
                         ),
                         correlationValues = {
                           val mtx =
-                            miningModel.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
+                            naiveBayesModel.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
                           Matrix(
                             matCell = mtx.getMatCells match {
                               case null => None
@@ -445,11 +446,11 @@ trait MiningModels extends MiningModel {
                           )
                         },
                         correlationMethods =
-                          miningModel.getModelExplanation.getCorrelations.getCorrelationMethods match {
+                          naiveBayesModel.getModelExplanation.getCorrelations.getCorrelationMethods match {
                             case null => None
                             case _ =>
                               val mtx =
-                                miningModel.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
+                                naiveBayesModel.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
                               Option(
                                 Matrix(
                                   matCell = mtx.getMatCells match {
@@ -483,11 +484,11 @@ trait MiningModels extends MiningModel {
                       ))
                 },
               predictiveModelQualities =
-                miningModel.getModelExplanation.getPredictiveModelQualities match {
+                naiveBayesModel.getModelExplanation.getPredictiveModelQualities match {
                   case null => None
                   case _ =>
                     Option(
-                      miningModel.getModelExplanation.getPredictiveModelQualities.asScala
+                      naiveBayesModel.getModelExplanation.getPredictiveModelQualities.asScala
                         .map {
                           pmq =>
                             PredictiveModelQuality(
@@ -546,7 +547,7 @@ trait MiningModels extends MiningModel {
                                                 case null => None
                                                 case _ =>
                                                   Option(
-                                                    miningModel.getModelExplanation.getExtensions.asScala
+                                                    naiveBayesModel.getModelExplanation.getExtensions.asScala
                                                       .map { e =>
                                                         Extension(
                                                           extender =
@@ -1092,11 +1093,11 @@ trait MiningModels extends MiningModel {
                         })
                 },
               clusteringModelQualities =
-                miningModel.getModelExplanation.getClusteringModelQualities match {
+                naiveBayesModel.getModelExplanation.getClusteringModelQualities match {
                   case null => None
                   case _ =>
                     Option(
-                      miningModel.getModelExplanation.getClusteringModelQualities.asScala
+                      naiveBayesModel.getModelExplanation.getClusteringModelQualities.asScala
                         .map {
                           cmq =>
                             ClusteringModelQuality(
@@ -1117,10 +1118,10 @@ trait MiningModels extends MiningModel {
                 }
             ))
       },
-      targets = miningModel.getTargets match {
+      targets = naiveBayesModel.getTargets match {
         case null => None
         case _ =>
-          Option(miningModel.getTargets.asScala.map {
+          Option(naiveBayesModel.getTargets.asScala.map {
             t =>
               Targets(
                 field = t.getField match {
@@ -1149,17 +1150,186 @@ trait MiningModels extends MiningModel {
               )
           })
       },
-      localTransformations = miningModel.getLocalTransformations match {
+      bayesInputs = naiveBayesModel.getBayesInputs.asScala.map { i =>
+        BayesInput(
+          extension = i.getExtensions match {
+            case null => None
+            case _ =>
+              Option(i.getExtensions.asScala.map { e =>
+                Extension(
+                  extender = e.getExtender match {
+                    case null => None
+                    case _    => Option(e.getExtender)
+                  },
+                  name = e.getName match {
+                    case null => None
+                    case _    => Option(e.getName)
+                  },
+                  value = e.getValue match {
+                    case null => None
+                    case _    => Option(e.getValue)
+                  }
+                )
+              })
+          },
+          targetValueStats = i.getTargetValueStats.asScala.map {
+            t =>
+              TargetValueStat(
+                extension = t.getExtensions match {
+                  case null => None
+                  case _ =>
+                    Option(t.getExtensions.asScala.map { e =>
+                      Extension(
+                        extender = e.getExtender match {
+                          case null => None
+                          case _    => Option(e.getExtender)
+                        },
+                        name = e.getName match {
+                          case null => None
+                          case _    => Option(e.getName)
+                        },
+                        value = e.getValue match {
+                          case null => None
+                          case _    => Option(e.getValue)
+                        }
+                      )
+                    })
+                },
+                continuousDistributionType =
+                  t.getContinuousDistribution.toString,
+                value = t.getValue
+              )
+          },
+          derivedField = i.getDerivedField match {
+            case null => None
+            case _ =>
+              Option(
+                DerivedField(
+                  name = i.getDerivedField.getName match {
+                    case null => None
+                    case _ => Option(i.getDerivedField.getName.getValue)
+                  },
+                  displayName = i.getDerivedField.getDisplayName,
+                  optype = i.getDerivedField.getOpType.value(),
+                  dataType = i.getDerivedField.getDataType.value(),
+                  intervals = i.getDerivedField.getIntervals match {
+                    case null => None
+                    case _ => Option(i.getDerivedField.getIntervals.asScala.map {
+                      i => Interval(
+                        closure = i.getClosure.value(),
+                        leftMargin = i.getLeftMargin match {
+                          case null => None
+                          case _ => Option(i.getLeftMargin.toDouble)
+                        },
+                        rightMargin = i.getRightMargin match {
+                          case null => None
+                          case _ => Option(i.getRightMargin.toDouble)
+                        }
+                      )
+                    })
+                  },
+                  values = i.getDerivedField.getValues match {
+                    case null => None
+                    case _ => Option(i.getDerivedField.getValues.asScala.map {
+                      v => v.toString
+                    })
+                  }
+                ))
+          },
+          pairCounts = i.getPairCounts.asScala.map { p =>
+            PairCount(
+              targetValueCounts = p.getTargetValueCounts.asScala.map {
+                c =>
+                  TargetValueCount(
+                    extension = c.getExtensions match {
+                      case null => None
+                      case _ =>
+                        Option(c.getExtensions.asScala.map { e =>
+                          Extension(
+                            extender = e.getExtender match {
+                              case null => None
+                              case _    => Option(e.getExtender)
+                            },
+                            name = e.getName match {
+                              case null => None
+                              case _    => Option(e.getName)
+                            },
+                            value = e.getValue match {
+                              case null => None
+                              case _    => Option(e.getValue)
+                            }
+                          )
+                        })
+                    },
+                    value = c.getValue,
+                    count = c.getCount
+                  )
+              },
+              value = p.getValue
+            )
+          },
+          fieldName = i.getField.getValue
+        )
+      },
+      bayesOutput = BayesOutput(
+        extension = naiveBayesModel.getBayesOutput.getExtensions match {
+          case null => None
+          case _ =>
+            Option(naiveBayesModel.getBayesOutput.getExtensions.asScala.map { e =>
+              Extension(
+                extender = e.getExtender match {
+                  case null => None
+                  case _    => Option(e.getExtender)
+                },
+                name = e.getName match {
+                  case null => None
+                  case _    => Option(e.getName)
+                },
+                value = e.getValue match {
+                  case null => None
+                  case _    => Option(e.getValue)
+                }
+              )
+            })
+        },
+        targetValueCounts = naiveBayesModel.getBayesOutput.getTargetValueCounts.asScala.map {
+          c => TargetValueCount(
+            extension = c.getExtensions match {
+              case null => None
+              case _ =>
+                Option(c.getExtensions.asScala.map { e =>
+                  Extension(
+                    extender = e.getExtender match {
+                      case null => None
+                      case _    => Option(e.getExtender)
+                    },
+                    name = e.getName match {
+                      case null => None
+                      case _    => Option(e.getName)
+                    },
+                    value = e.getValue match {
+                      case null => None
+                      case _    => Option(e.getValue)
+                    }
+                  )
+                })
+            },
+            value = c.getValue,
+            count = c.getCount
+          )
+        }
+      ),
+      localTransformations = naiveBayesModel.getLocalTransformations match {
         case null => None
         case _ =>
           Option(
             LocalTransformation(
               extension =
-                miningModel.getLocalTransformations.getExtensions match {
+                naiveBayesModel.getLocalTransformations.getExtensions match {
                   case null => None
                   case _ =>
                     Option(
-                      miningModel.getLocalTransformations.getExtensions.asScala
+                      naiveBayesModel.getLocalTransformations.getExtensions.asScala
                         .map { e =>
                           Extension(
                             extender = e.getExtender match {
@@ -1178,11 +1348,11 @@ trait MiningModels extends MiningModel {
                         })
                 },
               derivedFields =
-                miningModel.getLocalTransformations.getDerivedFields match {
+                naiveBayesModel.getLocalTransformations.getDerivedFields match {
                   case null => None
                   case _ =>
                     Option(
-                      miningModel.getLocalTransformations.getDerivedFields.asScala
+                      naiveBayesModel.getLocalTransformations.getDerivedFields.asScala
                         .map { d =>
                           DerivedField(
                             name = d.getName match {
@@ -1197,56 +1367,10 @@ trait MiningModels extends MiningModel {
                 }
             ))
       },
-      segmentation = miningModel.getSegmentation match {
+      modelVerification = naiveBayesModel.getModelVerification match {
         case null => None
         case _ =>
-          Option(
-            Segmentation(
-              multipleModelMethod =
-                miningModel.getSegmentation.getMultipleModelMethod.value,
-              segments = miningModel.getSegmentation.getSegments match {
-                case null => None
-                case _ =>
-                  Option(miningModel.getSegmentation.getSegments.asScala.map {
-                    s =>
-                      Segment(
-                        id = s.getId match {
-                          case null => None
-                          case _    => Option(s.getId)
-                        },
-                        weight = s.getWeight.toDouble,
-                        predicate = s.getPredicate.toString
-                      )
-                  })
-              },
-              localTransformation = miningModel.getLocalTransformations match {
-                case null => None
-                case _ =>
-                  Option(LocalTransformation(derivedFields =
-                    miningModel.getLocalTransformations.getDerivedFields match {
-                      case null => None
-                      case _ =>
-                        Option(
-                          miningModel.getLocalTransformations.getDerivedFields.asScala
-                            .map { d =>
-                              DerivedField(
-                                name = d.getName match {
-                                  case null => None
-                                  case _    => Option(d.getName.getValue)
-                                },
-                                displayName = d.getDisplayName,
-                                optype = d.getOpType.value(),
-                                dataType = d.getDataType.value()
-                              )
-                            })
-                    }))
-              }
-            ))
-      },
-      modelVerification = miningModel.getModelVerification match {
-        case null => None
-        case _ =>
-          val v = miningModel.getModelVerification
+          val v = naiveBayesModel.getModelVerification
           Option(
             ModelVerification(
               recordCount = v.getRecordCount match {
@@ -1260,375 +1384,18 @@ trait MiningModels extends MiningModel {
               verificationFields = None
             ))
       },
-      embeddedModels = miningModel.getEmbeddedModels match {
+      modelName = naiveBayesModel.getModelName match {
         case null => None
-        case _ =>
-          Option(miningModel.getEmbeddedModels.asScala.map { m =>
-            EmbeddedModels(
-              modelName = m.getModelName match {
-                case null => None
-                case _ => Option(m.getModelName)
-              },
-              functionName = m.getMiningFunction.value(),
-              output = m.getOutput match{
-                case null => None
-                case _ =>
-                  Option(
-                    Output(
-                      extension = m.getOutput.getExtensions match {
-                        case null => None
-                        case _ =>
-                          Option(m.getOutput.getExtensions.asScala.map { e =>
-                            Extension(
-                              extender = e.getExtender match {
-                                case null => None
-                                case _    => Option(e.getExtender)
-                              },
-                              name = e.getName match {
-                                case null => None
-                                case _    => Option(e.getName)
-                              },
-                              value = e.getValue match {
-                                case null => None
-                                case _    => Option(e.getValue)
-                              },
-                              content = e.getContent match {
-                                case null => None
-                                case _ => Option(e.getContent.asScala.map { c => c.toString })
-                              }
-                            )
-                          })
-                      },
-                      outputField =
-                        m.getOutput.getOutputFields.asScala
-                          .map {
-                            o =>
-                              OutputField(
-                                name = o.getName.getValue,
-                                displayName = Option(o.getDisplayName),
-                                optype = o.getOpType.value(),
-                                targetField = Option(o.getTargetField.getValue),
-                                feature = o.getResultFeature.value(),
-                                value = Option(o.getValue),
-                                ruleFeature = o.getRuleFeature.value(),
-                                algorithm = o.getAlgorithm.value(),
-                                rank = o.getRank.toInt,
-                                rankBasis = o.getRankBasis.value(),
-                                rankOrder = o.getRankOrder.value(),
-                                isMultiValued = o.getIsMultiValued,
-                                segmentId = Option(o.getSegmentId),
-                                isFinalResult = o.isFinalResult
-                              )
-                          }
-                    ))
-              },
-              modelStats = m.getModelStats match {
-                case null => None
-                case _ =>
-                  Option(
-                    ModelStats(
-                      univariateStats =
-                        m.getModelStats.getUnivariateStats match {
-                          case null => None
-                          case _ =>
-                            Option(
-                              m.getModelStats.getUnivariateStats.asScala
-                                .map {
-                                  u =>
-                                    UnivariateStats(
-                                      field = u.getField.getValue,
-                                      weighted = u.getWeighted.value(),
-                                      counts = u.getCounts match {
-                                        case null => None
-                                        case _ =>
-                                          Option(Counts(
-                                            totalFreq = u.getCounts.getTotalFreq,
-                                            missingFreq = Option(
-                                              u.getCounts.getMissingFreq.toDouble),
-                                            invalidFreq = Option(
-                                              u.getCounts.getInvalidFreq.toDouble),
-                                            cardinality =
-                                              Option(u.getCounts.getCardinality.toInt)
-                                          ))
-                                      },
-                                      numericInfo = u.getNumericInfo match {
-                                        case null => None
-                                        case _ =>
-                                          Option(NumericInfo(
-                                            minimum =
-                                              Option(u.getNumericInfo.getMinimum),
-                                            maximum =
-                                              Option(u.getNumericInfo.getMaximum),
-                                            mean = Option(u.getNumericInfo.getMean),
-                                            standardDeviation = Option(
-                                              u.getNumericInfo.getStandardDeviation),
-                                            median = Option(u.getNumericInfo.getMedian),
-                                            interQuartileRange = Option(
-                                              u.getNumericInfo.getInterQuartileRange)
-                                          ))
-                                      },
-                                      discStats = u.getDiscrStats match {
-                                        case null => None
-                                        case _ =>
-                                          Option(
-                                            DiscStats(
-                                              arrays =
-                                                Option(u.getDiscrStats.getArrays.asScala
-                                                  .map {
-                                                    _.toString
-                                                  }),
-                                              modalValue =
-                                                Option(u.getDiscrStats.getModalValue)
-                                            ))
-                                      },
-                                      contStats = u.getContStats match {
-                                        case null => None
-                                        case _ =>
-                                          Option(ContStats(
-                                            intervals =
-                                              u.getContStats.getIntervals match {
-                                                case null => None
-                                                case _ =>
-                                                  Option(
-                                                    u.getContStats.getIntervals.asScala
-                                                      .map { i =>
-                                                        Interval(
-                                                          closure = i.getClosure.value(),
-                                                          leftMargin =
-                                                            Option(i.getLeftMargin),
-                                                          rightMargin =
-                                                            Option(i.getRightMargin)
-                                                        )
-                                                      })
-                                              },
-                                            totalValueSom =
-                                              u.getContStats.getTotalValuesSum,
-                                            totalSquaresSum =
-                                              u.getContStats.getTotalSquaresSum
-                                          ))
-                                      },
-                                      anova = u.getAnova match {
-                                        case null => None
-                                        case _ =>
-                                          Option(Anova(
-                                            target = u.getAnova.getTarget.getValue,
-                                            anovaRow = u.getAnova.getAnovaRows match {
-                                              case null => None
-                                              case _ =>
-                                                Option(
-                                                  u.getAnova.getAnovaRows.asScala.map {
-                                                    r =>
-                                                      AnovaRow(
-                                                        `type` = r.getType.value(),
-                                                        sumOfSquares = r.getSumOfSquares,
-                                                        degreesOfFreedom =
-                                                          r.getDegreesOfFreedom,
-                                                        meanOfSquares =
-                                                          r.getMeanOfSquares match {
-                                                            case null => None
-                                                            case _ =>
-                                                              Option(r.getMeanOfSquares)
-                                                          },
-                                                        fValue = r.getFValue match {
-                                                          case null => None
-                                                          case _    => Option(r.getFValue)
-                                                        },
-                                                        pValue = r.getPValue match {
-                                                          case null => None
-                                                          case _    => Option(r.getPValue)
-                                                        }
-                                                      )
-                                                  })
-                                            }
-                                          ))
-                                      }
-                                    )
-                                })
-                        },
-                      multivariateStats =
-                        m.getModelStats.getMultivariateStats match {
-                          case null => None
-                          case _ =>
-                            Option(
-                              m.getModelStats.getMultivariateStats.asScala
-                                .map {
-                                  m =>
-                                    MultivariateStats(
-                                      targetCategory = m.getTargetCategory match {
-                                        case null => None
-                                        case _    => Option(m.getTargetCategory)
-                                      },
-                                      multivariateStats =
-                                        m.getMultivariateStats.asScala.map {
-                                          s =>
-                                            MultivariateStat(
-                                              name = s.getName,
-                                              category = s.getCategory match {
-                                                case null => None
-                                                case _    => Option(s.getCategory)
-                                              },
-                                              exponent = s.getExponent.toInt,
-                                              isIntercept = s.isIntercept,
-                                              importance = s.getImportance match {
-                                                case null => None
-                                                case _ =>
-                                                  Option(s.getImportance.toDouble)
-                                              },
-                                              stdError = s.getStdError match {
-                                                case null => None
-                                                case _    => Option(s.getStdError.toDouble)
-                                              },
-                                              tValue = s.getTValue match {
-                                                case null => None
-                                                case _    => Option(s.getTValue.toDouble)
-                                              },
-                                              chiSquareValue =
-                                                s.getChiSquareValue match {
-                                                  case null => None
-                                                  case _ =>
-                                                    Option(s.getChiSquareValue.toDouble)
-                                                },
-                                              fStatistic = s.getFStatistic match {
-                                                case null => None
-                                                case _ =>
-                                                  Option(s.getFStatistic.toDouble)
-                                              },
-                                              dF = s.getDF match {
-                                                case null => None
-                                                case _    => Option(s.getDF.toDouble)
-                                              },
-                                              pValueAlpha = s.getPValueAlpha match {
-                                                case null => None
-                                                case _ =>
-                                                  Option(s.getPValueAlpha.toDouble)
-                                              },
-                                              pValueInitial = s.getPValueInitial match {
-                                                case null => None
-                                                case _ =>
-                                                  Option(s.getPValueInitial.toDouble)
-                                              },
-                                              pValueFinal = s.getPValueFinal match {
-                                                case null => None
-                                                case _ =>
-                                                  Option(s.getPValueFinal.toDouble)
-                                              },
-                                              confidenceLevel =
-                                                s.getConfidenceLevel.toDouble,
-                                              confidenceLowerBound =
-                                                s.getConfidenceLowerBound match {
-                                                  case null => None
-                                                  case _ =>
-                                                    Option(
-                                                      s.getConfidenceLowerBound.toDouble)
-                                                },
-                                              confidenceUpperBound =
-                                                s.getConfidenceUpperBound match {
-                                                  case null => None
-                                                  case _ =>
-                                                    Option(
-                                                      s.getConfidenceUpperBound.toDouble)
-                                                }
-                                            )
-                                        }
-                                    )
-                                })
-                        }
-                    ))
-              },
-              targets = m.getTargets match {
-                case null => None
-                case _ =>
-                  Option(m.getTargets.asScala.map {
-                    t =>
-                      Targets(
-                        field = t.getField match {
-                          case null => None
-                          case _    => Option(t.getField.getValue)
-                        },
-                        optype = t.getOpType match {
-                          case null => None
-                          case _    => Option(t.getOpType.value())
-                        },
-                        castInteger = t.getCastInteger match {
-                          case null => None
-                          case _    => Option(t.getCastInteger.value())
-                        },
-                        min = t.getMin match {
-                          case null => None
-                          case _    => Option(t.getMin.toDouble)
-                        },
-                        max = t.getMax match {
-                          case null => None
-                          case _    => Option(t.getMax.toDouble)
-                        },
-                        rescaleConstant = t.getRescaleConstant.toDouble,
-                        rescaleFactor = t.getRescaleFactor.toDouble,
-                        targetValues = None
-                      )
-                  })
-              },
-              localTransformation = m.getLocalTransformations match {
-                case null => None
-                case _ =>
-                  Option(
-                    LocalTransformation(
-                      extension =
-                        m.getLocalTransformations.getExtensions match {
-                          case null => None
-                          case _ =>
-                            Option(
-                              m.getLocalTransformations.getExtensions.asScala
-                                .map { e =>
-                                  Extension(
-                                    extender = e.getExtender match {
-                                      case null => None
-                                      case _    => Option(e.getExtender)
-                                    },
-                                    name = e.getName match {
-                                      case null => None
-                                      case _    => Option(e.getName)
-                                    },
-                                    value = e.getValue match {
-                                      case null => None
-                                      case _    => Option(e.getValue)
-                                    }
-                                  )
-                                })
-                        },
-                      derivedFields =
-                        m.getLocalTransformations.getDerivedFields match {
-                          case null => None
-                          case _ =>
-                            Option(
-                              m.getLocalTransformations.getDerivedFields.asScala
-                                .map { d =>
-                                  DerivedField(
-                                    name = d.getName match {
-                                      case null => None
-                                      case _    => Option(d.getName.getValue)
-                                    },
-                                    displayName = d.getDisplayName,
-                                    optype = d.getOpType.value(),
-                                    dataType = d.getDataType.value()
-                                  )
-                                })
-                        }
-                    ))
-              }
-            )
-          })
+        case _    => Option(naiveBayesModel.getModelName)
       },
-      modelName = miningModel.getModelName match {
+      threshold = naiveBayesModel.getThreshold,
+      functionName = naiveBayesModel.getMiningFunction.value(),
+      algorithmName = naiveBayesModel.getAlgorithmName match {
         case null => None
-        case _    => Option(miningModel.getModelName)
+        case _    => Option(naiveBayesModel.getAlgorithmName)
       },
-      functionName = miningModel.getMiningFunction.value(),
-      algorithmName = miningModel.getAlgorithmName match {
-        case null => None
-        case _    => Option(miningModel.getAlgorithmName)
-      },
-      isScorable = Option(miningModel.isScorable)
+      isScorable = Option(naiveBayesModel.isScorable)
     )
   }
-}
 
+}
