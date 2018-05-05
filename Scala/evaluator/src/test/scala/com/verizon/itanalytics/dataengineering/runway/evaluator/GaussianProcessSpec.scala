@@ -9,8 +9,8 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator
 import java.io.File
 
 import com.verizon.itanalytics.dataengineering.runway.evaluator.testutils.TestUtils
-import org.dmg.pmml.PMML
-import org.jpmml.evaluator.UnsupportedElementException
+import org.dmg.pmml.{Model, PMML}
+import org.jpmml.evaluator.{ModelEvaluator, UnsupportedElementException}
 import org.scalatest.FlatSpec
 
 
@@ -22,11 +22,12 @@ class GaussianProcessSpec
 
   val testModelPath = mapModels("gaussian")
   val testDataPath = mapData("gaussian")
+  val pMML: PMML = readPMML(new File(testModelPath))
+  val miningFunction = "regression"
 
   "the evaluator" should
     "read Gaussian Process models" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val miningFunction = "regression"
+
 
     assert(pMML.getModels.get(0).getMiningFunction.value() == miningFunction)
   }

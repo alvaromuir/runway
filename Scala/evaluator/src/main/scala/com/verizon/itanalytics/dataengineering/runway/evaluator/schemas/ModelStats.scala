@@ -7,7 +7,7 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 */
 
 // http://dmg.org/pmml/v4-3/Statistics.html
-trait Statistics extends DataDictionary {
+trait ModelStats extends DataDictionary {
 
   case class ModelStats(
       univariateStats: Option[Seq[UnivariateStats]] = None,

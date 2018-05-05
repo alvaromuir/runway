@@ -7,9 +7,9 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 */
 
 // http://dmg.org/pmml/v4-3/Targets.html
-trait Target {
+trait Targets {
 
-  case class Target(
+  case class Targets(
       field: Option[String] = None,
       optype: Option[String] = None,
       castInteger: Option[String] = None, // round, ceiling, floor

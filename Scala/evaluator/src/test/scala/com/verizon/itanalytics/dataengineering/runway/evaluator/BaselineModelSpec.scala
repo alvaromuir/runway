@@ -9,7 +9,7 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator
 import com.verizon.itanalytics.dataengineering.runway.evaluator.testutils.TestUtils
 import org.scalatest.FlatSpec
 
-class BaselineModelsSpec
+class BaselineModelSpec
     extends FlatSpec
     with Builder
     with TestUtils

@@ -8,7 +8,7 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 
 
 // http://dmg.org/pmml/v4-3/Transformations.html
-trait TransformationDictionary extends Statistics {
+trait TransformationDictionary extends ModelStats with DerivedField {
   case class TransformationDictionary(
       defineFunctions: Option[Seq[DefineFunction]] = None,
       derivedFields: Option[Seq[DerivedField]] = None)
@@ -28,14 +28,6 @@ trait TransformationDictionary extends Statistics {
                    defaultValue: Option[String] = None,
                    invalidValueTreatment: String = "returnInvalid")
 
-  case class LocalTransformation(derivedFields: Option[Seq[DerivedField]])
-
-  case class DerivedField(name: Option[String] = None,
-                          displayName: String,
-                          optype: String,
-                          dataType: String,
-                          intervals: Option[Seq[Interval]] = None,
-                          values: Option[Seq[String]] = None)
 
   case class Constant(dataType: String)
 

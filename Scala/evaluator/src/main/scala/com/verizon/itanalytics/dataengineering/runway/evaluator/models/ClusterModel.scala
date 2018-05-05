@@ -1,55 +1,54 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.models
 
 /*
- * Project: Runway
- * Alvaro Muir, Verizon IT Analytics: Data Engineering
- * 04 25, 2018
- */
+* Project: Runway
+* Alvaro Muir, Verizon IT Analytics: Data Engineering
+* 04 25, 2018
+*/
 
-import com.verizon.itanalytics.dataengineering.runway.evaluator.models.elements.BayesianNetworkModel
+import com.verizon.itanalytics.dataengineering.runway.evaluator.models.elements.ClusteringModel
 import org.dmg.pmml.PMML
 
 import scala.collection.JavaConverters._
 
-trait BayesianNetwork extends BayesianNetworkModel {
+trait ClusterModel extends ClusteringModel {
 
-  /** Parses provided pMML file as an Baseline Model
+  /** Parses provided pMML file as an Clustering Model
     *
     * @param pMML a valid pMML file
-    * @return BayesianNetworkModel
+    * @return ClusteringModel
     */
-  def parseBayesianNetworkModel(pMML: PMML): BayesianNetwork = {
-    val bayesianNetworkModel = pMML.getModels
+  def parseClusteringModel(pMML: PMML): ClusteringModel = {
+    val clusteringModel = pMML.getModels
       .get(0)
-      .asInstanceOf[org.dmg.pmml.bayesian_network.BayesianNetworkModel]
+      .asInstanceOf[org.dmg.pmml.clustering.ClusteringModel]
 
-    BayesianNetwork(
-      extension = bayesianNetworkModel.getExtensions match {
+    ClusteringModel(
+      extension = clusteringModel.getExtensions match {
         case null => None
-        case _ =>
-          Option(bayesianNetworkModel.getExtensions.asScala.map { e =>
-            Extension(
-              extender = e.getExtender match {
-                case null => None
-                case _    => Option(e.getExtender)
-              },
-              name = e.getName match {
-                case null => None
-                case _    => Option(e.getName)
-              },
-              value = e.getValue match {
-                case null => None
-                case _    => Option(e.getValue)
-              }
-            )
-          })
+        case _ => Option(clusteringModel.getExtensions.asScala.map {
+          e => Extension(
+            extender = e.getExtender match {
+              case null => None
+              case _ => Option(e.getExtender)
+            },
+            name = e.getName match {
+              case null => None
+              case _ => Option(e.getName)
+            },
+            value = e.getValue match {
+              case null => None
+              case _ => Option(e.getValue)
+            }
+          )
+        })
       },
-      miningSchema = MiningSchema(miningFields =
-        bayesianNetworkModel.getMiningSchema.getMiningFields match {
+      miningSchema = MiningSchema(
+        miningFields = clusteringModel.getMiningSchema.getMiningFields match {
           case null => None
           case _ =>
             Option(
-              bayesianNetworkModel.getMiningSchema.getMiningFields.asScala.map {
+              clusteringModel.getMiningSchema.getMiningFields.asScala.map {
                 f =>
                   MiningField(
                     name = f.getName.getValue,
@@ -84,60 +83,57 @@ trait BayesianNetwork extends BayesianNetworkModel {
                   )
               })
         }),
-      output = bayesianNetworkModel.getOutput match {
+      output = clusteringModel.getOutput match {
         case null => None
         case _ =>
-          Option(
-            Output(
-              extension = bayesianNetworkModel.getExtensions match {
-                case null => None
-                case _ =>
-                  Option(bayesianNetworkModel.getExtensions.asScala.map { e =>
-                    Extension(
-                      extender = e.getExtender match {
-                        case null => None
-                        case _    => Option(e.getExtender)
-                      },
-                      name = None,
-                      value = None,
-                      content = None
-                    )
-                  })
-              },
-              outputField =
-                bayesianNetworkModel.getOutput.getOutputFields.asScala
-                  .map {
-                    o =>
-                      OutputField(
-                        name = o.getName.getValue,
-                        displayName = Option(o.getDisplayName),
-                        optype = o.getOpType.value(),
-                        targetField = Option(o.getTargetField.getValue),
-                        feature = o.getResultFeature.value(),
-                        value = Option(o.getValue),
-                        ruleFeature = o.getRuleFeature.value(),
-                        algorithm = o.getAlgorithm.value(),
-                        rank = o.getRank.toInt,
-                        rankBasis = o.getRankBasis.value(),
-                        rankOrder = o.getRankOrder.value(),
-                        isMultiValued = o.getIsMultiValued,
-                        segmentId = Option(o.getSegmentId),
-                        isFinalResult = o.isFinalResult
-                      )
-                  }
-            ))
+          Option(Output(
+            extension = clusteringModel.getExtensions match {
+              case null => None
+              case _ => Option(clusteringModel.getExtensions.asScala.map {
+                e => Extension(
+                  extender = e.getExtender match {
+                    case null => None
+                    case _ => Option(e.getExtender)
+                  },
+                  name = None,
+                  value = None,
+                  content = None
+                )
+              })
+            },
+            outputField = clusteringModel.getOutput.getOutputFields.asScala
+              .map {
+                o =>
+                  OutputField(
+                    name = o.getName.getValue,
+                    displayName = Option(o.getDisplayName),
+                    optype = o.getOpType.value(),
+                    targetField = Option(o.getTargetField.getValue),
+                    feature = o.getResultFeature.value(),
+                    value = Option(o.getValue),
+                    ruleFeature = o.getRuleFeature.value(),
+                    algorithm = o.getAlgorithm.value(),
+                    rank = o.getRank.toInt,
+                    rankBasis = o.getRankBasis.value(),
+                    rankOrder = o.getRankOrder.value(),
+                    isMultiValued = o.getIsMultiValued,
+                    segmentId = Option(o.getSegmentId),
+                    isFinalResult = o.isFinalResult
+                  )
+              })
+          )
       },
-      modelStats = bayesianNetworkModel.getModelStats match {
+      modelStats = clusteringModel.getModelStats match {
         case null => None
         case _ =>
           Option(
             ModelStats(
               univariateStats =
-                bayesianNetworkModel.getModelStats.getUnivariateStats match {
+                clusteringModel.getModelStats.getUnivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      bayesianNetworkModel.getModelStats.getUnivariateStats.asScala
+                      clusteringModel.getModelStats.getUnivariateStats.asScala
                         .map {
                           u =>
                             UnivariateStats(
@@ -251,11 +247,11 @@ trait BayesianNetwork extends BayesianNetworkModel {
                         })
                 },
               multivariateStats =
-                bayesianNetworkModel.getModelStats.getMultivariateStats match {
+                clusteringModel.getModelStats.getMultivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      bayesianNetworkModel.getModelStats.getMultivariateStats.asScala
+                      clusteringModel.getModelStats.getMultivariateStats.asScala
                         .map {
                           m =>
                             MultivariateStats(
@@ -340,15 +336,15 @@ trait BayesianNetwork extends BayesianNetworkModel {
                 }
             ))
       },
-      modelExplanation = bayesianNetworkModel.getModelExplanation match {
+      modelExplanation = clusteringModel.getModelExplanation match {
         case null => None
         case _ =>
           Option(
             ModelExplanation(
-              extension = bayesianNetworkModel.getModelExplanation.getExtensions match {
+              extension = clusteringModel.getModelExplanation.getExtensions match {
                 case null => None
                 case _ =>
-                  Option(bayesianNetworkModel.getModelExplanation.getExtensions.asScala.map { e =>
+                  Option(clusteringModel.getModelExplanation.getExtensions.asScala.map { e =>
                     Extension(
                       extender = e.getExtender match {
                         case null => None
@@ -365,13 +361,13 @@ trait BayesianNetwork extends BayesianNetworkModel {
                     )
                   })
               },
-              correlations = bayesianNetworkModel.getModelExplanation.getCorrelations match {
+              correlations = clusteringModel.getModelExplanation.getCorrelations match {
                 case null => None
                 case _ => Option(
                   Correlations(
-                    extension = bayesianNetworkModel.getModelExplanation.getCorrelations.getExtensions match {
+                    extension = clusteringModel.getModelExplanation.getCorrelations.getExtensions match {
                       case null => None
-                      case _ => Option(bayesianNetworkModel.getModelExplanation.getCorrelations.getExtensions.asScala.map { e =>
+                      case _ => Option(clusteringModel.getModelExplanation.getCorrelations.getExtensions.asScala.map { e =>
                         Extension(
                           extender = e.getExtender match {
                             case null => None
@@ -389,13 +385,13 @@ trait BayesianNetwork extends BayesianNetworkModel {
                       })
                     },
                     correlationFields = Array(
-                      n = bayesianNetworkModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
-                      `type` = bayesianNetworkModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType.value(),
-                      value = bayesianNetworkModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
+                      n = clusteringModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
+                      `type` = clusteringModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType.value(),
+                      value = clusteringModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
                     ),
                     correlationValues = {
                       val mtx =
-                        bayesianNetworkModel.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
+                        clusteringModel.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
                       Matrix(
                         matCell = mtx.getMatCells match {
                           case null => None
@@ -426,11 +422,11 @@ trait BayesianNetwork extends BayesianNetworkModel {
                       )
                     },
                     correlationMethods =
-                      bayesianNetworkModel.getModelExplanation.getCorrelations.getCorrelationMethods match {
+                      clusteringModel.getModelExplanation.getCorrelations.getCorrelationMethods match {
                         case null => None
                         case _ =>
                           val mtx =
-                            bayesianNetworkModel.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
+                            clusteringModel.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
                           Option(
                             Matrix(
                               matCell = mtx.getMatCells match {
@@ -464,10 +460,10 @@ trait BayesianNetwork extends BayesianNetworkModel {
                       }
                   ))
               },
-              predictiveModelQualities = bayesianNetworkModel.getModelExplanation.getPredictiveModelQualities match {
+              predictiveModelQualities = clusteringModel.getModelExplanation.getPredictiveModelQualities match {
                 case null => None
                 case _ =>
-                  Option(bayesianNetworkModel.getModelExplanation.getPredictiveModelQualities.asScala.map {
+                  Option(clusteringModel.getModelExplanation.getPredictiveModelQualities.asScala.map {
                     pmq =>
                       PredictiveModelQuality(
                         extension = pmq.getExtensions match {
@@ -521,7 +517,7 @@ trait BayesianNetwork extends BayesianNetworkModel {
                                       extension = pmq.getExtensions match {
                                         case null => None
                                         case _ =>
-                                          Option(bayesianNetworkModel.getModelExplanation.getExtensions.asScala.map { e =>
+                                          Option(clusteringModel.getModelExplanation.getExtensions.asScala.map { e =>
                                             Extension(
                                               extender = e.getExtender match {
                                                 case null => None
@@ -884,10 +880,10 @@ trait BayesianNetwork extends BayesianNetworkModel {
                       )
                   })
               },
-              clusteringModelQualities= bayesianNetworkModel.getModelExplanation.getClusteringModelQualities match {
+              clusteringModelQualities = clusteringModel.getModelExplanation.getClusteringModelQualities match {
                 case null => None
                 case _ =>
-                  Option(bayesianNetworkModel.getModelExplanation.getClusteringModelQualities.asScala.map {
+                  Option(clusteringModel.getModelExplanation.getClusteringModelQualities.asScala.map {
                     cmq =>
                       ClusteringModelQuality(
                         dataName = cmq.getDataName match {
@@ -907,126 +903,207 @@ trait BayesianNetwork extends BayesianNetworkModel {
               }
             ))
       },
-      targets = bayesianNetworkModel.getTargets match {
+      localTransformations = clusteringModel.getLocalTransformations match {
         case null => None
         case _ =>
-          Option(bayesianNetworkModel.getTargets.asScala.map {
-            t =>
-              Targets(
-                field = t.getField match {
-                  case null => None
-                  case _    => Option(t.getField.getValue)
-                },
-                optype = t.getOpType match {
-                  case null => None
-                  case _    => Option(t.getOpType.value())
-                },
-                castInteger = t.getCastInteger match {
-                  case null => None
-                  case _    => Option(t.getCastInteger.value())
-                },
-                min = t.getMin match {
-                  case null => None
-                  case _    => Option(t.getMin.toDouble)
-                },
-                max = t.getMax match {
-                  case null => None
-                  case _    => Option(t.getMax.toDouble)
-                },
-                rescaleConstant = t.getRescaleConstant.toDouble,
-                rescaleFactor = t.getRescaleFactor.toDouble,
-                targetValues = None
-              )
-          })
+          Option(
+            LocalTransformation(derivedFields =
+              clusteringModel.getLocalTransformations.getDerivedFields match {
+                case null => None
+                case _ =>
+                  Option(
+                    clusteringModel.getLocalTransformations.getDerivedFields.asScala
+                      .map { d =>
+                        DerivedField(
+                          name = d.getName match {
+                            case null => None
+                            case _    => Option(d.getName.getValue)
+                          },
+                          displayName = d.getDisplayName,
+                          optype = d.getOpType.value(),
+                          dataType = d.getDataType.value()
+                        )
+                      })
+              }))
       },
-      localTransformations = bayesianNetworkModel.getLocalTransformations match {
-        case null => None
-        case _ => Option(LocalTransformation(
-          extension = bayesianNetworkModel.getLocalTransformations.getExtensions match {
-            case null => None
-            case _ =>
-              Option(bayesianNetworkModel.getLocalTransformations.getExtensions.asScala.map { e =>
-                Extension(
-                  extender = e.getExtender match {
-                    case null => None
-                    case _    => Option(e.getExtender)
-                  },
-                  name = e.getName match {
-                    case null => None
-                    case _    => Option(e.getName)
-                  },
-                  value = e.getValue match {
-                    case null => None
-                    case _    => Option(e.getValue)
-                  }
-                )
-              })
-          },
-          derivedFields = bayesianNetworkModel.getLocalTransformations.getDerivedFields match {
-            case null => None
-            case _ =>
-              Option(
-                bayesianNetworkModel.getLocalTransformations.getDerivedFields.asScala
-                  .map { d =>
-                    DerivedField(
-                      name = d.getName match {
-                        case null => None
-                        case _    => Option(d.getName.getValue)
-                      },
-                      displayName = d.getDisplayName,
-                      optype = d.getOpType.value(),
-                      dataType = d.getDataType.value()
-                    )
-                  })
-          }
-        ))
-      },
-      bayesianNetworkNodes = BayesianNetworkNodes(
-        extension = bayesianNetworkModel.getBayesianNetworkNodes.getExtensions match {
+
+      comparisonMeasure = ComparisonMeasure(
+        extension = clusteringModel.getComparisonMeasure.getExtensions match {
           case null => None
-          case _ => Option(bayesianNetworkModel.getBayesianNetworkNodes.getExtensions.asScala.map { e =>
-            Extension(
+          case _ => Option(clusteringModel.getComparisonMeasure.getExtensions.asScala.map {
+            e => Extension(
               extender = e.getExtender match {
                 case null => None
-                case _    => Option(e.getExtender)
+                case _ => Option(e.getExtender)
               },
               name = e.getName match {
                 case null => None
-                case _    => Option(e.getName)
+                case _ => Option(e.getName)
               },
               value = e.getValue match {
                 case null => None
-                case _    => Option(e.getValue)
+                case _ => Option(e.getValue)
               }
             )
           })
         },
-        content = bayesianNetworkModel.getBayesianNetworkNodes.getContent match {
+        kind = clusteringModel.getComparisonMeasure.getKind.value(),
+        compareFunction = clusteringModel.getComparisonMeasure.getCompareFunction.value(),
+        minimum = clusteringModel.getComparisonMeasure.getMinimum match {
           case null => None
-          case _ => Option(bayesianNetworkModel.getBayesianNetworkNodes.getContent.asScala.map {
-              c => Content(
-                locator = Locator(
-                  publicId = c.getLocator.getPublicId match {
-                    case null => None
-                    case _ => Option(c.getLocator.getPublicId)
-                  },
-                  systemId = c.getLocator.getSystemId match {
-                    case null => None
-                    case _ => Option(c.getLocator.getSystemId)
-                  },
-                  lineNumber = c.getLocator.getLineNumber,
-                  columnNumber = c.getLocator.getColumnNumber
-                )
+          case _ => Option(clusteringModel.getComparisonMeasure.getMinimum)
+        },
+        maximum = clusteringModel.getComparisonMeasure.getMaximum match {
+          case null => None
+          case _ => Option(clusteringModel.getComparisonMeasure.getMaximum)
+        },
+        measure = clusteringModel.getComparisonMeasure.getMeasure match {
+          case null => None
+          case _ => Option(clusteringModel.getComparisonMeasure.getMeasure
+            .toString
+            .split("org.dmg.pmml.")
+            .tail.head.split("@").head) // this should be of "Measure" type and RegEx
+        }
+      ),
+      clusteringFields = clusteringModel.getClusteringFields.asScala.map {
+        f => ClusteringField(
+          extension = f.getExtensions match {
+            case null => None
+            case _ => Option(f.getExtensions.asScala.map {
+              e => Extension(
+                extender = e.getExtender match {
+                  case null => None
+                  case _ => Option(e.getExtender)
+                },
+                name = e.getName match {
+                  case null => None
+                  case _ => Option(e.getName)
+                },
+                value = e.getValue match {
+                  case null => None
+                  case _ => Option(e.getValue)
+                }
               )
             })
-        },
-        discreteNode = None,
-        continuousNode = None
-      ),
-      modelVerification = bayesianNetworkModel.getModelVerification match {
+          },
+          field = f.getField.getValue,
+          isCenterField = f.getCenterField.value(),
+          fieldWeight = f.getFieldWeight,
+          similarityScale = f.getSimilarityScale match {
+            case null => None
+            case _ => Option(f.getSimilarityScale)
+          },
+          compareFunction = f.getCompareFunction match {
+            case null => None
+            case _ => Option(f.getCompareFunction.value())
+          })
+      },
+      missingValueWeights = clusteringModel.getMissingValueWeights match {
+        case null => None
+        case _ => Option(Array(
+          n = clusteringModel.getMissingValueWeights.getArray.getN.toInt,
+          `type` = clusteringModel.getMissingValueWeights.getArray.getType.value(),
+          value = clusteringModel.getMissingValueWeights.getArray.getValue
+        ))
+      },
+      cluster = clusteringModel.getClusters.asScala.map {
+        c => Cluster(
+          extension = c.getExtensions match {
+            case null => None
+            case _ => Option(c.getExtensions.asScala.map {
+              e => Extension(
+                extender = e.getExtender match {
+                  case null => None
+                  case _ => Option(e.getExtender)
+                },
+                name = e.getName match {
+                  case null => None
+                  case _ => Option(e.getName)
+                },
+                value = e.getValue match {
+                  case null => None
+                  case _ => Option(e.getValue)
+                }
+              )
+            })
+          },
+          id = c.getId match {
+            case null => None
+            case _ => Option(c.getId)
+          },
+          name = c.getName match {
+            case null => None
+            case _ => Option(c.getName)
+          },
+          size = c.getSize match {
+            case null => None
+            case _ => Option(c.getSize)
+          },
+          covariances = c.getCovariances match {
+            case null => None
+            case _ =>
+              val mtx = c.getCovariances.getMatrix
+              Option(Matrix(
+                matCell = mtx.getMatCells match {
+                  case null => None
+                  case _ =>
+                    Option(mtx.getMatCells.asScala.map { c =>
+                      MatCell(row = c.getRow,
+                        col = c.getCol,
+                        value = c.getValue)
+                    })
+                },
+                kind = mtx.getKind.value(),
+                nbCols = mtx.getNbCols match {
+                  case null => None
+                  case _    => Option(mtx.getNbCols)
+                },
+                nbRows = mtx.getNbRows match {
+                  case null => None
+                  case _    => Option(mtx.getNbRows)
+                },
+                diagDefault = mtx.getDiagDefault match {
+                  case null => None
+                  case _    => Option(mtx.getDiagDefault)
+                },
+                offDiagDefault = mtx.getOffDiagDefault match {
+                  case null => None
+                  case _    => Option(mtx.getOffDiagDefault)
+                }
+              ))
+          },
+          kohonenMap = c.getKohonenMap match {
+            case null => None
+            case _ => Option(KohonenMap(
+              extension = c.getKohonenMap.getExtensions match {
+                case null => None
+                case _ => Option(c.getKohonenMap.getExtensions.asScala.map {
+                  e => Extension(
+                    extender = e.getExtender match {
+                      case null => None
+                      case _ => Option(e.getExtender)
+                    },
+                    name = e.getName match {
+                      case null => None
+                      case _ => Option(e.getName)
+                    },
+                    value = e.getValue match {
+                      case null => None
+                      case _ => Option(e.getValue)
+                    }
+                  )
+                })
+              },
+              coord1 = Option(c.getKohonenMap.getCoord1),
+              coord2 = Option(c.getKohonenMap.getCoord2),
+              coord3 = Option(c.getKohonenMap.getCoord3)
+            ))
+          })
+      },
+      modelVerification = clusteringModel.getModelVerification match {
         case null => None
         case _ =>
-          val v = bayesianNetworkModel.getModelVerification
+          val v = clusteringModel.getModelVerification
           Option(
             ModelVerification(
               recordCount = v.getRecordCount match {
@@ -1040,16 +1117,19 @@ trait BayesianNetwork extends BayesianNetworkModel {
               verificationFields = None
             ))
       },
-      modelName = bayesianNetworkModel.getModelName match {
+
+      modelName = clusteringModel.getModelName match {
         case null => None
-        case _    => Option(bayesianNetworkModel.getModelName)
+        case _    => Option(clusteringModel.getModelName)
       },
-      functionName = bayesianNetworkModel.getMiningFunction.value(),
-      algorithmName = bayesianNetworkModel.getAlgorithmName match {
+      functionName = clusteringModel.getMiningFunction.value(),
+      algorithmName = clusteringModel.getAlgorithmName match {
         case null => None
-        case _    => Option(bayesianNetworkModel.getAlgorithmName)
+        case _ => Option(clusteringModel.getAlgorithmName)
       },
-      isScorable = Option(bayesianNetworkModel.isScorable)
+      modelClass = clusteringModel.getModelClass.value(),
+      numberOfClusters = clusteringModel.getNumberOfClusters,
+      isScorable = Option(clusteringModel.isScorable)
     )
   }
 }

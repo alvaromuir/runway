@@ -1,10 +1,10 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator
 
 /*
-* Project: Runway
-* Alvaro Muir, Verizon IT Analytics: Data Engineering
-* 04 25, 2018
-*/
+ * Project: Runway
+ * Alvaro Muir, Verizon IT Analytics: Data Engineering
+ * 04 25, 2018
+ */
 
 import java.io.File
 
@@ -15,9 +15,17 @@ import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._
 
-class AssociationRulesSpec extends FlatSpec with Builder with TestUtils with Evaluator {
+class AssociationRulesSpec
+    extends FlatSpec
+    with Builder
+    with TestUtils
+    with Evaluator {
 
   val testModelPath = mapModels("association")
+  val pMML: PMML = readPMML(new File(testModelPath))
+  val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
+  val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
+  val model: Option[AssociationModel] = pmmlModel.associationModel
 
   "the evaluator" should
     "read Association models" in {
@@ -28,10 +36,6 @@ class AssociationRulesSpec extends FlatSpec with Builder with TestUtils with Eva
   }
 
   it should "provide information on required input fields" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-    val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
-
     val dataDictionary = pmmlModel.dataDictionary
     val taxonomies = Some(dataDictionary.taxonomies).get.toList.head
     val dataFields = Some(dataDictionary.dataFields).get.toList.head
@@ -46,84 +50,44 @@ class AssociationRulesSpec extends FlatSpec with Builder with TestUtils with Eva
     assert(dataFields.head.taxonomy.isEmpty)
     assert(dataFields.head.isCyclic.get.contains("0"))
     assert(dataFields.head.intervals.get.isEmpty)
-
-    assert(dataFields.tail.head.name.contains("item"))
-    assert(dataFields.tail.head.displayName.isEmpty)
-    assert(dataFields.tail.head.optype.contains("categorical"))
-    assert(dataFields.tail.head.taxonomy.isEmpty)
-    assert(dataFields.tail.head.isCyclic.get.contains("0"))
-    assert(dataFields.tail.head.intervals.get.isEmpty)
   }
 
-  it should "identified as an Association Rules model in the PMML Schema" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-    val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
-
-    assert(Some(pmmlModel.associationModel).isDefined)
+  it should "identify as an Association Rules Model in the PMML Schema" in {
+    assert(model.isDefined)
   }
 
-  it should "have the appropriate key-value pairs" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-    val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
+  it should "contain the appropriate key-value pairs" in {
+    assert(Some(model.get.extension).isDefined)
+    assert(Some(model.get.miningSchema).isDefined)
+    assert(Some(model.get.output).isDefined)
+    assert(Some(model.get.modelStats).isDefined)
+    assert(Some(model.get.localTransformations).isDefined)
+    assert(Some(model.get.item).isDefined)
+    assert(Some(model.get.itemSet).isDefined)
+    assert(Some(model.get.associationRule).isDefined)
+    assert(Some(model.get.modelVerification).isDefined)
 
-    assert(Some(pmmlModel.associationModel.get.modelName).isDefined)
-    assert(Some(pmmlModel.associationModel.get.functionName).isDefined)
-    assert(Some(pmmlModel.associationModel.get.algorithmName).isDefined)
-    assert(Some(pmmlModel.associationModel.get.numberOfTransactions).isDefined)
-    assert(Some(pmmlModel.associationModel.get.maxNumberOfItemsPerTA).isDefined)
-    assert(Some(pmmlModel.associationModel.get.avgNumberOfItemsPerTA).isDefined)
-    assert(Some(pmmlModel.associationModel.get.minimumSupport).isDefined)
-    assert(Some(pmmlModel.associationModel.get.minimumConfidence).isDefined)
-    assert(Some(pmmlModel.associationModel.get.lengthLimit).isDefined)
-    assert(Some(pmmlModel.associationModel.get.numberOfItems).isDefined)
-    assert(Some(pmmlModel.associationModel.get.numberOfItemsets).isDefined)
-    assert(Some(pmmlModel.associationModel.get.numberOfRules).isDefined)
-    assert(Some(pmmlModel.associationModel.get.isScorable).isDefined)
-    assert(Some(pmmlModel.associationModel.get.output).isDefined)
-    assert(Some(pmmlModel.associationModel.get.modelStats).isDefined)
-    assert(Some(pmmlModel.associationModel.get.localTransformation).isDefined)
-    assert(Some(pmmlModel.associationModel.get.miningSchema).isDefined)
-    assert(Some(pmmlModel.associationModel.get.items).isDefined)
-    assert(Some(pmmlModel.associationModel.get.itemSets).isDefined)
-    assert(Some(pmmlModel.associationModel.get.associationRules).isDefined)
-    assert(Some(pmmlModel.associationModel.get.modelVerification).isDefined)
+    assert(Some(model.get.modelName).isDefined)
+    assert(Some(model.get.functionName).isDefined)
+    assert(Some(model.get.algorithmName).isDefined)
+    assert(Some(model.get.numberOfTransactions).isDefined)
+    assert(Some(model.get.maxNumberOfItemsPerTA).isDefined)
+    assert(Some(model.get.avgNumberOfItemsPerTA).isDefined)
+    assert(Some(model.get.minimumSupport).isDefined)
+    assert(Some(model.get.minimumConfidence).isDefined)
+    assert(Some(model.get.lengthLimit).isDefined)
+    assert(Some(model.get.numberOfItems).isDefined)
+    assert(Some(model.get.numberOfItemsets).isDefined)
+    assert(Some(model.get.numberOfRules).isDefined)
+    assert(Some(model.get.isScorable).isDefined)
   }
 
-  it should "have basic string-based fields" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-    val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
-
-    assert(Some(pmmlModel.associationModel.get.modelName).get.isEmpty)
-    assert(Some(pmmlModel.associationModel.get.functionName).contains("associationRules"))
-    assert(Some(pmmlModel.associationModel.get.algorithmName).get.isEmpty)
-    assert(Some(pmmlModel.associationModel.get.isScorable).get.contains(true))
+  it should "return extension information, if available" in {
+    assert(Some(model.get.extension).get.get.isEmpty)
   }
 
-  it should "have basic numeric-based fields" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-    val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
-
-    assert(Some(pmmlModel.associationModel.get.numberOfTransactions).contains(100))
-    assert(Some(pmmlModel.associationModel.get.maxNumberOfItemsPerTA).get.isEmpty)
-    assert(Some(pmmlModel.associationModel.get.avgNumberOfItemsPerTA).get.isEmpty)
-    assert(Some(pmmlModel.associationModel.get.minimumSupport).contains(5.0E-4))
-    assert(Some(pmmlModel.associationModel.get.minimumConfidence).contains(0.8))
-    assert(Some(pmmlModel.associationModel.get.lengthLimit).get.isEmpty)
-    assert(Some(pmmlModel.associationModel.get.numberOfItems).contains(11))
-    assert(Some(pmmlModel.associationModel.get.numberOfItemsets).contains(357))
-    assert(Some(pmmlModel.associationModel.get.numberOfRules).contains(770))
-  }
-
-  it should "have schema information if available" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-    val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
-
-    val miningSchema = Some(pmmlModel.associationModel.get.miningSchema)
+  it should "provide mining schema information, if available" in {
+    val miningSchema = Some(model.get.miningSchema)
     val miningFields = miningSchema.get.miningFields.get.toList
 
     assert(miningFields.size.equals(2))
@@ -139,45 +103,22 @@ class AssociationRulesSpec extends FlatSpec with Builder with TestUtils with Eva
     assert(miningFields.head.invalidValueTreatment.contains("returnInvalid"))
   }
 
-  it should "have output information if available" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-    val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
-
-    assert(Some(pmmlModel.associationModel.get.output).get.isEmpty)
+  it should "provide output information, if available" in {
+    assert(Some(model.get.output).get.isEmpty)
   }
 
-  it should "have statistics information if available" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-    val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
-
-    assert(Some(pmmlModel.associationModel.get.modelStats).get.isEmpty)
+  it should "provide model statistics information, if available" in {
+    assert(Some(model.get.modelStats).get.isEmpty)
   }
 
-  it should "have local transformation information if available" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-    val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
-
-    assert(Some(pmmlModel.associationModel.get.localTransformation).get.isEmpty)
+  it should "provide local transformation information, if available" in {
+    assert(Some(model.get.localTransformations).get.isEmpty)
   }
 
-  it should "have information on the models verification" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-    val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
+  it should "provide Association Rules Model item information" in {
+    val items = model.get.item
 
-    assert(Some(pmmlModel.associationModel.get.modelVerification).get.isEmpty)
-  }
-
-  it should "have details on items" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-    val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
-
-    val items = pmmlModel.associationModel.get.items
-    assert(items.get.size.equals(Some(pmmlModel.associationModel.get.numberOfItems).get))
+    assert(items.get.size.equals(Some(model.get.numberOfItems).get))
     assert(items.get.head.id.contains("1"))
     assert(items.get.head.value.contains("beer"))
     assert(items.get.head.field.isEmpty)
@@ -186,14 +127,10 @@ class AssociationRulesSpec extends FlatSpec with Builder with TestUtils with Eva
     assert(items.get.head.weight.isEmpty)
   }
 
-  it should "have details on item sets" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-    val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
+  it should "provide Association Rules Model item sets information" in {
+    val itemSets = model.get.itemSet
 
-    val itemSets = pmmlModel.associationModel.get.itemSets
-
-    assert(itemSets.get.size.equals(Some(pmmlModel.associationModel.get.numberOfItemsets).get))
+    assert(itemSets.get.size.equals(Some(model.get.numberOfItemsets).get))
     assert(itemSets.get.head.id.contains("1"))
     assert(itemSets.get.head.support.isEmpty)
     assert(itemSets.get.head.numberOfItems.contains(2))
@@ -201,14 +138,10 @@ class AssociationRulesSpec extends FlatSpec with Builder with TestUtils with Eva
     assert(itemSets.get.head.itemRefs.toList.head.itemRef.equals("5"))
   }
 
-  it should "have details the association rules" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-    val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
+  it should "provide details the Association Rules Models" in {
+    val associationRules = model.get.associationRule
 
-    val associationRules = pmmlModel.associationModel.get.associationRules
-
-    assert(associationRules.get.size.equals(Some(pmmlModel.associationModel.get.numberOfRules).get))
+    assert(associationRules.get.size.equals(Some(model.get.numberOfRules).get))
     assert(associationRules.get.head.antecedent.contains("1"))
     assert(associationRules.get.head.consequent.contains("348"))
     assert(associationRules.get.head.support.equals(0.02))
@@ -219,21 +152,45 @@ class AssociationRulesSpec extends FlatSpec with Builder with TestUtils with Eva
     assert(associationRules.get.head.id.isEmpty)
   }
 
-  it should "return results from observation inputs" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-    val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
+  it should "provide model verification information, if available" in {
+    assert(Some(model.get.modelVerification).get.isEmpty)
+  }
 
+  it should "return basic string-based fields" in {
+    assert(Some(model.get.modelName).get.isEmpty)
+    assert(Some(model.get.functionName).contains("associationRules"))
+    assert(Some(model.get.algorithmName).get.isEmpty)
+  }
+
+  it should "return model-specific numeric-based fields" in {
+    assert(Some(model.get.numberOfTransactions).contains(100))
+    assert(Some(model.get.maxNumberOfItemsPerTA).get.isEmpty)
+    assert(Some(model.get.avgNumberOfItemsPerTA).get.isEmpty)
+    assert(Some(model.get.minimumSupport).contains(5.0E-4))
+    assert(Some(model.get.minimumConfidence).contains(0.8))
+    assert(Some(model.get.lengthLimit).get.isEmpty)
+    assert(Some(model.get.numberOfItems).contains(11))
+    assert(Some(model.get.numberOfItemsets).contains(357))
+    assert(Some(model.get.numberOfRules).contains(770))
+  }
+
+  it should "return basic boolean fields" in {
+    assert(Some(model.get.isScorable).get.contains(true))
+  }
+
+  it should "return results from observation inputs" in {
     assert(evaluator.verify().equals(())) // is empty
 
     val inputField = evaluator.getInputFields.get(0).getName.getValue
+
     val observations = Map(inputField -> List("beer", "softdrink")).toMap[Any, Any]
 
     val arguments = createArguments(pmmlModel, observations)
-
     val results = evaluator.evaluate(arguments)
-    assert(Some(results.asScala.keys.head).contains(null))
-    assert(results.asScala(null).toString.contains("antecedentFlags={1, 2, 3}"))
+
+    val field = null
+    assert(Some(results.asScala.keys.head).contains(field))
+    assert(Some(results.asScala(field)).get.toString.contains("antecedentFlags={1, 2, 3}"))
   }
 
 }

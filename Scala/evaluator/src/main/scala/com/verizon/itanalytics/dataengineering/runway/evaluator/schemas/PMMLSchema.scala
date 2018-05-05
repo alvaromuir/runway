@@ -6,6 +6,7 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 * 04 24, 2018
 */
 
+import com.verizon.itanalytics.dataengineering.runway.evaluator.models.elements._
 import com.verizon.itanalytics.dataengineering.runway.evaluator.models._
 
 // http://dmg.org/pmml/v4-3/GeneralStructure.html
@@ -13,11 +14,11 @@ trait PMMLSchema
     extends Taxonomy
     with DataDictionary
     with AssociationRules
-    with BayesianNetwork
-    with BaselineModels
-    with ClusterModels
-    with GeneralRegression
-    with GaussianProcess
+    with BayesianNetworkModel
+    with BaselineModel
+    with ClusteringModel
+    with GeneralRegressionModel
+    with GaussianProcessModel
     with MiningModel
     with NaiveBayesModel
     with NearestNeighborModel
@@ -37,10 +38,9 @@ trait PMMLSchema
                          dataDictionary: DataDictionary,
                          transformationDictionary: Option[TransformationDictionary] = None,
                          version: String,
-                         associationModel: Option[AssociationRules] = None,
-                         baselineModel: Option[BaselineModels] = None,
+                         associationModel: Option[AssociationModel] = None,
                          bayesianNetworkModel: Option[BayesianNetwork] = None,
-                         clusteringModel: Option[ClusteringModels] = None,
+                         clusteringModel: Option[ClusteringModel] = None,
                          gaussianProcessModel: Option[GaussianProcess] = None,
                          generalRegressionModel: Option[GeneralRegression] = None,
                          miningModel: Option[MiningModel] = None,
@@ -57,16 +57,12 @@ trait PMMLSchema
                          treeModel: Option[TreeModel] = None
   )
 
-  case class Extension(extender: Option[String] = None,
-                       name: Option[String] = None,
-                       value: Option[String] = None)
-
   case class Header(
       copyright: Option[String] = None,
       description: Option[String] = None,
       modelVersion: Option[String] = None,
       application: Option[Application] = None,
-      annotations: Option[Seq[String]] = None, //revisit, make Extensions (once we see one)
+      annotations: Option[Seq[String]] = None,
       timeStamp: Option[String] = None)
 
   case class Annotation(annotation: Option[String] = None) //revisit, make Extensions (once we see one)

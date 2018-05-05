@@ -15,18 +15,33 @@ import org.scalatest.FlatSpec
 import scala.collection.JavaConverters._
 
 class EvaluatorSpec
-    extends FlatSpec
+  extends FlatSpec
     with Builder
     with TestUtils
     with Evaluator {
+
+  val testModelPath = mapModels("association")
+  var pMML: PMML = readPMML(new File(testModelPath))
+  var evaluator: ModelEvaluator[_ <: Model] = null
+  var pmmlModel: PMMLSchema = null
+
   "the evaluator" should
-    "read create appropriate arguments for association models" in {
-    val testModelPath = mapModels("association")
+    "read files and return a valid PMML instance" in {
+    pMML = readPMML(new File(testModelPath))
+    assert(pMML.isInstanceOf[org.dmg.pmml.PMML])
+  }
 
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-    val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
+  it should "evaluate files into valid Model Evaluator type" in {
+    evaluator = evaluatePmml(pMML)
+    assert(evaluator.getModel.getMiningFunction.value.contains("associationRules"))
+  }
 
+  it should "parse files into valid PMMLSchema" in {
+    pmmlModel = parsePmml(evaluator.getPMML)
+    assert(pmmlModel.associationModel.isDefined)
+  }
+
+  it should "parses observations appropriately for arguments" in {
     val inputField = evaluator.getInputFields.get(0).getName.getValue
     val observations = List("beer", "softdrink")
 
@@ -35,5 +50,4 @@ class EvaluatorSpec
     assert(arguments.asScala.head._1.toString.contains(inputField))
     assert(arguments.asScala.head._2.toString.contains(observations.head))
   }
-
 }

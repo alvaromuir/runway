@@ -1,28 +1,31 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 
 /*
-* Project: Runway
-* Alvaro Muir, Verizon IT Analytics: Data Engineering
-* 04 24, 2018
-*/
+ * Project: Runway
+ * Alvaro Muir, Verizon IT Analytics: Data Engineering
+ * 04 24, 2018
+ */
 
-
-trait ModelExplanation {
+trait ModelExplanation extends Extension with Array {
   case class ModelExplanation(
+      extension: Option[Seq[Extension]] = None,
       correlations: Option[Correlations],
-      predictiveModelQuality: Option[PredictiveModelQuality],
-      clusteringModelQuality: Option[ClusteringModelQuality]
+      predictiveModelQualities: Option[Seq[PredictiveModelQuality]],
+      clusteringModelQualities: Option[Seq[ClusteringModelQuality]]
   )
 
   case class Correlations(
-      correlationFields: CorrelationFields,
+      extension: Option[Seq[Extension]] = None,
+      correlationFields: Array,
       correlationValues: Matrix,
       correlationMethods: Option[Matrix]
   )
 
-  case class CorrelationFields(n: String, `type`: String, value: String)
-
   case class PredictiveModelQuality(
+      extension: Option[Seq[Extension]] = None,
+      confusionMatrix: Option[ConfusionMatrix] = None,
+      liftData: Option[Seq[LiftData]] = None,
+      ROC: Option[ROC] = None,
       targetField: String,
       dataName: Option[String] = None,
       dataUsage: String = "training",
@@ -41,62 +44,53 @@ trait ModelExplanation {
       fStatistic: Option[Double] = None,
       AIC: Option[Double] = None,
       BIC: Option[Double] = None,
-      AICc: Option[Double] = None,
-      confusionMatrix: Option[ConfusionMatrix] = None,
-      liftData: Option[LiftData] = None,
-      ROC: Option[ROC] = None
+      AICc: Option[Double] = None
   )
 
-  case class ConfusionMatrix(classLabels: Option[Seq[String]] = None,
+  case class ConfusionMatrix(extension: Option[Seq[Extension]] = None,
+                             classLabels: Option[ClassLabels] = None,
                              matrix: Option[Matrix] = None)
 
-  case class Matrix(kind: String = "any",
+  case class ClassLabels(extension: Option[Seq[Extension]] = None,
+                         labels: Array)
+
+  case class Matrix(extension: Option[Seq[Extension]] = None,
+                    matCell: Option[Seq[MatCell]] = None,
+                    kind: String = "any",
                     nbRows: Option[Int] = None,
                     nbCols: Option[Int] = None,
                     diagDefault: Option[Double] = None,
-                    offDiagDefault: Option[Double] = None,
-                    matCells: Option[Seq[MatCell]] = None)
+                    offDiagDefault: Option[Double] = None)
 
-  case class MatCell(
-      row: Int,
-      col: Int,
-      value: String
-  )
+  case class MatCell(row: Int, col: Int, value: String)
 
   case class LiftData(targetFieldValue: Option[String] = None,
                       targetFieldDisplayValue: Option[String] = None,
                       rankingQuality: Option[Double] = None,
-                      modelLiftGraph: ModelLiftGraph,
-                      optimumLiftGraph: Option[OptimumLiftGraph] = None,
-                      randomLiftGraph: Option[RandomLiftGraph] = None)
+                      modelLiftGraph: LiftGraph,
+                      optimumLiftGraph: Option[LiftGraph] = None,
+                      randomLiftGraph: Option[LiftGraph] = None)
 
-  case class ModelLiftGraph(liftGraph: LiftGraph)
+  case class LiftGraph(extension: Option[Seq[Extension]] = None,
+                       xCoordinates: Array,
+                       yCoordinates: Array,
+                       boundaryValues: Option[Array] = None,
+                       boundaryValueMeans: Option[Array] = None)
 
-  case class OptimumLiftGraph(liftGraph: LiftGraph)
-
-  case class RandomLiftGraph(liftGraph: LiftGraph)
-
-  case class LiftGraph(xCoordinates: Seq[Double],
-                       yCoordinates: Seq[Double],
-                       boundaryValues: Option[Seq[Double]] = None,
-                       boundaryValueMeans: Option[Seq[Double]] = None)
-
-  case class ROC(positiveTargetFieldValue: String,
+  case class ROC(extension: Option[Seq[Extension]] = None,
+                 positiveTargetFieldValue: String,
                  positiveTargetFieldDisplayValue: Option[String] = None,
                  negativeTargetFieldValue: Option[String] = None,
                  negativeTargetFieldDisplayValue: Option[String] = None,
                  rocGraph: Option[ROCGraph] = None)
 
-  case class ROCGraph(
-      yCoordinates: Seq[Double],
-      boundaryValues: Option[Seq[Double]] = None,
-      boundaryValueMeans: Option[Seq[Double]] = None
-  )
+  case class ROCGraph(extension: Option[Seq[Extension]] = None,
+                      xCoordinates: Array,
+                      yCoordinates: Array,
+                      boundaryValues: Option[Array] = None)
 
-  case class ClusteringModelQuality(
-      dataName: Option[String] = None,
-      SSE: Option[Double] = None,
-      SSB: Option[Double] = None
-  )
+  case class ClusteringModelQuality(dataName: Option[String] = None,
+                                    SSE: Option[Double] = None,
+                                    SSB: Option[Double] = None)
 
 }

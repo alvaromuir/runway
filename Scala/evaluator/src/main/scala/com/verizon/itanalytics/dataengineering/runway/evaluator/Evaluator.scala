@@ -11,23 +11,12 @@ import java.text.SimpleDateFormat
 import java.util
 import java.util.{Date, Locale}
 
-import com.verizon.itanalytics.dataengineering.runway.evaluator.parsers.{
-  AssociationRulesParser,
-  BaselineModelsParser,
-  BayesianNetworkParser,
-  ClusterModelsParser,
-  GaussianProcessParser,
-  GeneralRegressionParser
-}
-import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas.PMMLSchema
+import com.verizon.itanalytics.dataengineering.runway.evaluator.models._
+
 import javax.xml.bind.JAXBException
+import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas.PMMLSchema
 import org.dmg.pmml.{FieldName, Model, PMML}
-import org.jpmml.evaluator.{
-  ModelEvaluator,
-  ModelEvaluatorFactory,
-  ReportingValueFactoryFactory,
-  ValueFactoryFactory
-}
+import org.jpmml.evaluator.{ModelEvaluator, ModelEvaluatorFactory, ReportingValueFactoryFactory, ValueFactoryFactory}
 import org.jpmml.model.PMMLUtil
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -38,12 +27,11 @@ import scala.util.control.ControlThrowable
 trait Evaluator
     extends Utils
     with PMMLSchema
-    with AssociationRulesParser
-    with BaselineModelsParser
-    with BayesianNetworkParser
-    with ClusterModelsParser
-    with GaussianProcessParser
-    with GeneralRegressionParser {
+    with AssociationRules
+    with BayesianNetwork
+    with ClusterModel
+    with GaussianProcess
+    with GeneralRegression {
   val log: Logger = LoggerFactory.getLogger(getClass.getName)
 
   /** Returns a pMML file from input stream
@@ -92,7 +80,6 @@ trait Evaluator
     val miningBuildTask = pMML.getMiningBuildTask
     val dataDictionary = pMML.getDataDictionary
     val transformationDictionary = pMML.getTransformationDictionary
-
     val modelFunction = pMML.getModels.get(0).getMiningFunction.value()
     val formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
                                              Locale.ENGLISH).format(new Date())
@@ -199,9 +186,7 @@ trait Evaluator
       ),
       transformationDictionary = transformationDictionary match {
         case null => None
-        case _ =>
-          Option(
-            TransformationDictionary(
+        case _ => Option(TransformationDictionary(
               defineFunctions =
                 transformationDictionary.getDefineFunctions match {
                   case null => None
@@ -277,10 +262,6 @@ trait Evaluator
         case "associationRules" => Option(parseAssociationModel(pMML))
         case _                  => None
       },
-      baselineModel = modelFunction match {
-        case "baselineModel" => Option(parseBaselineModel(pMML))
-        case _               => None
-      },
       bayesianNetworkModel = modelFunction match {
         case "bayesianNetworkModel" => Option(parseBayesianNetworkModel(pMML))
         case _                      => None
@@ -294,8 +275,44 @@ trait Evaluator
         case _                 => None
       },
       generalRegressionModel = modelFunction match {
-        case "classification" => Option(parseGeneralRegressionModel(pMML))
-        case _                => None
+        case "regression" => Option(parseGeneralRegressionModel(pMML))
+        case _ => None
+      },
+      miningModel = modelFunction match {
+        case _ => None
+      },
+      naiveBayesModel = modelFunction match {
+        case _ => None
+      },
+      nearestNeighborModel = modelFunction match {
+        case _ => None
+      },
+      neuralNetwork = modelFunction match {
+        case _ => None
+      },
+      regressionModel = modelFunction match {
+        case _ => None
+      },
+      ruleSetModel = modelFunction match {
+        case _ => None
+      },
+      sequenceModel = modelFunction match {
+        case _ => None
+      },
+      scorecard = modelFunction match {
+        case _ => None
+      },
+      supportVectorMachineModel = modelFunction match {
+        case _ => None
+      },
+      textModel = modelFunction match {
+        case _ => None
+      },
+      timeSeriesModel = modelFunction match {
+        case _ => None
+      },
+      treeModel = modelFunction match {
+        case _ => None
       }
     )
   }
@@ -325,6 +342,15 @@ trait Evaluator
           case (k, v) => arguments.put(FieldName.create(k.toString), v)
         }
     }
+
+    pmmlModel.generalRegressionModel match {
+      case None =>
+      case Some(_) =>
+        features.map {
+          case (k, v) => arguments.put(FieldName.create(k.toString), v)
+        }
+    }
+
     arguments.asJava
   }
 
