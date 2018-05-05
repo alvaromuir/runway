@@ -1,4 +1,4 @@
-package com.verizon.itanalytics.dataengineering.runway.evaluator.models
+package com.verizon.itanalytics.dataengineering.runway.evaluator.models.elements
 
 /*
 * Project: Runway
