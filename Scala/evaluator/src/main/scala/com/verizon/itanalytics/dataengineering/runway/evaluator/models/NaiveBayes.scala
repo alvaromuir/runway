@@ -13,10 +13,10 @@ import scala.collection.JavaConverters._
 
 trait NaiveBayes extends NaiveBayesModel {
 
-  /** Parses provided pMML file as an Baseline Model
+  /** Parses provided pMML file as an Naive Bayes Model
     *
     * @param pMML a valid pMML file
-    * @return NaiveBayesModelSchema
+    * @return NaiveBayesModel
     */
   def parseNaiveBayesModel(pMML: PMML): NaiveBayesModel = {
 
