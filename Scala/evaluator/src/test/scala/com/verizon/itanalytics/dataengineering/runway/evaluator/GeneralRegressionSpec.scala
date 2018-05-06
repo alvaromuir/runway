@@ -28,7 +28,7 @@ class GeneralRegressionSpec
   val model: Option[GeneralRegression] = pmmlModel.generalRegressionModel
 
   "the evaluator" should
-    "read Gaussian Process models" in {
+    "read General Regression models" in {
     val pMML: PMML = readPMML(new File(testModelPath))
     val miningFunction = "regression"
 

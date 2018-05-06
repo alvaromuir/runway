@@ -15,7 +15,8 @@ trait RegressionModel
     with ModelStats
     with ModelExplanation
     with Targets
-    with LocalTransformation {
+    with LocalTransformation
+    with ModelVerification {
 
   case class RegressionModel(
       extension: Option[Seq[Extension]] = None,
@@ -24,21 +25,22 @@ trait RegressionModel
       modelStats: Option[ModelStats] = None,
       modelExplanation: Option[ModelExplanation] = None,
       targets: Option[Iterable[Targets]] = None,
-      regressionTable: RegressionTable,
+      localTransformations: Option[LocalTransformation] = None,
+      regressionTable: Seq[RegressionTable],
       modelVerification: Option[ModelVerification] = None,
       modelName: Option[String] = None,
       functionName: String,
       algorithmName: Option[String] = None,
       modelType: Option[String] = None,
-      targteFieldName: Option[String] = None,
+      targetFieldName: Option[String] = None,
       normalizationMethod: Option[String] = None,
       isScorable: Option[Boolean])
 
   case class RegressionTable(
       extension: Option[Seq[Extension]] = None,
-      numericPredictor: Option[NumericPredictor] = None,
-      categoricalPredictor: Option[CategoricalPredictor] = None,
-      predictorTerm: Option[PredictorTerm] = None,
+      numericPredictor: Option[Seq[NumericPredictor]] = None,
+      categoricalPredictor: Option[Seq[CategoricalPredictor]] = None,
+      predictorTerm: Option[Seq[PredictorTerm]] = None,
       intercept: Double,
       targetCategory: Option[String] = None)
 

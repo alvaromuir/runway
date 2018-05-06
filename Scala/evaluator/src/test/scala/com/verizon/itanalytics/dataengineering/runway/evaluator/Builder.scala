@@ -17,7 +17,8 @@ trait Builder extends BeforeAndAfterEach {
     "clustering" -> s"$modelsSrcPath/single_audit_kmeans.xml",
     "gaussian" -> s"$modelsSrcPath/GaussianTest.xml",
     "generalRegression" -> s"$modelsSrcPath/IrisGeneralRegression.xml",
-    "naiveBayes" -> s"$modelsSrcPath/NaiveBayesTest.xml"
+    "naiveBayes" -> s"$modelsSrcPath/NaiveBayesTest.xml",
+    "regression" -> s"$modelsSrcPath/single_audit_logreg.xml"
   )
 
   val dataSrcPath = "./evaluator/src/test/resources/data"
@@ -26,7 +27,8 @@ trait Builder extends BeforeAndAfterEach {
     "bayesianNetwork" -> s"$dataSrcPath/ALARM10k.csv",
     "clustering" -> s"$dataSrcPath/Audit.csv",
     "gaussian" -> s"$dataSrcPath/GaussianTest.csv",
-    "generalRegression" -> s"$dataSrcPath/Iris.csv"
+    "generalRegression" -> s"$dataSrcPath/Iris.csv",
+    "regression" -> s"$dataSrcPath/Audit.csv"
   )
 
   override def beforeEach() {
