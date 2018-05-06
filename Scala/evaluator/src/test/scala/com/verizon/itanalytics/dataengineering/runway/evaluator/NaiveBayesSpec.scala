@@ -1,17 +1,16 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator
 
-/*
- * Project: Runway
- * Alvaro Muir, Verizon IT Analytics: Data Engineering
- * 05 05, 2018
- */
-
 import java.io.File
 
 import org.dmg.pmml.{Model, PMML}
 import org.jpmml.evaluator.ModelEvaluator
 import org.scalatest.FlatSpec
 
+/*
+ * Project: Runway
+ * Alvaro Muir, Verizon IT Analytics: Data Engineering
+ * 05 05, 2018
+ */
 
 class NaiveBayesSpec
     extends FlatSpec

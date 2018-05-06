@@ -1,17 +1,16 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator
 
-/*
-* Project: Runway
-* Alvaro Muir, Verizon IT Analytics: Data Engineering
-* 04 27, 2018
-*/
-
 import java.io.File
 
 import org.dmg.pmml.PMML
 import org.jpmml.evaluator.UnsupportedElementException
 import org.scalatest.FlatSpec
 
+/*
+* Project: Runway
+* Alvaro Muir, Verizon IT Analytics: Data Engineering
+* 04 27, 2018
+*/
 
 class GaussianProcessSpec
     extends FlatSpec

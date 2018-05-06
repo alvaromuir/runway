@@ -1,11 +1,5 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator
 
-/*
- * Project: Runway
- * Alvaro Muir, Verizon IT Analytics: Data Engineering
- * 04 25, 2018
- */
-
 import java.io.File
 
 import com.verizon.itanalytics.dataengineering.runway.evaluator.testutils.TestUtils
@@ -14,6 +8,12 @@ import org.jpmml.evaluator.ModelEvaluator
 import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._
+
+/*
+ * Project: Runway
+ * Alvaro Muir, Verizon IT Analytics: Data Engineering
+ * 04 25, 2018
+ */
 
 class AssociationRulesSpec
     extends FlatSpec

@@ -1,11 +1,5 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator
 
-/*
-* Project: Runway
-* Alvaro Muir, Verizon IT Analytics: Data Engineering
-* 05 06, 2018
-*/
-
 import java.io.File
 
 import scala.collection.JavaConverters._
@@ -13,6 +7,12 @@ import com.verizon.itanalytics.dataengineering.runway.evaluator.testutils.TestUt
 import org.dmg.pmml.{Model, PMML}
 import org.jpmml.evaluator.ModelEvaluator
 import org.scalatest.FlatSpec
+
+/*
+* Project: Runway
+* Alvaro Muir, Verizon IT Analytics: Data Engineering
+* 05 06, 2018
+*/
 
 class RegressionSpec extends FlatSpec
   with Builder

@@ -1,15 +1,15 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.models
 
+import com.verizon.itanalytics.dataengineering.runway.evaluator.models.elements.AssociationModel
+import org.dmg.pmml.PMML
+
+import scala.collection.JavaConverters._
+
 /*
  * Project: Runway
  * Alvaro Muir, Verizon IT Analytics: Data Engineering
  * 04 29, 2018
  */
-
-import com.verizon.itanalytics.dataengineering.runway.evaluator.models.elements.AssociationModel
-import org.dmg.pmml.PMML
-
-import scala.collection.JavaConverters._
 
 trait AssociationRules extends AssociationModel {
 

@@ -1,122 +1,130 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.models
 
-import com.verizon.itanalytics.dataengineering.runway.evaluator.models.elements.NaiveBayesModel
+import com.verizon.itanalytics.dataengineering.runway.evaluator.models.elements.NeuralNetworkModel
 import org.dmg.pmml.PMML
+
+import scala.collection.JavaConverters._
 
 /*
  * Project: Runway
  * Alvaro Muir, Verizon IT Analytics: Data Engineering
- * 05 05, 2018
+ * 05 06, 2018
  */
 
-import scala.collection.JavaConverters._
+trait NeuralNetwork extends NeuralNetworkModel {
 
-trait NaiveBayes extends NaiveBayesModel {
-
-  /** Parses provided pMML file as an Naive Bayes Model
+  /** Parses provided pMML file as an Neural Network Model
     *
     * @param pMML a valid pMML file
-    * @return NaiveBayesModel
+    * @return NeuralNetworkModel
     */
-  def parseNaiveBayesModel(pMML: PMML): NaiveBayesModel = {
-
-    val naiveBayesModel = pMML.getModels
+  def parseNeuralNetworkModel(pMML: PMML): NeuralNetworkModel = {
+    val neuralNetworkModel = pMML.getModels
       .get(0)
-      .asInstanceOf[org.dmg.pmml.naive_bayes.NaiveBayesModel]
+      .asInstanceOf[org.dmg.pmml.neural_network.NeuralNetwork]
 
-    NaiveBayesModel(
-      extension = naiveBayesModel.getExtensions match {
+    NeuralNetworkModel(
+      extension = neuralNetworkModel.getExtensions match {
         case null => None
         case _ =>
-          Option(naiveBayesModel.getExtensions.asScala.map { e =>
-            Extension(
-              extender = e.getExtender match {
-                case null => None
-                case _    => Option(e.getExtender)
-              },
-              name = e.getName match {
-                case null => None
-                case _    => Option(e.getName)
-              },
-              value = e.getValue match {
-                case null => None
-                case _    => Option(e.getValue)
-              },
-              content = e.getContent match {
-                case null => None
-                case _ => Option(e.getContent.asScala.map { _.toString })
-              }
-            )
+          Option(neuralNetworkModel.getExtensions.asScala.map {
+            e =>
+              Extension(
+                extender = e.getExtender match {
+                  case null => None
+                  case _    => Option(e.getExtender)
+                },
+                name = e.getName match {
+                  case null => None
+                  case _    => Option(e.getName)
+                },
+                value = e.getValue match {
+                  case null => None
+                  case _    => Option(e.getValue)
+                },
+                content = e.getContent match {
+                  case null => None
+                  case _    => Option(e.getContent.asScala.map { _.toString })
+                }
+              )
           })
       },
       miningSchema = MiningSchema(
-        miningFields = naiveBayesModel.getMiningSchema.getMiningFields match {
-          case null => None
-          case _ =>
-            Option(naiveBayesModel.getMiningSchema.getMiningFields.asScala.map {
-              f =>
-                MiningField(
-                  name = f.getName.getValue,
-                  usageType = f.getUsageType.value(),
-                  optype = f.getOpType match {
-                    case null => None
-                    case _    => Option(f.getOpType.value())
-                  },
-                  importance = f.getImportance match {
-                    case null => None
-                    case _    => Option(f.getImportance.toDouble)
-                  },
-                  outliers = f.getOutlierTreatment.value(),
-                  lowValue = f.getLowValue match {
-                    case null => None
-                    case _    => Option(f.getLowValue.toDouble)
-                  },
-                  highValue = f.getHighValue match {
-                    case null => None
-                    case _    => Option(f.getHighValue.toDouble)
-                  },
-                  missingValueReplacement = f.getMissingValueReplacement match {
-                    case null => None
-                    case _    => Option(f.getMissingValueReplacement)
-                  },
-                  missingValueTreatment = f.getMissingValueTreatment match {
-                    case null => None
-                    case _    => Option(f.getMissingValueTreatment.value())
-                  },
-                  invalidValueTreatment = f.getInvalidValueTreatment.value()
-                )
-            })
-        }),
-      output = naiveBayesModel.getOutput match {
+        miningFields =
+          neuralNetworkModel.getMiningSchema.getMiningFields match {
+            case null => None
+            case _ =>
+              Option(
+                neuralNetworkModel.getMiningSchema.getMiningFields.asScala.map {
+                  f =>
+                    MiningField(
+                      name = f.getName.getValue,
+                      usageType = f.getUsageType.value(),
+                      optype = f.getOpType match {
+                        case null => None
+                        case _    => Option(f.getOpType.value())
+                      },
+                      importance = f.getImportance match {
+                        case null => None
+                        case _    => Option(f.getImportance.toDouble)
+                      },
+                      outliers = f.getOutlierTreatment.value(),
+                      lowValue = f.getLowValue match {
+                        case null => None
+                        case _    => Option(f.getLowValue.toDouble)
+                      },
+                      highValue = f.getHighValue match {
+                        case null => None
+                        case _    => Option(f.getHighValue.toDouble)
+                      },
+                      missingValueReplacement =
+                        f.getMissingValueReplacement match {
+                          case null => None
+                          case _    => Option(f.getMissingValueReplacement)
+                        },
+                      missingValueTreatment = f.getMissingValueTreatment match {
+                        case null => None
+                        case _    => Option(f.getMissingValueTreatment.value())
+                      },
+                      invalidValueTreatment = f.getInvalidValueTreatment.value()
+                    )
+                })
+          }),
+      output = neuralNetworkModel.getOutput match {
         case null => None
         case _ =>
           Option(
             Output(
-              extension = naiveBayesModel.getOutput .getExtensions match {
+              extension = neuralNetworkModel.getOutput.getExtensions match {
                 case null => None
                 case _ =>
-                  Option(naiveBayesModel.getOutput .getExtensions.asScala.map { e =>
-                    Extension(
-                      extender = e.getExtender match {
-                        case null => None
-                        case _    => Option(e.getExtender)
-                      },
-                      name = e.getName match {
-                        case null => None
-                        case _    => Option(e.getName)
-                      },
-                      value = e.getValue match {
-                        case null => None
-                        case _    => Option(e.getValue)
-                      },
-                      content = e.getContent match {
-                        case null => None
-                        case _ => Option(e.getContent.asScala.map { c => c.toString })
-                      }
-                    )
-                  })
+                  Option(
+                    neuralNetworkModel.getOutput.getExtensions.asScala.map {
+                      e =>
+                        Extension(
+                          extender = e.getExtender match {
+                            case null => None
+                            case _    => Option(e.getExtender)
+                          },
+                          name = e.getName match {
+                            case null => None
+                            case _    => Option(e.getName)
+                          },
+                          value = e.getValue match {
+                            case null => None
+                            case _    => Option(e.getValue)
+                          },
+                          content = e.getContent match {
+                            case null => None
+                            case _ =>
+                              Option(e.getContent.asScala.map { c =>
+                                c.toString
+                              })
+                          }
+                        )
+                    })
               },
-              outputField = naiveBayesModel.getOutput.getOutputFields.asScala
+              outputField = neuralNetworkModel.getOutput.getOutputFields.asScala
                 .map {
                   o =>
                     OutputField(
@@ -138,17 +146,17 @@ trait NaiveBayes extends NaiveBayesModel {
                 }
             ))
       },
-      modelStats = naiveBayesModel.getModelStats match {
+      modelStats = neuralNetworkModel.getModelStats match {
         case null => None
         case _ =>
           Option(
             ModelStats(
               univariateStats =
-                naiveBayesModel.getModelStats.getUnivariateStats match {
+                neuralNetworkModel.getModelStats.getUnivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      naiveBayesModel.getModelStats.getUnivariateStats.asScala
+                      neuralNetworkModel.getModelStats.getUnivariateStats.asScala
                         .map {
                           u =>
                             UnivariateStats(
@@ -262,11 +270,11 @@ trait NaiveBayes extends NaiveBayesModel {
                         })
                 },
               multivariateStats =
-                naiveBayesModel.getModelStats.getMultivariateStats match {
+                neuralNetworkModel.getModelStats.getMultivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      naiveBayesModel.getModelStats.getMultivariateStats.asScala
+                      neuralNetworkModel.getModelStats.getMultivariateStats.asScala
                         .map {
                           m =>
                             MultivariateStats(
@@ -351,17 +359,17 @@ trait NaiveBayes extends NaiveBayesModel {
                 }
             ))
       },
-      modelExplanation = naiveBayesModel.getModelExplanation match {
+      modelExplanation = neuralNetworkModel.getModelExplanation match {
         case null => None
         case _ =>
           Option(
             ModelExplanation(
               extension =
-                naiveBayesModel.getModelExplanation.getExtensions match {
+                neuralNetworkModel.getModelExplanation.getExtensions match {
                   case null => None
                   case _ =>
                     Option(
-                      naiveBayesModel.getModelExplanation.getExtensions.asScala
+                      neuralNetworkModel.getModelExplanation.getExtensions.asScala
                         .map { e =>
                           Extension(
                             extender = e.getExtender match {
@@ -380,17 +388,17 @@ trait NaiveBayes extends NaiveBayesModel {
                         })
                 },
               correlations =
-                naiveBayesModel.getModelExplanation.getCorrelations match {
+                neuralNetworkModel.getModelExplanation.getCorrelations match {
                   case null => None
                   case _ =>
                     Option(
                       Correlations(
                         extension =
-                          naiveBayesModel.getModelExplanation.getCorrelations.getExtensions match {
+                          neuralNetworkModel.getModelExplanation.getCorrelations.getExtensions match {
                             case null => None
                             case _ =>
                               Option(
-                                naiveBayesModel.getModelExplanation.getCorrelations.getExtensions.asScala
+                                neuralNetworkModel.getModelExplanation.getCorrelations.getExtensions.asScala
                                   .map { e =>
                                     Extension(
                                       extender = e.getExtender match {
@@ -410,16 +418,16 @@ trait NaiveBayes extends NaiveBayesModel {
                           },
                         correlationFields = Array(
                           n =
-                            naiveBayesModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
+                            neuralNetworkModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
                           `type` =
-                            naiveBayesModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType
+                            neuralNetworkModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType
                               .value(),
                           value =
-                            naiveBayesModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
+                            neuralNetworkModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
                         ),
                         correlationValues = {
                           val mtx =
-                            naiveBayesModel.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
+                            neuralNetworkModel.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
                           Matrix(
                             matCell = mtx.getMatCells match {
                               case null => None
@@ -450,11 +458,11 @@ trait NaiveBayes extends NaiveBayesModel {
                           )
                         },
                         correlationMethods =
-                          naiveBayesModel.getModelExplanation.getCorrelations.getCorrelationMethods match {
+                          neuralNetworkModel.getModelExplanation.getCorrelations.getCorrelationMethods match {
                             case null => None
                             case _ =>
                               val mtx =
-                                naiveBayesModel.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
+                                neuralNetworkModel.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
                               Option(
                                 Matrix(
                                   matCell = mtx.getMatCells match {
@@ -488,11 +496,11 @@ trait NaiveBayes extends NaiveBayesModel {
                       ))
                 },
               predictiveModelQualities =
-                naiveBayesModel.getModelExplanation.getPredictiveModelQualities match {
+                neuralNetworkModel.getModelExplanation.getPredictiveModelQualities match {
                   case null => None
                   case _ =>
                     Option(
-                      naiveBayesModel.getModelExplanation.getPredictiveModelQualities.asScala
+                      neuralNetworkModel.getModelExplanation.getPredictiveModelQualities.asScala
                         .map {
                           pmq =>
                             PredictiveModelQuality(
@@ -551,7 +559,7 @@ trait NaiveBayes extends NaiveBayesModel {
                                                 case null => None
                                                 case _ =>
                                                   Option(
-                                                    naiveBayesModel.getModelExplanation.getExtensions.asScala
+                                                    neuralNetworkModel.getModelExplanation.getExtensions.asScala
                                                       .map { e =>
                                                         Extension(
                                                           extender =
@@ -1097,11 +1105,11 @@ trait NaiveBayes extends NaiveBayesModel {
                         })
                 },
               clusteringModelQualities =
-                naiveBayesModel.getModelExplanation.getClusteringModelQualities match {
+                neuralNetworkModel.getModelExplanation.getClusteringModelQualities match {
                   case null => None
                   case _ =>
                     Option(
-                      naiveBayesModel.getModelExplanation.getClusteringModelQualities.asScala
+                      neuralNetworkModel.getModelExplanation.getClusteringModelQualities.asScala
                         .map {
                           cmq =>
                             ClusteringModelQuality(
@@ -1122,10 +1130,10 @@ trait NaiveBayes extends NaiveBayesModel {
                 }
             ))
       },
-      targets = naiveBayesModel.getTargets match {
+      targets = neuralNetworkModel.getTargets match {
         case null => None
         case _ =>
-          Option(naiveBayesModel.getTargets.asScala.map {
+          Option(neuralNetworkModel.getTargets.asScala.map {
             t =>
               Targets(
                 field = t.getField match {
@@ -1154,186 +1162,17 @@ trait NaiveBayes extends NaiveBayesModel {
               )
           })
       },
-      bayesInputs = naiveBayesModel.getBayesInputs.asScala.map { i =>
-        BayesInput(
-          extension = i.getExtensions match {
-            case null => None
-            case _ =>
-              Option(i.getExtensions.asScala.map { e =>
-                Extension(
-                  extender = e.getExtender match {
-                    case null => None
-                    case _    => Option(e.getExtender)
-                  },
-                  name = e.getName match {
-                    case null => None
-                    case _    => Option(e.getName)
-                  },
-                  value = e.getValue match {
-                    case null => None
-                    case _    => Option(e.getValue)
-                  }
-                )
-              })
-          },
-          targetValueStats = i.getTargetValueStats.asScala.map {
-            t =>
-              TargetValueStat(
-                extension = t.getExtensions match {
-                  case null => None
-                  case _ =>
-                    Option(t.getExtensions.asScala.map { e =>
-                      Extension(
-                        extender = e.getExtender match {
-                          case null => None
-                          case _    => Option(e.getExtender)
-                        },
-                        name = e.getName match {
-                          case null => None
-                          case _    => Option(e.getName)
-                        },
-                        value = e.getValue match {
-                          case null => None
-                          case _    => Option(e.getValue)
-                        }
-                      )
-                    })
-                },
-                continuousDistributionType =
-                  t.getContinuousDistribution.toString,
-                value = t.getValue
-              )
-          },
-          derivedField = i.getDerivedField match {
-            case null => None
-            case _ =>
-              Option(
-                DerivedField(
-                  name = i.getDerivedField.getName match {
-                    case null => None
-                    case _ => Option(i.getDerivedField.getName.getValue)
-                  },
-                  displayName = i.getDerivedField.getDisplayName,
-                  optype = i.getDerivedField.getOpType.value(),
-                  dataType = i.getDerivedField.getDataType.value(),
-                  intervals = i.getDerivedField.getIntervals match {
-                    case null => None
-                    case _ => Option(i.getDerivedField.getIntervals.asScala.map {
-                      i => Interval(
-                        closure = i.getClosure.value(),
-                        leftMargin = i.getLeftMargin match {
-                          case null => None
-                          case _ => Option(i.getLeftMargin.toDouble)
-                        },
-                        rightMargin = i.getRightMargin match {
-                          case null => None
-                          case _ => Option(i.getRightMargin.toDouble)
-                        }
-                      )
-                    })
-                  },
-                  values = i.getDerivedField.getValues match {
-                    case null => None
-                    case _ => Option(i.getDerivedField.getValues.asScala.map {
-                      v => v.toString
-                    })
-                  }
-                ))
-          },
-          pairCounts = i.getPairCounts.asScala.map { p =>
-            PairCount(
-              targetValueCounts = p.getTargetValueCounts.asScala.map {
-                c =>
-                  TargetValueCount(
-                    extension = c.getExtensions match {
-                      case null => None
-                      case _ =>
-                        Option(c.getExtensions.asScala.map { e =>
-                          Extension(
-                            extender = e.getExtender match {
-                              case null => None
-                              case _    => Option(e.getExtender)
-                            },
-                            name = e.getName match {
-                              case null => None
-                              case _    => Option(e.getName)
-                            },
-                            value = e.getValue match {
-                              case null => None
-                              case _    => Option(e.getValue)
-                            }
-                          )
-                        })
-                    },
-                    value = c.getValue,
-                    count = c.getCount
-                  )
-              },
-              value = p.getValue
-            )
-          },
-          fieldName = i.getField.getValue
-        )
-      },
-      bayesOutput = BayesOutput(
-        extension = naiveBayesModel.getBayesOutput.getExtensions match {
-          case null => None
-          case _ =>
-            Option(naiveBayesModel.getBayesOutput.getExtensions.asScala.map { e =>
-              Extension(
-                extender = e.getExtender match {
-                  case null => None
-                  case _    => Option(e.getExtender)
-                },
-                name = e.getName match {
-                  case null => None
-                  case _    => Option(e.getName)
-                },
-                value = e.getValue match {
-                  case null => None
-                  case _    => Option(e.getValue)
-                }
-              )
-            })
-        },
-        targetValueCounts = naiveBayesModel.getBayesOutput.getTargetValueCounts.asScala.map {
-          c => TargetValueCount(
-            extension = c.getExtensions match {
-              case null => None
-              case _ =>
-                Option(c.getExtensions.asScala.map { e =>
-                  Extension(
-                    extender = e.getExtender match {
-                      case null => None
-                      case _    => Option(e.getExtender)
-                    },
-                    name = e.getName match {
-                      case null => None
-                      case _    => Option(e.getName)
-                    },
-                    value = e.getValue match {
-                      case null => None
-                      case _    => Option(e.getValue)
-                    }
-                  )
-                })
-            },
-            value = c.getValue,
-            count = c.getCount
-          )
-        }
-      ),
-      localTransformations = naiveBayesModel.getLocalTransformations match {
+      localTransformations = neuralNetworkModel.getLocalTransformations match {
         case null => None
         case _ =>
           Option(
             LocalTransformation(
               extension =
-                naiveBayesModel.getLocalTransformations.getExtensions match {
+                neuralNetworkModel.getLocalTransformations.getExtensions match {
                   case null => None
                   case _ =>
                     Option(
-                      naiveBayesModel.getLocalTransformations.getExtensions.asScala
+                      neuralNetworkModel.getLocalTransformations.getExtensions.asScala
                         .map { e =>
                           Extension(
                             extender = e.getExtender match {
@@ -1352,11 +1191,11 @@ trait NaiveBayes extends NaiveBayesModel {
                         })
                 },
               derivedFields =
-                naiveBayesModel.getLocalTransformations.getDerivedFields match {
+                neuralNetworkModel.getLocalTransformations.getDerivedFields match {
                   case null => None
                   case _ =>
                     Option(
-                      naiveBayesModel.getLocalTransformations.getDerivedFields.asScala
+                      neuralNetworkModel.getLocalTransformations.getDerivedFields.asScala
                         .map { d =>
                           DerivedField(
                             name = d.getName match {
@@ -1371,10 +1210,274 @@ trait NaiveBayes extends NaiveBayesModel {
                 }
             ))
       },
-      modelVerification = naiveBayesModel.getModelVerification match {
+      neuralInputs = NeuralInputs(
+        extension = neuralNetworkModel.getNeuralInputs.getExtensions match {
         case null => None
         case _ =>
-          val v = naiveBayesModel.getModelVerification
+          Option(neuralNetworkModel.getNeuralInputs.getExtensions.asScala.map {
+            e =>
+              Extension(
+                extender = e.getExtender match {
+                  case null => None
+                  case _    => Option(e.getExtender)
+                },
+                name = e.getName match {
+                  case null => None
+                  case _    => Option(e.getName)
+                },
+                value = e.getValue match {
+                  case null => None
+                  case _    => Option(e.getValue)
+                },
+                content = e.getContent match {
+                  case null => None
+                  case _    => Option(e.getContent.asScala.map { _.toString })
+                }
+              )
+          })
+      },
+        numberOfInputs = neuralNetworkModel.getNeuralInputs.asScala.size,
+        neuralInput = neuralNetworkModel.getNeuralInputs.asScala.map {
+          n => NeuralInput(
+            extension = n.getExtensions match {
+              case null => None
+              case _ =>
+                Option(n.getExtensions.asScala.map {
+                  e =>
+                    Extension(
+                      extender = e.getExtender match {
+                        case null => None
+                        case _    => Option(e.getExtender)
+                      },
+                      name = e.getName match {
+                        case null => None
+                        case _    => Option(e.getName)
+                      },
+                      value = e.getValue match {
+                        case null => None
+                        case _    => Option(e.getValue)
+                      },
+                      content = e.getContent match {
+                        case null => None
+                        case _    => Option(e.getContent.asScala.map { _.toString })
+                      }
+                    )
+                })
+            },
+            derivedField = DerivedField(
+              name = n.getDerivedField.getName match {
+                case null => None
+                case _ => Option(n.getDerivedField.getName.getValue)
+              },
+              displayName = n.getDerivedField.getDisplayName,
+              optype = n.getDerivedField.getOpType.value(),
+              dataType = n.getDerivedField.getDataType.value(),
+              intervals = n.getDerivedField.getIntervals match {
+                case null => None
+                case _ => Option(n.getDerivedField.getIntervals.asScala.map {
+                  i => Interval(
+                    closure = i.getClosure.value(),
+                    leftMargin = i.getLeftMargin match {
+                      case null => None
+                      case _ => Option(i.getLeftMargin.toDouble)
+                    },
+                    rightMargin = i.getRightMargin match {
+                      case null => None
+                      case _ => Option(i.getRightMargin.toDouble)
+                    }
+                  )
+                })
+              },
+              values = n.getDerivedField.getValues match {
+                case null => None
+                case _ => Option(n.getDerivedField.getValues.asScala.map { _.toString })
+              }
+            ),
+            id = n.getId
+          )
+        }
+      ),
+      neuralLayer = neuralNetworkModel.getNeuralLayers.asScala.map {
+        l => NeuralLayer(extension = l.getExtensions match {
+          case null => None
+          case _ =>
+            Option(l.getExtensions.asScala.map {
+              e =>
+                Extension(
+                  extender = e.getExtender match {
+                    case null => None
+                    case _    => Option(e.getExtender)
+                  },
+                  name = e.getName match {
+                    case null => None
+                    case _    => Option(e.getName)
+                  },
+                  value = e.getValue match {
+                    case null => None
+                    case _    => Option(e.getValue)
+                  },
+                  content = e.getContent match {
+                    case null => None
+                    case _    => Option(e.getContent.asScala.map { _.toString })
+                  }
+                )
+            })
+        },
+          neurons = l.getNeurons.asScala.map {
+            n => Neuron(
+              extension = n.getExtensions match {
+                case null => None
+                case _ =>
+                  Option(n.getExtensions.asScala.map {
+                    e =>
+                      Extension(
+                        extender = e.getExtender match {
+                          case null => None
+                          case _    => Option(e.getExtender)
+                        },
+                        name = e.getName match {
+                          case null => None
+                          case _    => Option(e.getName)
+                        },
+                        value = e.getValue match {
+                          case null => None
+                          case _    => Option(e.getValue)
+                        },
+                        content = e.getContent match {
+                          case null => None
+                          case _    => Option(e.getContent.asScala.map { _.toString })
+                        }
+                      )
+                  })
+              },
+              id = n.getId,
+              bias = n.getBias match {
+                case null => None
+                case _ => Option(n.getBias.toDouble)
+              },
+              width = n.getWidth match {
+                case null => None
+                case _ => Option(n.getWidth.toDouble)
+              },
+              altitude = n.getAltitude match {
+                case null => None
+                case _ => Option(n.getAltitude.toDouble)
+              }
+            )
+          },
+          activationFunction = l.getActivationFunction match {
+            case null => None
+            case _ => Option(l.getActivationFunction.value())
+          },
+          threshold = l.getThreshold match {
+            case null => None
+            case _ => Option(l.getThreshold.toDouble)
+          },
+              width = l.getWidth match {
+                case null => None
+                case _ => Option(l.getWidth.toDouble)
+              },
+        altitude = l.getAltitude match {
+          case null => None
+          case _ => Option(l.getAltitude.toDouble)
+        },
+        normalizationMethod = l.getNormalizationMethod match {
+          case null => None
+          case _ => Option(l.getNormalizationMethod.value())
+        }
+        )
+      },
+      neuralOutputs = NeuralOutputs(
+        extension = neuralNetworkModel.getNeuralOutputs.getExtensions match {
+          case null => None
+          case _ =>
+            Option(neuralNetworkModel.getNeuralOutputs.getExtensions.asScala.map {
+              e =>
+                Extension(
+                  extender = e.getExtender match {
+                    case null => None
+                    case _    => Option(e.getExtender)
+                  },
+                  name = e.getName match {
+                    case null => None
+                    case _    => Option(e.getName)
+                  },
+                  value = e.getValue match {
+                    case null => None
+                    case _    => Option(e.getValue)
+                  },
+                  content = e.getContent match {
+                    case null => None
+                    case _    => Option(e.getContent.asScala.map { _.toString })
+                  }
+                )
+            })
+        },
+        numberOfOutputs = neuralNetworkModel.getNeuralOutputs.asScala.size,
+        neuralOutput = neuralNetworkModel.getNeuralOutputs.asScala.map {
+          n => NeuralOutput(
+            extension = n.getExtensions match {
+              case null => None
+              case _ =>
+                Option(n.getExtensions.asScala.map {
+                  e =>
+                    Extension(
+                      extender = e.getExtender match {
+                        case null => None
+                        case _    => Option(e.getExtender)
+                      },
+                      name = e.getName match {
+                        case null => None
+                        case _    => Option(e.getName)
+                      },
+                      value = e.getValue match {
+                        case null => None
+                        case _    => Option(e.getValue)
+                      },
+                      content = e.getContent match {
+                        case null => None
+                        case _    => Option(e.getContent.asScala.map { _.toString })
+                      }
+                    )
+                })
+            },
+            derivedField = DerivedField(
+              name = n.getDerivedField.getName match {
+                case null => None
+                case _ => Option(n.getDerivedField.getName.getValue)
+              },
+              displayName = n.getDerivedField.getDisplayName,
+              optype = n.getDerivedField.getOpType.value(),
+              dataType = n.getDerivedField.getDataType.value(),
+              intervals = n.getDerivedField.getIntervals match {
+                case null => None
+                case _ => Option(n.getDerivedField.getIntervals.asScala.map {
+                  i => Interval(
+                    closure = i.getClosure.value(),
+                    leftMargin = i.getLeftMargin match {
+                      case null => None
+                      case _ => Option(i.getLeftMargin.toDouble)
+                    },
+                    rightMargin = i.getRightMargin match {
+                      case null => None
+                      case _ => Option(i.getRightMargin.toDouble)
+                    }
+                  )
+                })
+              },
+              values = n.getDerivedField.getValues match {
+                case null => None
+                case _ => Option(n.getDerivedField.getValues.asScala.map { _.toString })
+              }
+            ),
+            outputNeuron = n.getOutputNeuron
+          )
+        }
+        ),
+      modelVerification = neuralNetworkModel.getModelVerification match {
+        case null => None
+        case _ =>
+          val v = neuralNetworkModel.getModelVerification
           Option(
             ModelVerification(
               recordCount = v.getRecordCount match {
@@ -1388,17 +1491,23 @@ trait NaiveBayes extends NaiveBayesModel {
               verificationFields = None
             ))
       },
-      modelName = naiveBayesModel.getModelName match {
+      modelName = neuralNetworkModel.getModelName match {
         case null => None
-        case _    => Option(naiveBayesModel.getModelName)
+        case _    => Option(neuralNetworkModel.getModelName)
       },
-      threshold = naiveBayesModel.getThreshold,
-      functionName = naiveBayesModel.getMiningFunction.value(),
-      algorithmName = naiveBayesModel.getAlgorithmName match {
+      functionName = neuralNetworkModel.getMiningFunction.value(),
+      algorithmName = neuralNetworkModel.getAlgorithmName match {
         case null => None
-        case _    => Option(naiveBayesModel.getAlgorithmName)
+        case _    => Option(neuralNetworkModel.getAlgorithmName)
       },
-      isScorable = Option(naiveBayesModel.isScorable)
+      activationFunction = neuralNetworkModel.getActivationFunction.value(),
+      normalizationMethod = neuralNetworkModel.getNormalizationMethod match {
+        case null => None
+        case _ => Option(neuralNetworkModel.getNormalizationMethod.value())
+      },
+      threshold = neuralNetworkModel.getThreshold.toDouble,
+      numberOfHiddenLayers = neuralNetworkModel.getNumberOfLayers.toInt,
+      isScorable = Option(neuralNetworkModel.isScorable)
     )
   }
 

@@ -1,9 +1,4 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator
-/*
-* Project: Runway
-* Alvaro Muir, Verizon IT Analytics: Data Engineering
-* 04 24, 2018
-*/
 
 import java.io.File
 
@@ -12,6 +7,12 @@ import org.jpmml.evaluator.ModelEvaluator
 import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._
+
+/*
+* Project: Runway
+* Alvaro Muir, Verizon IT Analytics: Data Engineering
+* 04 24, 2018
+*/
 
 class EvaluatorSpec
   extends FlatSpec

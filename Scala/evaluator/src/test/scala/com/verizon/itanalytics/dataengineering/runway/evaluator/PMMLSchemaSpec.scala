@@ -1,11 +1,5 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator
 
-/*
-* Project: Runway
-* Alvaro Muir, Verizon IT Analytics: Data Engineering
-* 04 24, 2018
-*/
-
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Locale}
@@ -14,6 +8,12 @@ import com.verizon.itanalytics.dataengineering.runway.evaluator.testutils.TestUt
 import org.dmg.pmml.{Model, PMML}
 import org.jpmml.evaluator.ModelEvaluator
 import org.scalatest.FlatSpec
+
+/*
+* Project: Runway
+* Alvaro Muir, Verizon IT Analytics: Data Engineering
+* 04 24, 2018
+*/
 
 class PMMLSchemaSpec
     extends FlatSpec

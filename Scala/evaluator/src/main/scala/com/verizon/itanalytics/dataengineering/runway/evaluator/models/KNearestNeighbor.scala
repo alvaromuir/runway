@@ -1,15 +1,15 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.models
 
+import com.verizon.itanalytics.dataengineering.runway.evaluator.models.elements.NearestNeighborModel
+import org.dmg.pmml.PMML
+
+import scala.collection.JavaConverters._
+
 /*
  * Project: Runway
  * Alvaro Muir, Verizon IT Analytics: Data Engineering
  * 05 05, 2018
  */
-
-import com.verizon.itanalytics.dataengineering.runway.evaluator.models.elements.NearestNeighborModel
-import org.dmg.pmml.PMML
-
-import scala.collection.JavaConverters._
 
 trait KNearestNeighbor extends NearestNeighborModel {
 

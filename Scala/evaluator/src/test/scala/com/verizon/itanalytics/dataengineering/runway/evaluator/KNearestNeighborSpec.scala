@@ -1,12 +1,12 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator
 
+import org.scalatest.FlatSpec
+
 /*
 * Project: Runway
 * Alvaro Muir, Verizon IT Analytics: Data Engineering
 * 05 05, 2018
 */
-
-import org.scalatest.FlatSpec
 
 class KNearestNeighborSpec
   extends FlatSpec {
