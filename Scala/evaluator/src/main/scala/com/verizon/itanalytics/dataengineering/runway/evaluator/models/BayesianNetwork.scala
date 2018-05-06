@@ -40,6 +40,10 @@ trait BayesianNetwork extends BayesianNetworkModel {
               value = e.getValue match {
                 case null => None
                 case _    => Option(e.getValue)
+              },
+              content = e.getContent match {
+                case null => None
+                case _ => Option(e.getContent.asScala.map { _.toString })
               }
             )
           })
@@ -1006,6 +1010,10 @@ trait BayesianNetwork extends BayesianNetworkModel {
               value = e.getValue match {
                 case null => None
                 case _    => Option(e.getValue)
+              },
+              content = e.getContent match {
+                case null => None
+                case _ => Option(e.getContent.asScala.map { _.toString })
               }
             )
           })

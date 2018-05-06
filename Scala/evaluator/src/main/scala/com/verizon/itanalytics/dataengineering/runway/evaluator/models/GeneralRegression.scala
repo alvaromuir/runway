@@ -1,5 +1,11 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.models
 
+/*
+ * Project: Runway
+ * Alvaro Muir, Verizon IT Analytics: Data Engineering
+ * 04 25, 2018
+ */
+
 import com.verizon.itanalytics.dataengineering.runway.evaluator.models.elements.GeneralRegressionModel
 import org.dmg.pmml.PMML
 
@@ -34,6 +40,10 @@ trait GeneralRegression extends GeneralRegressionModel {
               value = e.getValue match {
                 case null => None
                 case _    => Option(e.getValue)
+              },
+              content = e.getContent match {
+                case null => None
+                case _ => Option(e.getContent.asScala.map { _.toString })
               }
             )
           })

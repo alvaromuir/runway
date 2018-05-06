@@ -41,6 +41,10 @@ trait GaussianProcess extends GaussianProcessModel {
               value = e.getValue match {
                 case null => None
                 case _    => Option(e.getValue)
+              },
+              content = e.getContent match {
+                case null => None
+                case _ => Option(e.getContent.asScala.map { _.toString })
               }
             )
           })
@@ -990,40 +994,183 @@ trait GaussianProcess extends GaussianProcessModel {
           }
         ))
       },
-      radialBasisKernel = None,
-      aRDSquaredExponentialKernel = None,
-      absoluteExponentialKernel = None,
-      generalizedExponentialKernel = None,
-      trainingInstances = TrainingInstances(
-        isTransformed = gaussianProcessModel.getTrainingInstances.isTransformed,
-        recordCount = gaussianProcessModel.getTrainingInstances.getRecordCount match {
-          case null => None
-          case _ => Option(gaussianProcessModel.getTrainingInstances.getRecordCount.toInt)
-        },
-        fieldCount = gaussianProcessModel.getTrainingInstances.getFieldCount match {
-          case null => None
-          case _ => Option(gaussianProcessModel.getTrainingInstances.getFieldCount.toInt)
-        },
-        instanceFields = gaussianProcessModel.getTrainingInstances.getInstanceFields match {
-          case null => None
-          case _ => Option(gaussianProcessModel.getTrainingInstances.getInstanceFields.asScala.map {
-            f => InstanceField(
-              field = f.getField.getValue,
-              key = Option(f.getKey.getValue),
-              column = Option(f.getColumn)
-            )
-          })
-        },
-        tableLocator = gaussianProcessModel.getTrainingInstances.getTableLocator match {
-          case null => None
-          case _ => Option(gaussianProcessModel.getTrainingInstances.getTableLocator.toString) // not sure what this is
-        },
-        inlineTables = gaussianProcessModel.getTrainingInstances.getInlineTable match {
-          case null => None
-          case _ => Option(gaussianProcessModel.getTrainingInstances.getInlineTable.getRows.asScala.map(r =>
-            Row(row = r.toString)))
-        }
-      ),
+      radialBasisKernel = gaussianProcessModel.getRadialBasisKernel match {
+        case null => None
+        case _ => Option(RadialBasisKernel(
+          extension = gaussianProcessModel.getRadialBasisKernel.getExtensions match {
+            case null => None
+            case _ =>
+              Option(gaussianProcessModel.getRadialBasisKernel.getExtensions.asScala.map { e =>
+                Extension(
+                  extender = e.getExtender match {
+                    case null => None
+                    case _    => Option(e.getExtender)
+                  },
+                  name = e.getName match {
+                    case null => None
+                    case _    => Option(e.getName)
+                  },
+                  value = e.getValue match {
+                    case null => None
+                    case _    => Option(e.getValue)
+                  }
+                )
+              })
+          },
+          description = gaussianProcessModel.getRadialBasisKernel.getDescription match {
+            case null => None
+            case _ => Option(gaussianProcessModel.getRadialBasisKernel.getDescription)
+          },
+          gamma = gaussianProcessModel.getRadialBasisKernel.getGamma.toDouble,
+          noiseVariance = gaussianProcessModel.getRadialBasisKernel.getNoiseVariance.toDouble,
+          lambda = gaussianProcessModel.getRadialBasisKernel.getLambda.toDouble
+        ))
+      },
+      aRDSquaredExponentialKernel = gaussianProcessModel.getARDSquaredExponentialKernel match {
+        case null => None
+        case _ => Option(ARDSquaredExponentialKernel(
+          extension = gaussianProcessModel.getARDSquaredExponentialKernel.getExtensions match {
+            case null => None
+            case _ =>
+              Option(gaussianProcessModel.getARDSquaredExponentialKernel.getExtensions.asScala.map { e =>
+                Extension(
+                  extender = e.getExtender match {
+                    case null => None
+                    case _    => Option(e.getExtender)
+                  },
+                  name = e.getName match {
+                    case null => None
+                    case _    => Option(e.getName)
+                  },
+                  value = e.getValue match {
+                    case null => None
+                    case _    => Option(e.getValue)
+                  }
+                )
+              })
+          },
+          lambda = gaussianProcessModel.getARDSquaredExponentialKernel.getLambdas match {
+            case null => None
+            case _ => Option(gaussianProcessModel.getARDSquaredExponentialKernel.getLambdas.asScala.map {
+              l => Lambda(n = l.getArray.getN.intValue(), `type` = l.getArray.getType.value(), value = l.getArray.getValue)
+            })
+          },
+          description = gaussianProcessModel.getARDSquaredExponentialKernel.getDescription match {
+            case null => None
+            case _ => Option(gaussianProcessModel.getRadialBasisKernel.getDescription)
+          },
+          gamma = gaussianProcessModel.getARDSquaredExponentialKernel.getGamma.toDouble,
+          noiseVariance = gaussianProcessModel.getARDSquaredExponentialKernel.getNoiseVariance.toDouble
+        ))
+      },
+      absoluteExponentialKernel = gaussianProcessModel.getAbsoluteExponentialKernel match {
+        case null => None
+        case _ => Option(AbsoluteExponentialKernel(
+          extension = gaussianProcessModel.getAbsoluteExponentialKernel.getExtensions match {
+            case null => None
+            case _ =>
+              Option(gaussianProcessModel.getARDSquaredExponentialKernel.getExtensions.asScala.map { e =>
+                Extension(
+                  extender = e.getExtender match {
+                    case null => None
+                    case _    => Option(e.getExtender)
+                  },
+                  name = e.getName match {
+                    case null => None
+                    case _    => Option(e.getName)
+                  },
+                  value = e.getValue match {
+                    case null => None
+                    case _    => Option(e.getValue)
+                  }
+                )
+              })
+          },
+          lambda = gaussianProcessModel.getAbsoluteExponentialKernel.getLambdas match {
+            case null => None
+            case _ => Option(gaussianProcessModel.getAbsoluteExponentialKernel.getLambdas.asScala.map {
+              l => Lambda(n = l.getArray.getN.intValue(), `type` = l.getArray.getType.value(), value = l.getArray.getValue)
+            })
+          },
+          description = gaussianProcessModel.getAbsoluteExponentialKernel.getDescription match {
+            case null => None
+            case _ => Option(gaussianProcessModel.getRadialBasisKernel.getDescription)
+          },
+          gamma = gaussianProcessModel.getAbsoluteExponentialKernel.getGamma.toDouble,
+          noiseVariance = gaussianProcessModel.getAbsoluteExponentialKernel.getNoiseVariance.toDouble
+        ))
+      },
+      generalizedExponentialKernel = gaussianProcessModel.getGeneralizedExponentialKernel match {
+        case null => None
+        case _ => Option(GeneralizedExponentialKernel(
+          extension = gaussianProcessModel.getGeneralizedExponentialKernel .getExtensions match {
+            case null => None
+            case _ =>
+              Option(gaussianProcessModel.getARDSquaredExponentialKernel.getExtensions.asScala.map { e =>
+                Extension(
+                  extender = e.getExtender match {
+                    case null => None
+                    case _    => Option(e.getExtender)
+                  },
+                  name = e.getName match {
+                    case null => None
+                    case _    => Option(e.getName)
+                  },
+                  value = e.getValue match {
+                    case null => None
+                    case _    => Option(e.getValue)
+                  }
+                )
+              })
+          },
+          lambda = gaussianProcessModel.getGeneralizedExponentialKernel .getLambdas match {
+            case null => None
+            case _ => Option(gaussianProcessModel.getGeneralizedExponentialKernel .getLambdas.asScala.map {
+              l => Lambda(n = l.getArray.getN.intValue(), `type` = l.getArray.getType.value(), value = l.getArray.getValue)
+            })
+          },
+          description = gaussianProcessModel.getGeneralizedExponentialKernel .getDescription match {
+            case null => None
+            case _ => Option(gaussianProcessModel.getRadialBasisKernel.getDescription)
+          },
+          gamma = gaussianProcessModel.getGeneralizedExponentialKernel .getGamma.toDouble,
+          noiseVariance = gaussianProcessModel.getGeneralizedExponentialKernel .getNoiseVariance.toDouble,
+          degree = gaussianProcessModel.getGeneralizedExponentialKernel.getDegree.toDouble
+        ))
+      },
+      trainingInstances = gaussianProcessModel.getTrainingInstances match {
+        case null => None
+        case _ => Option(TrainingInstances(
+          isTransformed = gaussianProcessModel.getTrainingInstances.isTransformed,
+          recordCount = gaussianProcessModel.getTrainingInstances.getRecordCount match {
+            case null => None
+            case _ => Option(gaussianProcessModel.getTrainingInstances.getRecordCount.toInt)
+          },
+          fieldCount = gaussianProcessModel.getTrainingInstances.getFieldCount match {
+            case null => None
+            case _ => Option(gaussianProcessModel.getTrainingInstances.getFieldCount.toInt)
+          },
+          instanceFields = gaussianProcessModel.getTrainingInstances.getInstanceFields match {
+            case null => None
+            case _ => Option(gaussianProcessModel.getTrainingInstances.getInstanceFields.asScala.map {
+              f => InstanceField(
+                field = f.getField.getValue,
+                key = Option(f.getKey.getValue),
+                column = Option(f.getColumn)
+              )
+            })
+          },
+          tableLocator = gaussianProcessModel.getTrainingInstances.getTableLocator match {
+            case null => None
+            case _ => Option(gaussianProcessModel.getTrainingInstances.getTableLocator.toString) // not sure what this is
+          },
+          inlineTables = gaussianProcessModel.getTrainingInstances.getInlineTable match {
+            case null => None
+            case _ => Option(gaussianProcessModel.getTrainingInstances.getInlineTable.getRows.asScala.map(r =>
+              Row(row = r.toString)))
+          }
+        ))
+      },
       modelVerification = gaussianProcessModel.getModelVerification match {
         case null => None
         case _ =>

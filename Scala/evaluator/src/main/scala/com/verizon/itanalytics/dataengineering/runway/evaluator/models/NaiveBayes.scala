@@ -41,6 +41,10 @@ trait NaiveBayes extends NaiveBayesModel {
               value = e.getValue match {
                 case null => None
                 case _    => Option(e.getValue)
+              },
+              content = e.getContent match {
+                case null => None
+                case _ => Option(e.getContent.asScala.map { _.toString })
               }
             )
           })

@@ -389,6 +389,10 @@ trait ClusterModel extends ClusteringModel {
                           value = e.getValue match {
                             case null => None
                             case _    => Option(e.getValue)
+                          },
+                          content = e.getContent match {
+                            case null => None
+                            case _ => Option(e.getContent.asScala.map { _.toString })
                           }
                         )
                       })
@@ -935,26 +939,31 @@ trait ClusterModel extends ClusteringModel {
                       })
               }))
       },
-
       comparisonMeasure = ComparisonMeasure(
-        extension = clusteringModel.getComparisonMeasure.getExtensions match {
+        extension = clusteringModel.getExtensions match {
           case null => None
-          case _ => Option(clusteringModel.getComparisonMeasure.getExtensions.asScala.map {
-            e => Extension(
-              extender = e.getExtender match {
-                case null => None
-                case _ => Option(e.getExtender)
-              },
-              name = e.getName match {
-                case null => None
-                case _ => Option(e.getName)
-              },
-              value = e.getValue match {
-                case null => None
-                case _ => Option(e.getValue)
-              }
-            )
-          })
+          case _ =>
+            Option(
+              clusteringModel.getExtensions.asScala.map { e =>
+                Extension(
+                  extender = e.getExtender match {
+                    case null => None
+                    case _    => Option(e.getExtender)
+                  },
+                  name = e.getName match {
+                    case null => None
+                    case _    => Option(e.getName)
+                  },
+                  value = e.getValue match {
+                    case null => None
+                    case _    => Option(e.getValue)
+                  },
+                  content = e.getContent match {
+                    case null => None
+                    case _ => Option(e.getContent.asScala.map { _.toString })
+                  }
+                )
+              })
         },
         kind = clusteringModel.getComparisonMeasure.getKind.value(),
         compareFunction = clusteringModel.getComparisonMeasure.getCompareFunction.value(),
@@ -1126,7 +1135,6 @@ trait ClusterModel extends ClusteringModel {
               verificationFields = None
             ))
       },
-
       modelName = clusteringModel.getModelName match {
         case null => None
         case _    => Option(clusteringModel.getModelName)

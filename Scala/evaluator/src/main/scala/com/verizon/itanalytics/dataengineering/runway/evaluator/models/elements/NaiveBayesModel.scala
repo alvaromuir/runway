@@ -48,7 +48,8 @@ trait NaiveBayesModel
                              continuousDistributionType: String,
                              value: String)
 
-  case class PairCount(targetValueCounts: Iterable[TargetValueCount], value: String)
+  case class PairCount(targetValueCounts: Iterable[TargetValueCount],
+                       value: String)
 
   case class TargetValueCount(extension: Option[Seq[Extension]] = None,
                               value: String,

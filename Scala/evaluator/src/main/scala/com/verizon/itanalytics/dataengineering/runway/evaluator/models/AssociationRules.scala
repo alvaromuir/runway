@@ -40,6 +40,10 @@ trait AssociationRules extends AssociationModel {
               value = e.getValue match {
                 case null => None
                 case _    => Option(e.getValue)
+              },
+              content = e.getContent match {
+                case null => None
+                case _ => Option(e.getContent.asScala.map { _.toString })
               }
             )
           })
@@ -371,7 +375,6 @@ trait AssociationRules extends AssociationModel {
                       })
               }))
       },
-
       item = associationModel.getItems match {
         case null => None
         case _ =>
@@ -539,7 +542,6 @@ trait AssociationRules extends AssociationModel {
               verificationFields = None
             ))
       },
-
       modelName = associationModel.getModelName match {
         case null => None
         case _    => Option(associationModel.getModelName)

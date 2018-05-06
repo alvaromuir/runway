@@ -7,7 +7,6 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator
 
 import java.io.File
 
-import com.verizon.itanalytics.dataengineering.runway.evaluator.testutils.TestUtils
 import org.dmg.pmml.{Model, PMML}
 import org.jpmml.evaluator.ModelEvaluator
 import org.scalatest.FlatSpec
@@ -17,13 +16,12 @@ import scala.collection.JavaConverters._
 class EvaluatorSpec
   extends FlatSpec
     with Builder
-    with TestUtils
     with Evaluator {
 
   val testModelPath = mapModels("association")
   var pMML: PMML = readPMML(new File(testModelPath))
-  var evaluator: ModelEvaluator[_ <: Model] = null
-  var pmmlModel: PMMLSchema = null
+  var evaluator: ModelEvaluator[_ <: Model] = _
+  var pmmlModel: PMMLSchema = _
 
   "the evaluator" should
     "read files and return a valid PMML instance" in {

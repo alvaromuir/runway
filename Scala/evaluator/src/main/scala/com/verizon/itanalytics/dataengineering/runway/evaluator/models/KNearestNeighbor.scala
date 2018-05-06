@@ -1,154 +1,160 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.models
 
-import com.verizon.itanalytics.dataengineering.runway.evaluator.models.elements.MiningModel
+/*
+ * Project: Runway
+ * Alvaro Muir, Verizon IT Analytics: Data Engineering
+ * 05 05, 2018
+ */
+
+import com.verizon.itanalytics.dataengineering.runway.evaluator.models.elements.NearestNeighborModel
 import org.dmg.pmml.PMML
 
 import scala.collection.JavaConverters._
 
-/*
- * Project: Runway
- * Alvaro Muir, Verizon IT Analytics: Data Engineering
- * 04 30, 2018
- */
+trait KNearestNeighbor extends NearestNeighborModel {
 
-trait MiningModels extends MiningModel {
-
-  /** Parses provided pMML file as an Mining Model
-    *
-    * @param pMML a valid pMML file
-    * @return MiningModel Schema
-    */
-  def parseMiningModel(pMML: PMML): MiningModel = {
-
-    val miningModel = pMML.getModels
+  def parseNearestNeighborModel(pMML: PMML): KNearestNeighbor = {
+    val nearestNeighborModel = pMML
+      .getModels
       .get(0)
-      .asInstanceOf[org.dmg.pmml.mining.MiningModel]
+      .asInstanceOf[org.dmg.pmml.nearest_neighbor.NearestNeighborModel]
 
-    MiningModel(
-      extension = miningModel.getExtensions match {
+    KNearestNeighbor(
+      extension = nearestNeighborModel.getExtensions match {
         case null => None
         case _ =>
-          Option(miningModel.getExtensions.asScala.map { e =>
-            Extension(
-              extender = e.getExtender match {
-                case null => None
-                case _    => Option(e.getExtender)
-              },
-              name = e.getName match {
-                case null => None
-                case _    => Option(e.getName)
-              },
-              value = e.getValue match {
-                case null => None
-                case _    => Option(e.getValue)
-              },
-              content = e.getContent match {
-                case null => None
-                case _ => Option(e.getContent.asScala.map { _.toString })
-              }
-            )
+          Option(nearestNeighborModel.getExtensions.asScala.map {
+            e =>
+              Extension(
+                extender = e.getExtender match {
+                  case null => None
+                  case _    => Option(e.getExtender)
+                },
+                name = e.getName match {
+                  case null => None
+                  case _    => Option(e.getName)
+                },
+                value = e.getValue match {
+                  case null => None
+                  case _    => Option(e.getValue)
+                },
+                content = e.getContent match {
+                  case null => None
+                  case _ =>
+                    Option(e.getContent.asScala.map { c =>
+                      c.toString
+                    })
+                }
+              )
           })
       },
-      miningSchema = MiningSchema(
-        miningFields = miningModel.getMiningSchema.getMiningFields match {
+      miningSchema = MiningSchema(miningFields =
+        nearestNeighborModel.getMiningSchema.getMiningFields match {
           case null => None
           case _ =>
-            Option(miningModel.getMiningSchema.getMiningFields.asScala.map {
-              f =>
-                MiningField(
-                  name = f.getName.getValue,
-                  usageType = f.getUsageType.value(),
-                  optype = f.getOpType match {
-                    case null => None
-                    case _    => Option(f.getOpType.value())
-                  },
-                  importance = f.getImportance match {
-                    case null => None
-                    case _    => Option(f.getImportance.toDouble)
-                  },
-                  outliers = f.getOutlierTreatment.value(),
-                  lowValue = f.getLowValue match {
-                    case null => None
-                    case _    => Option(f.getLowValue.toDouble)
-                  },
-                  highValue = f.getHighValue match {
-                    case null => None
-                    case _    => Option(f.getHighValue.toDouble)
-                  },
-                  missingValueReplacement = f.getMissingValueReplacement match {
-                    case null => None
-                    case _    => Option(f.getMissingValueReplacement)
-                  },
-                  missingValueTreatment = f.getMissingValueTreatment match {
-                    case null => None
-                    case _    => Option(f.getMissingValueTreatment.value())
-                  },
-                  invalidValueTreatment = f.getInvalidValueTreatment.value()
-                )
-            })
+            Option(
+              nearestNeighborModel.getMiningSchema.getMiningFields.asScala.map {
+                f =>
+                  MiningField(
+                    name = f.getName.getValue,
+                    usageType = f.getUsageType.value(),
+                    optype = f.getOpType match {
+                      case null => None
+                      case _    => Option(f.getOpType.value())
+                    },
+                    importance = f.getImportance match {
+                      case null => None
+                      case _    => Option(f.getImportance.toDouble)
+                    },
+                    outliers = f.getOutlierTreatment.value(),
+                    lowValue = f.getLowValue match {
+                      case null => None
+                      case _    => Option(f.getLowValue.toDouble)
+                    },
+                    highValue = f.getHighValue match {
+                      case null => None
+                      case _    => Option(f.getHighValue.toDouble)
+                    },
+                    missingValueReplacement =
+                      f.getMissingValueReplacement match {
+                        case null => None
+                        case _    => Option(f.getMissingValueReplacement)
+                      },
+                    missingValueTreatment = f.getMissingValueTreatment match {
+                      case null => None
+                      case _    => Option(f.getMissingValueTreatment.value())
+                    },
+                    invalidValueTreatment = f.getInvalidValueTreatment.value()
+                  )
+              })
         }),
-      output = miningModel.getOutput match {
+      output = nearestNeighborModel.getOutput match {
         case null => None
         case _ =>
           Option(
             Output(
-              extension = miningModel.getExtensions match {
+              extension = nearestNeighborModel.getExtensions match {
                 case null => None
                 case _ =>
-                  Option(miningModel.getExtensions.asScala.map { e =>
-                    Extension(
-                      extender = e.getExtender match {
-                        case null => None
-                        case _    => Option(e.getExtender)
-                      },
-                      name = e.getName match {
-                        case null => None
-                        case _    => Option(e.getName)
-                      },
-                      value = e.getValue match {
-                        case null => None
-                        case _    => Option(e.getValue)
-                      },
-                      content = e.getContent match {
-                        case null => None
-                        case _ => Option(e.getContent.asScala.map { c => c.toString })
-                      }
-                    )
+                  Option(nearestNeighborModel.getExtensions.asScala.map {
+                    e =>
+                      Extension(
+                        extender = e.getExtender match {
+                          case null => None
+                          case _    => Option(e.getExtender)
+                        },
+                        name = e.getName match {
+                          case null => None
+                          case _    => Option(e.getName)
+                        },
+                        value = e.getValue match {
+                          case null => None
+                          case _    => Option(e.getValue)
+                        },
+                        content = e.getContent match {
+                          case null => None
+                          case _ =>
+                            Option(e.getContent.asScala.map { c =>
+                              c.toString
+                            })
+                        }
+                      )
                   })
               },
-              outputField = miningModel.getOutput.getOutputFields.asScala
-                .map {
-                  o =>
-                    OutputField(
-                      name = o.getName.getValue,
-                      displayName = Option(o.getDisplayName),
-                      optype = o.getOpType.value(),
-                      targetField = Option(o.getTargetField.getValue),
-                      feature = o.getResultFeature.value(),
-                      value = Option(o.getValue),
-                      ruleFeature = o.getRuleFeature.value(),
-                      algorithm = o.getAlgorithm.value(),
-                      rank = o.getRank.toInt,
-                      rankBasis = o.getRankBasis.value(),
-                      rankOrder = o.getRankOrder.value(),
-                      isMultiValued = o.getIsMultiValued,
-                      segmentId = Option(o.getSegmentId),
-                      isFinalResult = o.isFinalResult
-                    )
-                }
+              outputField =
+                nearestNeighborModel.getOutput.getOutputFields.asScala
+                  .map {
+                    o =>
+                      OutputField(
+                        name = o.getName.getValue,
+                        displayName = Option(o.getDisplayName),
+                        optype = o.getOpType.value(),
+                        targetField = Option(o.getTargetField.getValue),
+                        feature = o.getResultFeature.value(),
+                        value = Option(o.getValue),
+                        ruleFeature = o.getRuleFeature.value(),
+                        algorithm = o.getAlgorithm.value(),
+                        rank = o.getRank.toInt,
+                        rankBasis = o.getRankBasis.value(),
+                        rankOrder = o.getRankOrder.value(),
+                        isMultiValued = o.getIsMultiValued,
+                        segmentId = Option(o.getSegmentId),
+                        isFinalResult = o.isFinalResult
+                      )
+                  }
             ))
       },
-      modelStats = miningModel.getModelStats match {
+      modelStats = nearestNeighborModel.getModelStats match {
         case null => None
         case _ =>
           Option(
             ModelStats(
               univariateStats =
-                miningModel.getModelStats.getUnivariateStats match {
+                nearestNeighborModel.getModelStats.getUnivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      miningModel.getModelStats.getUnivariateStats.asScala
+                      nearestNeighborModel.getModelStats.getUnivariateStats.asScala
                         .map {
                           u =>
                             UnivariateStats(
@@ -262,11 +268,11 @@ trait MiningModels extends MiningModel {
                         })
                 },
               multivariateStats =
-                miningModel.getModelStats.getMultivariateStats match {
+                nearestNeighborModel.getModelStats.getMultivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      miningModel.getModelStats.getMultivariateStats.asScala
+                      nearestNeighborModel.getModelStats.getMultivariateStats.asScala
                         .map {
                           m =>
                             MultivariateStats(
@@ -351,45 +357,46 @@ trait MiningModels extends MiningModel {
                 }
             ))
       },
-      modelExplanation = miningModel.getModelExplanation match {
+      modelExplanation = nearestNeighborModel.getModelExplanation match {
         case null => None
         case _ =>
           Option(
             ModelExplanation(
-              extension = miningModel.getModelExplanation.getExtensions match {
-                case null => None
-                case _ =>
-                  Option(
-                    miningModel.getModelExplanation.getExtensions.asScala.map {
-                      e =>
-                        Extension(
-                          extender = e.getExtender match {
-                            case null => None
-                            case _    => Option(e.getExtender)
-                          },
-                          name = e.getName match {
-                            case null => None
-                            case _    => Option(e.getName)
-                          },
-                          value = e.getValue match {
-                            case null => None
-                            case _    => Option(e.getValue)
-                          }
-                        )
-                    })
-              },
+              extension =
+                nearestNeighborModel.getModelExplanation.getExtensions match {
+                  case null => None
+                  case _ =>
+                    Option(
+                      nearestNeighborModel.getModelExplanation.getExtensions.asScala
+                        .map { e =>
+                          Extension(
+                            extender = e.getExtender match {
+                              case null => None
+                              case _    => Option(e.getExtender)
+                            },
+                            name = e.getName match {
+                              case null => None
+                              case _    => Option(e.getName)
+                            },
+                            value = e.getValue match {
+                              case null => None
+                              case _    => Option(e.getValue)
+                            }
+                          )
+                        })
+                },
               correlations =
-                miningModel.getModelExplanation.getCorrelations match {
+                nearestNeighborModel.getModelExplanation.getCorrelations match {
                   case null => None
                   case _ =>
                     Option(
                       Correlations(
                         extension =
-                          miningModel.getModelExplanation.getCorrelations.getExtensions match {
+                          nearestNeighborModel.getModelExplanation.getCorrelations.getExtensions match {
                             case null => None
                             case _ =>
                               Option(
-                                miningModel.getModelExplanation.getCorrelations.getExtensions.asScala
+                                nearestNeighborModel.getModelExplanation.getCorrelations.getExtensions.asScala
                                   .map { e =>
                                     Extension(
                                       extender = e.getExtender match {
@@ -409,16 +416,16 @@ trait MiningModels extends MiningModel {
                           },
                         correlationFields = Array(
                           n =
-                            miningModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
+                            nearestNeighborModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
                           `type` =
-                            miningModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType
+                            nearestNeighborModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType
                               .value(),
                           value =
-                            miningModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
+                            nearestNeighborModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
                         ),
                         correlationValues = {
                           val mtx =
-                            miningModel.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
+                            nearestNeighborModel.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
                           Matrix(
                             matCell = mtx.getMatCells match {
                               case null => None
@@ -449,11 +456,11 @@ trait MiningModels extends MiningModel {
                           )
                         },
                         correlationMethods =
-                          miningModel.getModelExplanation.getCorrelations.getCorrelationMethods match {
+                          nearestNeighborModel.getModelExplanation.getCorrelations.getCorrelationMethods match {
                             case null => None
                             case _ =>
                               val mtx =
-                                miningModel.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
+                                nearestNeighborModel.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
                               Option(
                                 Matrix(
                                   matCell = mtx.getMatCells match {
@@ -487,11 +494,11 @@ trait MiningModels extends MiningModel {
                       ))
                 },
               predictiveModelQualities =
-                miningModel.getModelExplanation.getPredictiveModelQualities match {
+                nearestNeighborModel.getModelExplanation.getPredictiveModelQualities match {
                   case null => None
                   case _ =>
                     Option(
-                      miningModel.getModelExplanation.getPredictiveModelQualities.asScala
+                      nearestNeighborModel.getModelExplanation.getPredictiveModelQualities.asScala
                         .map {
                           pmq =>
                             PredictiveModelQuality(
@@ -550,7 +557,7 @@ trait MiningModels extends MiningModel {
                                                 case null => None
                                                 case _ =>
                                                   Option(
-                                                    miningModel.getModelExplanation.getExtensions.asScala
+                                                    nearestNeighborModel.getModelExplanation.getExtensions.asScala
                                                       .map { e =>
                                                         Extension(
                                                           extender =
@@ -1096,11 +1103,11 @@ trait MiningModels extends MiningModel {
                         })
                 },
               clusteringModelQualities =
-                miningModel.getModelExplanation.getClusteringModelQualities match {
+                nearestNeighborModel.getModelExplanation.getClusteringModelQualities match {
                   case null => None
                   case _ =>
                     Option(
-                      miningModel.getModelExplanation.getClusteringModelQualities.asScala
+                      nearestNeighborModel.getModelExplanation.getClusteringModelQualities.asScala
                         .map {
                           cmq =>
                             ClusteringModelQuality(
@@ -1121,10 +1128,10 @@ trait MiningModels extends MiningModel {
                 }
             ))
       },
-      targets = miningModel.getTargets match {
+      targets = nearestNeighborModel.getTargets match {
         case null => None
         case _ =>
-          Option(miningModel.getTargets.asScala.map {
+          Option(nearestNeighborModel.getTargets.asScala.map {
             t =>
               Targets(
                 field = t.getField match {
@@ -1153,17 +1160,17 @@ trait MiningModels extends MiningModel {
               )
           })
       },
-      localTransformations = miningModel.getLocalTransformations match {
+      localTransformations = nearestNeighborModel.getLocalTransformations match {
         case null => None
         case _ =>
           Option(
             LocalTransformation(
               extension =
-                miningModel.getLocalTransformations.getExtensions match {
+                nearestNeighborModel.getLocalTransformations.getExtensions match {
                   case null => None
                   case _ =>
                     Option(
-                      miningModel.getLocalTransformations.getExtensions.asScala
+                      nearestNeighborModel.getLocalTransformations.getExtensions.asScala
                         .map { e =>
                           Extension(
                             extender = e.getExtender match {
@@ -1182,11 +1189,11 @@ trait MiningModels extends MiningModel {
                         })
                 },
               derivedFields =
-                miningModel.getLocalTransformations.getDerivedFields match {
+                nearestNeighborModel.getLocalTransformations.getDerivedFields match {
                   case null => None
                   case _ =>
                     Option(
-                      miningModel.getLocalTransformations.getDerivedFields.asScala
+                      nearestNeighborModel.getLocalTransformations.getDerivedFields.asScala
                         .map { d =>
                           DerivedField(
                             name = d.getName match {
@@ -1201,88 +1208,71 @@ trait MiningModels extends MiningModel {
                 }
             ))
       },
-      segmentation = miningModel.getSegmentation match {
+      trainingInstances = nearestNeighborModel.getTrainingInstances match {
         case null => None
         case _ =>
           Option(
-            Segmentation(
-              multipleModelMethod =
-                miningModel.getSegmentation.getMultipleModelMethod.value,
-              segments = miningModel.getSegmentation.getSegments match {
-                case null => None
-                case _ =>
-                  Option(miningModel.getSegmentation.getSegments.asScala.map {
-                    s =>
-                      Segment(
-                        id = s.getId match {
-                          case null => None
-                          case _    => Option(s.getId)
-                        },
-                        weight = s.getWeight.toDouble,
-                        predicate = s.getPredicate.toString
-                      )
-                  })
-              },
-              localTransformation = miningModel.getLocalTransformations match {
-                case null => None
-                case _ =>
-                  Option(LocalTransformation(derivedFields =
-                    miningModel.getLocalTransformations.getDerivedFields match {
-                      case null => None
-                      case _ =>
-                        Option(
-                          miningModel.getLocalTransformations.getDerivedFields.asScala
-                            .map { d =>
-                              DerivedField(
-                                name = d.getName match {
-                                  case null => None
-                                  case _    => Option(d.getName.getValue)
-                                },
-                                displayName = d.getDisplayName,
-                                optype = d.getOpType.value(),
-                                dataType = d.getDataType.value()
-                              )
-                            })
-                    }))
-              }
+            TrainingInstances(
+              isTransformed =
+                nearestNeighborModel.getTrainingInstances.isTransformed,
+              recordCount =
+                nearestNeighborModel.getTrainingInstances.getRecordCount match {
+                  case null => None
+                  case _ =>
+                    Option(
+                      nearestNeighborModel.getTrainingInstances.getRecordCount.toInt)
+                },
+              fieldCount =
+                nearestNeighborModel.getTrainingInstances.getFieldCount match {
+                  case null => None
+                  case _ =>
+                    Option(
+                      nearestNeighborModel.getTrainingInstances.getFieldCount.toInt)
+                },
+              instanceFields =
+                nearestNeighborModel.getTrainingInstances.getInstanceFields match {
+                  case null => None
+                  case _ =>
+                    Option(
+                      nearestNeighborModel.getTrainingInstances.getInstanceFields.asScala
+                        .map { f =>
+                          InstanceField(
+                            field = f.getField.getValue,
+                            key = Option(f.getKey.getValue),
+                            column = Option(f.getColumn)
+                          )
+                        })
+                },
+              tableLocator =
+                nearestNeighborModel.getTrainingInstances.getTableLocator match {
+                  case null => None
+                  case _ =>
+                    Option(
+                      nearestNeighborModel.getTrainingInstances.getTableLocator.toString) // not sure what this is
+                },
+              inlineTables =
+                nearestNeighborModel.getTrainingInstances.getInlineTable match {
+                  case null => None
+                  case _ =>
+                    Option(
+                      nearestNeighborModel.getTrainingInstances.getInlineTable.getRows.asScala
+                        .map(r => Row(row = r.toString)))
+                }
             ))
       },
-      modelVerification = miningModel.getModelVerification match {
+      comparisonMeasure = nearestNeighborModel.getComparisonMeasure match {
         case null => None
         case _ =>
-          val v = miningModel.getModelVerification
           Option(
-            ModelVerification(
-              recordCount = v.getRecordCount match {
-                case null => None
-                case _    => Option(v.getRecordCount.toInt)
-              },
-              fieldCount = v.getFieldCount match {
-                case null => None
-                case _    => Option(v.getFieldCount.toInt)
-              },
-              verificationFields = None
-            ))
-      },
-      embeddedModels = miningModel.getEmbeddedModels match {
-        case null => None
-        case _ =>
-          Option(miningModel.getEmbeddedModels.asScala.map { m =>
-            EmbeddedModels(
-              modelName = m.getModelName match {
-                case null => None
-                case _ => Option(m.getModelName)
-              },
-              functionName = m.getMiningFunction.value(),
-              output = m.getOutput match{
-                case null => None
-                case _ =>
-                  Option(
-                    Output(
-                      extension = m.getOutput.getExtensions match {
-                        case null => None
-                        case _ =>
-                          Option(m.getOutput.getExtensions.asScala.map { e =>
+            ComparisonMeasure(
+              extension =
+                nearestNeighborModel.getComparisonMeasure.getExtensions match {
+                  case null => None
+                  case _ =>
+                    Option(
+                      nearestNeighborModel.getComparisonMeasure.getExtensions.asScala
+                        .map {
+                          e =>
                             Extension(
                               extender = e.getExtender match {
                                 case null => None
@@ -1298,340 +1288,82 @@ trait MiningModels extends MiningModel {
                               },
                               content = e.getContent match {
                                 case null => None
-                                case _ => Option(e.getContent.asScala.map { c => c.toString })
+                                case _ =>
+                                  Option(e.getContent.asScala.map {
+                                    _.toString
+                                  })
                               }
                             )
-                          })
-                      },
-                      outputField =
-                        m.getOutput.getOutputFields.asScala
-                          .map {
-                            o =>
-                              OutputField(
-                                name = o.getName.getValue,
-                                displayName = Option(o.getDisplayName),
-                                optype = o.getOpType.value(),
-                                targetField = Option(o.getTargetField.getValue),
-                                feature = o.getResultFeature.value(),
-                                value = Option(o.getValue),
-                                ruleFeature = o.getRuleFeature.value(),
-                                algorithm = o.getAlgorithm.value(),
-                                rank = o.getRank.toInt,
-                                rankBasis = o.getRankBasis.value(),
-                                rankOrder = o.getRankOrder.value(),
-                                isMultiValued = o.getIsMultiValued,
-                                segmentId = Option(o.getSegmentId),
-                                isFinalResult = o.isFinalResult
-                              )
-                          }
-                    ))
-              },
-              modelStats = m.getModelStats match {
-                case null => None
-                case _ =>
-                  Option(
-                    ModelStats(
-                      univariateStats =
-                        m.getModelStats.getUnivariateStats match {
-                          case null => None
-                          case _ =>
-                            Option(
-                              m.getModelStats.getUnivariateStats.asScala
-                                .map {
-                                  u =>
-                                    UnivariateStats(
-                                      field = u.getField.getValue,
-                                      weighted = u.getWeighted.value(),
-                                      counts = u.getCounts match {
-                                        case null => None
-                                        case _ =>
-                                          Option(Counts(
-                                            totalFreq = u.getCounts.getTotalFreq,
-                                            missingFreq = Option(
-                                              u.getCounts.getMissingFreq.toDouble),
-                                            invalidFreq = Option(
-                                              u.getCounts.getInvalidFreq.toDouble),
-                                            cardinality =
-                                              Option(u.getCounts.getCardinality.toInt)
-                                          ))
-                                      },
-                                      numericInfo = u.getNumericInfo match {
-                                        case null => None
-                                        case _ =>
-                                          Option(NumericInfo(
-                                            minimum =
-                                              Option(u.getNumericInfo.getMinimum),
-                                            maximum =
-                                              Option(u.getNumericInfo.getMaximum),
-                                            mean = Option(u.getNumericInfo.getMean),
-                                            standardDeviation = Option(
-                                              u.getNumericInfo.getStandardDeviation),
-                                            median = Option(u.getNumericInfo.getMedian),
-                                            interQuartileRange = Option(
-                                              u.getNumericInfo.getInterQuartileRange)
-                                          ))
-                                      },
-                                      discStats = u.getDiscrStats match {
-                                        case null => None
-                                        case _ =>
-                                          Option(
-                                            DiscStats(
-                                              arrays =
-                                                Option(u.getDiscrStats.getArrays.asScala
-                                                  .map {
-                                                    _.toString
-                                                  }),
-                                              modalValue =
-                                                Option(u.getDiscrStats.getModalValue)
-                                            ))
-                                      },
-                                      contStats = u.getContStats match {
-                                        case null => None
-                                        case _ =>
-                                          Option(ContStats(
-                                            intervals =
-                                              u.getContStats.getIntervals match {
-                                                case null => None
-                                                case _ =>
-                                                  Option(
-                                                    u.getContStats.getIntervals.asScala
-                                                      .map { i =>
-                                                        Interval(
-                                                          closure = i.getClosure.value(),
-                                                          leftMargin =
-                                                            Option(i.getLeftMargin),
-                                                          rightMargin =
-                                                            Option(i.getRightMargin)
-                                                        )
-                                                      })
-                                              },
-                                            totalValueSom =
-                                              u.getContStats.getTotalValuesSum,
-                                            totalSquaresSum =
-                                              u.getContStats.getTotalSquaresSum
-                                          ))
-                                      },
-                                      anova = u.getAnova match {
-                                        case null => None
-                                        case _ =>
-                                          Option(Anova(
-                                            target = u.getAnova.getTarget.getValue,
-                                            anovaRow = u.getAnova.getAnovaRows match {
-                                              case null => None
-                                              case _ =>
-                                                Option(
-                                                  u.getAnova.getAnovaRows.asScala.map {
-                                                    r =>
-                                                      AnovaRow(
-                                                        `type` = r.getType.value(),
-                                                        sumOfSquares = r.getSumOfSquares,
-                                                        degreesOfFreedom =
-                                                          r.getDegreesOfFreedom,
-                                                        meanOfSquares =
-                                                          r.getMeanOfSquares match {
-                                                            case null => None
-                                                            case _ =>
-                                                              Option(r.getMeanOfSquares)
-                                                          },
-                                                        fValue = r.getFValue match {
-                                                          case null => None
-                                                          case _    => Option(r.getFValue)
-                                                        },
-                                                        pValue = r.getPValue match {
-                                                          case null => None
-                                                          case _    => Option(r.getPValue)
-                                                        }
-                                                      )
-                                                  })
-                                            }
-                                          ))
-                                      }
-                                    )
-                                })
-                        },
-                      multivariateStats =
-                        m.getModelStats.getMultivariateStats match {
-                          case null => None
-                          case _ =>
-                            Option(
-                              m.getModelStats.getMultivariateStats.asScala
-                                .map {
-                                  m =>
-                                    MultivariateStats(
-                                      targetCategory = m.getTargetCategory match {
-                                        case null => None
-                                        case _    => Option(m.getTargetCategory)
-                                      },
-                                      multivariateStats =
-                                        m.getMultivariateStats.asScala.map {
-                                          s =>
-                                            MultivariateStat(
-                                              name = s.getName,
-                                              category = s.getCategory match {
-                                                case null => None
-                                                case _    => Option(s.getCategory)
-                                              },
-                                              exponent = s.getExponent.toInt,
-                                              isIntercept = s.isIntercept,
-                                              importance = s.getImportance match {
-                                                case null => None
-                                                case _ =>
-                                                  Option(s.getImportance.toDouble)
-                                              },
-                                              stdError = s.getStdError match {
-                                                case null => None
-                                                case _    => Option(s.getStdError.toDouble)
-                                              },
-                                              tValue = s.getTValue match {
-                                                case null => None
-                                                case _    => Option(s.getTValue.toDouble)
-                                              },
-                                              chiSquareValue =
-                                                s.getChiSquareValue match {
-                                                  case null => None
-                                                  case _ =>
-                                                    Option(s.getChiSquareValue.toDouble)
-                                                },
-                                              fStatistic = s.getFStatistic match {
-                                                case null => None
-                                                case _ =>
-                                                  Option(s.getFStatistic.toDouble)
-                                              },
-                                              dF = s.getDF match {
-                                                case null => None
-                                                case _    => Option(s.getDF.toDouble)
-                                              },
-                                              pValueAlpha = s.getPValueAlpha match {
-                                                case null => None
-                                                case _ =>
-                                                  Option(s.getPValueAlpha.toDouble)
-                                              },
-                                              pValueInitial = s.getPValueInitial match {
-                                                case null => None
-                                                case _ =>
-                                                  Option(s.getPValueInitial.toDouble)
-                                              },
-                                              pValueFinal = s.getPValueFinal match {
-                                                case null => None
-                                                case _ =>
-                                                  Option(s.getPValueFinal.toDouble)
-                                              },
-                                              confidenceLevel =
-                                                s.getConfidenceLevel.toDouble,
-                                              confidenceLowerBound =
-                                                s.getConfidenceLowerBound match {
-                                                  case null => None
-                                                  case _ =>
-                                                    Option(
-                                                      s.getConfidenceLowerBound.toDouble)
-                                                },
-                                              confidenceUpperBound =
-                                                s.getConfidenceUpperBound match {
-                                                  case null => None
-                                                  case _ =>
-                                                    Option(
-                                                      s.getConfidenceUpperBound.toDouble)
-                                                }
-                                            )
-                                        }
-                                    )
-                                })
-                        }
-                    ))
-              },
-              targets = m.getTargets match {
-                case null => None
-                case _ =>
-                  Option(m.getTargets.asScala.map {
-                    t =>
-                      Targets(
-                        field = t.getField match {
-                          case null => None
-                          case _    => Option(t.getField.getValue)
-                        },
-                        optype = t.getOpType match {
-                          case null => None
-                          case _    => Option(t.getOpType.value())
-                        },
-                        castInteger = t.getCastInteger match {
-                          case null => None
-                          case _    => Option(t.getCastInteger.value())
-                        },
-                        min = t.getMin match {
-                          case null => None
-                          case _    => Option(t.getMin.toDouble)
-                        },
-                        max = t.getMax match {
-                          case null => None
-                          case _    => Option(t.getMax.toDouble)
-                        },
-                        rescaleConstant = t.getRescaleConstant.toDouble,
-                        rescaleFactor = t.getRescaleFactor.toDouble,
-                        targetValues = None
-                      )
-                  })
-              },
-              localTransformation = m.getLocalTransformations match {
-                case null => None
-                case _ =>
-                  Option(
-                    LocalTransformation(
-                      extension =
-                        m.getLocalTransformations.getExtensions match {
-                          case null => None
-                          case _ =>
-                            Option(
-                              m.getLocalTransformations.getExtensions.asScala
-                                .map { e =>
-                                  Extension(
-                                    extender = e.getExtender match {
-                                      case null => None
-                                      case _    => Option(e.getExtender)
-                                    },
-                                    name = e.getName match {
-                                      case null => None
-                                      case _    => Option(e.getName)
-                                    },
-                                    value = e.getValue match {
-                                      case null => None
-                                      case _    => Option(e.getValue)
-                                    }
-                                  )
-                                })
-                        },
-                      derivedFields =
-                        m.getLocalTransformations.getDerivedFields match {
-                          case null => None
-                          case _ =>
-                            Option(
-                              m.getLocalTransformations.getDerivedFields.asScala
-                                .map { d =>
-                                  DerivedField(
-                                    name = d.getName match {
-                                      case null => None
-                                      case _    => Option(d.getName.getValue)
-                                    },
-                                    displayName = d.getDisplayName,
-                                    optype = d.getOpType.value(),
-                                    dataType = d.getDataType.value()
-                                  )
-                                })
-                        }
-                    ))
-              }
-            )
-          })
+                        })
+                },
+              kind = nearestNeighborModel.getComparisonMeasure.getKind.value(),
+              compareFunction =
+                nearestNeighborModel.getComparisonMeasure.getCompareFunction
+                  .value(),
+              minimum =
+                nearestNeighborModel.getComparisonMeasure.getMinimum match {
+                  case null => None
+                  case _ =>
+                    Option(
+                      nearestNeighborModel.getComparisonMeasure.getMinimum.toDouble)
+                },
+              maximum =
+                nearestNeighborModel.getComparisonMeasure.getMaximum match {
+                  case null => None
+                  case _ =>
+                    Option(
+                      nearestNeighborModel.getComparisonMeasure.getMaximum.toDouble)
+                },
+              measure =
+                nearestNeighborModel.getComparisonMeasure.getMeasure match {
+                  case null => None
+                  case _ =>
+                    Option(
+                      nearestNeighborModel.getComparisonMeasure.getMeasure.toString) // revist
+                }
+            ))
       },
-      modelName = miningModel.getModelName match {
+      knnInputs = nearestNeighborModel.getKNNInputs match {
         case null => None
-        case _    => Option(miningModel.getModelName)
+        case _    => None
       },
-      functionName = miningModel.getMiningFunction.value(),
-      algorithmName = miningModel.getAlgorithmName match {
+      modelVerification = nearestNeighborModel.getModelVerification match {
         case null => None
-        case _    => Option(miningModel.getAlgorithmName)
+        case _ =>
+          val v = nearestNeighborModel.getModelVerification
+          Option(
+            ModelVerification(
+              recordCount = v.getRecordCount match {
+                case null => None
+                case _    => Option(v.getRecordCount.toInt)
+              },
+              fieldCount = v.getFieldCount match {
+                case null => None
+                case _    => Option(v.getFieldCount.toInt)
+              },
+              verificationFields = None
+            ))
       },
-      isScorable = Option(miningModel.isScorable)
+      modelName = nearestNeighborModel.getModelName match {
+        case null => None
+        case _    => Option(nearestNeighborModel.getModelName)
+      },
+      functionName = nearestNeighborModel.getMiningFunction.value(),
+      algorithmName = nearestNeighborModel.getAlgorithmName match {
+        case null => None
+        case _    => Option(nearestNeighborModel.getAlgorithmName)
+      },
+      numberOfNeighbors = nearestNeighborModel.getNumberOfNeighbors,
+      continuousScoringMethod =
+        nearestNeighborModel.getContinuousScoringMethod.value(),
+      categoricalScoringMethod =
+        nearestNeighborModel.getCategoricalScoringMethod.value(),
+      instanceIdVariable = nearestNeighborModel.getInstanceIdVariable match {
+        case null => None
+        case _    => None
+      },
+      threshold = nearestNeighborModel.getThreshold.toDouble,
+      isScorable = Option(nearestNeighborModel.isScorable)
     )
   }
 }

@@ -8,16 +8,14 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator
 
 import java.io.File
 
-import com.verizon.itanalytics.dataengineering.runway.evaluator.testutils.TestUtils
-import org.dmg.pmml.{Model, PMML}
-import org.jpmml.evaluator.{ModelEvaluator, UnsupportedElementException}
+import org.dmg.pmml.PMML
+import org.jpmml.evaluator.UnsupportedElementException
 import org.scalatest.FlatSpec
 
 
 class GaussianProcessSpec
     extends FlatSpec
     with Builder
-    with TestUtils
     with Evaluator {
 
   val testModelPath = mapModels("gaussian")

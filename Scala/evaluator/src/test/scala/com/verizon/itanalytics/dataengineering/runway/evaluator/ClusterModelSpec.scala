@@ -9,7 +9,7 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator
 import java.io.File
 
 import com.verizon.itanalytics.dataengineering.runway.evaluator.testutils.TestUtils
-import org.dmg.pmml.{FieldName, Model, PMML}
+import org.dmg.pmml.{Model, PMML}
 import org.jpmml.evaluator.ModelEvaluator
 import org.scalatest.FlatSpec
 

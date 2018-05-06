@@ -65,6 +65,7 @@ trait BayesianNetworkModel
   case class ValueProbability(value: String, probability: Double)
 
   case class DiscreteNode(
+      extension: Option[Seq[Extension]] = None,
       name: String,
       count: Option[Double] = None,
       derivedField: Option[DerivedField] = None,

@@ -16,7 +16,7 @@ trait ClusteringModel
     with ModelStats
     with ModelExplanation
     with LocalTransformation
-    with Targets
+    with CompareMeasure
     with ModelVerification {
 
   case class ClusteringModel(
@@ -39,12 +39,6 @@ trait ClusteringModel
       isScorable: Option[Boolean]
   )
 
-  case class ComparisonMeasure(extension: Option[Seq[Extension]] = None,
-                               kind: String,
-                               compareFunction: String = "absDiff",
-                               minimum: Option[Double] = None,
-                               maximum: Option[Double] = None,
-                               measure: Option[String] = None)
 
   case class Measure(name: String)
 

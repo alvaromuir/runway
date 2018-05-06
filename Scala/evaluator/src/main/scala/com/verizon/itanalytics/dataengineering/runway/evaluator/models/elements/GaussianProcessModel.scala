@@ -32,7 +32,7 @@ trait GaussianProcessModel
       aRDSquaredExponentialKernel: Option[ARDSquaredExponentialKernel] = None,
       absoluteExponentialKernel: Option[AbsoluteExponentialKernel] = None,
       generalizedExponentialKernel: Option[GeneralizedExponentialKernel] = None,
-      trainingInstances: TrainingInstances,
+      trainingInstances: Option[TrainingInstances] = None,
       modelVerification: Option[ModelVerification] = None,
       modelName: Option[String] = None,
       functionName: String,
@@ -41,26 +41,30 @@ trait GaussianProcessModel
       isScorable: Option[Boolean]
   )
 
-  case class RadialBasisKernel(description: Option[String] = None,
+  case class RadialBasisKernel(extension: Option[Seq[Extension]] = None,
+                               description: Option[String] = None,
                                gamma: Double = 1,
                                noiseVariance: Double = 1,
-                               lambda: Option[Lambda] = None)
+                               lambda: Double = 1)
 
-  case class ARDSquaredExponentialKernel(description: Option[String] = None,
+  case class ARDSquaredExponentialKernel(extension: Option[Seq[Extension]] = None,
+                                         lambda: Option[Seq[Lambda]] = None,
+                                         description: Option[String] = None,
                                          gamma: Double = 1,
-                                         noiseVariance: Double = 1,
-                                         lambda: Option[Lambda] = None)
+                                         noiseVariance: Double = 1)
 
-  case class AbsoluteExponentialKernel(description: Option[String] = None,
+  case class AbsoluteExponentialKernel(extension: Option[Seq[Extension]] = None,
+                                       lambda: Option[Seq[Lambda]] = None,
+                                       description: Option[String] = None,
                                        gamma: Double = 1,
-                                       noiseVariance: Double = 1,
-                                       lambda: Option[Lambda] = None)
+                                       noiseVariance: Double = 1)
 
-  case class GeneralizedExponentialKernel(description: Option[String] = None,
+  case class GeneralizedExponentialKernel(extension: Option[Seq[Extension]] = None,
+                                          lambda: Option[Seq[Lambda]] = None,
+                                          description: Option[String] = None,
                                           gamma: Double = 1,
                                           noiseVariance: Double = 1,
-                                          dagree: Double = 1,
-                                          lambda: Option[Lambda] = None)
+                                          degree: Double = 1)
 
-  case class Lambda(n: Int, `type`: String, lambda: Option[Seq[Double]] = None)
+  case class Lambda(n: Int, `type`: String, value: String)
 }

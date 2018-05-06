@@ -12,7 +12,7 @@ import scala.collection.JavaConverters._
 import com.verizon.itanalytics.dataengineering.runway.evaluator.testutils.TestUtils
 import org.dmg.pmml.{FieldName, Model, PMML}
 import org.jpmml.evaluator.ModelEvaluator
-import org.scalatest.{FlatSpec, Ignore}
+import org.scalatest.FlatSpec
 
 class GeneralRegressionSpec
     extends FlatSpec

@@ -16,7 +16,8 @@ trait Builder extends BeforeAndAfterEach {
     "bayesianNetwork" -> s"$modelsSrcPath/BayesianTest.xml",
     "clustering" -> s"$modelsSrcPath/single_audit_kmeans.xml",
     "gaussian" -> s"$modelsSrcPath/GaussianTest.xml",
-    "generalRegression" -> s"$modelsSrcPath/IrisGeneralRegression.xml"
+    "generalRegression" -> s"$modelsSrcPath/IrisGeneralRegression.xml",
+    "naiveBayes" -> s"$modelsSrcPath/NaiveBayesTest.xml"
   )
 
   val dataSrcPath = "./evaluator/src/test/resources/data"
