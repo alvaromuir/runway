@@ -120,7 +120,7 @@ class ClusterModelSpec
 
     assert(derivedFields.get.size.equals(48))
     assert(derivedFields.get.head.name.get.contains("Private_Employment"))
-    assert(Some(derivedFields.get.head.displayName).contains(null))
+    assert(derivedFields.get.head.displayName.isEmpty)
     assert(derivedFields.get.head.optype.contains("ordinal"))
     assert(derivedFields.get.head.dataType.contains("integer"))
   }

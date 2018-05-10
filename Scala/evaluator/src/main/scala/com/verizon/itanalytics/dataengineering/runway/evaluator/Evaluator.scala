@@ -16,7 +16,12 @@ import com.verizon.itanalytics.dataengineering.runway.evaluator.models._
 import javax.xml.bind.JAXBException
 import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas.PMMLSchema
 import org.dmg.pmml.{FieldName, Model, PMML}
-import org.jpmml.evaluator.{ModelEvaluator, ModelEvaluatorFactory, ReportingValueFactoryFactory, ValueFactoryFactory}
+import org.jpmml.evaluator.{
+  ModelEvaluator,
+  ModelEvaluatorFactory,
+  ReportingValueFactoryFactory,
+  ValueFactoryFactory
+}
 import org.jpmml.model.PMMLUtil
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -31,7 +36,8 @@ trait Evaluator
     with BayesianNetwork
     with ClusterModel
     with GaussianProcess
-    with GeneralRegression {
+    with GeneralRegression
+    with NeuralNetwork {
   val log: Logger = LoggerFactory.getLogger(getClass.getName)
 
   /** Returns a pMML file from input stream
@@ -76,6 +82,7 @@ trait Evaluator
     * @return PmmlSchema
     */
   def parsePmml(pMML: PMML): PMMLSchema = {
+    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
     val header = pMML.getHeader
     val miningBuildTask = pMML.getMiningBuildTask
     val dataDictionary = pMML.getDataDictionary
@@ -186,7 +193,9 @@ trait Evaluator
       ),
       transformationDictionary = transformationDictionary match {
         case null => None
-        case _ => Option(TransformationDictionary(
+        case _ =>
+          Option(
+            TransformationDictionary(
               defineFunctions =
                 transformationDictionary.getDefineFunctions match {
                   case null => None
@@ -232,7 +241,10 @@ trait Evaluator
                           case null => None
                           case _    => Option(df.getName.getValue)
                         },
-                        displayName = df.getDisplayName,
+                        displayName = df.getDisplayName match {
+                          case null => None
+                          case _ => Option(df.getDisplayName)
+                        },
                         optype = df.getOpType.value(),
                         dataType = df.getDataType.value(),
                         intervals = df.getIntervals match {
@@ -276,7 +288,7 @@ trait Evaluator
       },
       generalRegressionModel = modelFunction match {
         case "regression" => Option(parseGeneralRegressionModel(pMML))
-        case _ => None
+        case _            => None
       },
       miningModel = modelFunction match {
         case _ => None
@@ -287,8 +299,9 @@ trait Evaluator
       nearestNeighborModel = modelFunction match {
         case _ => None
       },
-      neuralNetwork = modelFunction match {
-        case _ => None
+      neuralNetwork = evaluator.getSummary match {
+        case "Neural network" => Option(parseNeuralNetworkModel(pMML))
+        case _                => None
       },
       regressionModel = modelFunction match {
         case _ => None

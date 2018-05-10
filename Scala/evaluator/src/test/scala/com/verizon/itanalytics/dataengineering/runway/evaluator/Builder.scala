@@ -18,6 +18,7 @@ trait Builder extends BeforeAndAfterEach {
     "gaussian" -> s"$modelsSrcPath/GaussianTest.xml",
     "generalRegression" -> s"$modelsSrcPath/IrisGeneralRegression.xml",
     "naiveBayes" -> s"$modelsSrcPath/NaiveBayesTest.xml",
+    "neuralNetwork" -> s"$modelsSrcPath/single_iris_mlp.xml",
     "regression" -> s"$modelsSrcPath/single_audit_logreg.xml"
   )
 
@@ -28,6 +29,7 @@ trait Builder extends BeforeAndAfterEach {
     "clustering" -> s"$dataSrcPath/Audit.csv",
     "gaussian" -> s"$dataSrcPath/GaussianTest.csv",
     "generalRegression" -> s"$dataSrcPath/Iris.csv",
+    "neuralNetwork" -> s"$dataSrcPath/Iris.csv",
     "regression" -> s"$dataSrcPath/Audit.csv"
   )
 

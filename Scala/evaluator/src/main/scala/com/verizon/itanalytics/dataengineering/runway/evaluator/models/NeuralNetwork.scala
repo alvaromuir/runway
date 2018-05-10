@@ -1202,7 +1202,10 @@ trait NeuralNetwork extends NeuralNetworkModel {
                               case null => None
                               case _    => Option(d.getName.getValue)
                             },
-                            displayName = d.getDisplayName,
+                            displayName = d.getDisplayName match {
+                              case null => None
+                              case _ => Option(d.getDisplayName)
+                            },
                             optype = d.getOpType.value(),
                             dataType = d.getDataType.value()
                           )
@@ -1269,7 +1272,10 @@ trait NeuralNetwork extends NeuralNetworkModel {
                 case null => None
                 case _ => Option(n.getDerivedField.getName.getValue)
               },
-              displayName = n.getDerivedField.getDisplayName,
+              displayName = n.getDerivedField.getDisplayName match {
+                case null => None
+                case _ => Option(n.getDerivedField.getDisplayName)
+              },
               optype = n.getDerivedField.getOpType.value(),
               dataType = n.getDerivedField.getDataType.value(),
               intervals = n.getDerivedField.getIntervals match {
@@ -1446,7 +1452,10 @@ trait NeuralNetwork extends NeuralNetworkModel {
                 case null => None
                 case _ => Option(n.getDerivedField.getName.getValue)
               },
-              displayName = n.getDerivedField.getDisplayName,
+              displayName = n.getDerivedField.getDisplayName match {
+                case null => None
+                case _ => Option(n.getDerivedField.getDisplayName)
+              },
               optype = n.getDerivedField.getOpType.value(),
               dataType = n.getDerivedField.getDataType.value(),
               intervals = n.getDerivedField.getIntervals match {

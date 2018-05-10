@@ -986,7 +986,10 @@ trait BayesianNetwork extends BayesianNetworkModel {
                         case null => None
                         case _    => Option(d.getName.getValue)
                       },
-                      displayName = d.getDisplayName,
+                      displayName = d.getDisplayName match {
+                        case null => None
+                        case _ => Option(d.getDisplayName)
+                      },
                       optype = d.getOpType.value(),
                       dataType = d.getDataType.value()
                     )

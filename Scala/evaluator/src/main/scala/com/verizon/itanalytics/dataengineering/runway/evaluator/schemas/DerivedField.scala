@@ -8,7 +8,7 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 
 trait DerivedField extends DataDictionary {
   case class DerivedField(name: Option[String] = None,
-                          displayName: String,
+                          displayName: Option[String] = None,
                           optype: String,
                           dataType: String,
                           intervals: Option[Seq[Interval]] = None,
