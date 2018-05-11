@@ -24,7 +24,7 @@ trait NeuralNetwork extends NeuralNetworkModel {
       .asInstanceOf[org.dmg.pmml.neural_network.NeuralNetwork]
 
     NeuralNetworkModel(
-      extension = neuralNetworkModel.getExtensions match {
+      extension = neuralNetworkModel.getExtensions match  {
         case null => None
         case _ =>
           Option(neuralNetworkModel.getExtensions.asScala.map {

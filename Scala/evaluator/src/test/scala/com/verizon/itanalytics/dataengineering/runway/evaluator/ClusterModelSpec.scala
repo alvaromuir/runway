@@ -185,10 +185,8 @@ class ClusterModelSpec
   }
 
   it should "provide information on the target fields if available" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-
     val targets = evaluator.getTargetFields
+    
     assert(Some(targets.get(0).getName).contains(null))
     assert(Some(targets.get(0).getOpType).get.value().contains("categorical"))
     assert(Some(targets.get(0).getDataType).get.value().contains("string"))
