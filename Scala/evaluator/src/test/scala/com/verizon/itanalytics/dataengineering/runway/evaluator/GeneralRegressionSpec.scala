@@ -47,6 +47,7 @@ class GeneralRegressionSpec
     assert(dataFields.head.name.contains("sepal_length"))
     assert(dataFields.head.displayName.isEmpty)
     assert(dataFields.head.optype.contains("continuous"))
+    assert(dataFields.head.dataType.contains("double"))
     assert(dataFields.head.taxonomy.isEmpty)
     assert(dataFields.head.isCyclic.get.equals("0"))
     assert(dataFields.head.intervals.size.equals(1))
