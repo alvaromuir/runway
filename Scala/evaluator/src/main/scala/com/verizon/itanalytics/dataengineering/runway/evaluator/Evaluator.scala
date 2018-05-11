@@ -348,6 +348,12 @@ trait Evaluator
         }
     }
 
+    pmmlModel.bayesianNetworkModel match {
+      // not yet implemented
+      case None =>
+      case Some(_) =>
+    }
+
     pmmlModel.clusteringModel match {
       case None =>
       case Some(_) =>
@@ -357,6 +363,32 @@ trait Evaluator
     }
 
     pmmlModel.generalRegressionModel match {
+      case None =>
+      case Some(_) =>
+        features.map {
+          case (k, v) => arguments.put(FieldName.create(k.toString), v)
+        }
+    }
+
+    pmmlModel.gaussianProcessModel match {
+      // not yet implemented
+      case None =>
+      case Some(_) =>
+    }
+
+    pmmlModel.naiveBayesModel match {
+      // not yet implemented
+      case None =>
+      case Some(_) =>
+    }
+
+    pmmlModel.nearestNeighborModel match {
+      // not yet implemented
+      case None =>
+      case Some(_) =>
+    }
+
+    pmmlModel.neuralNetwork match {
       case None =>
       case Some(_) =>
         features.map {

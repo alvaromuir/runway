@@ -3,9 +3,11 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator
 import java.io.File
 
 import com.verizon.itanalytics.dataengineering.runway.evaluator.testutils.TestUtils
-import org.dmg.pmml.{Model, PMML}
+import org.dmg.pmml.{FieldName, Model, PMML}
 import org.jpmml.evaluator.ModelEvaluator
 import org.scalatest.FlatSpec
+
+import scala.collection.JavaConverters._
 
 /*
 * Project: Runway
@@ -131,27 +133,104 @@ class NeuralNetworkSpec extends FlatSpec
   it should "provide Neural Network Model information on neural inputs" in {
     val inputs = model.get.neuralInputs
     val neuralInput = inputs.neuralInput.head
-    val derivedField = inputs.neuralInput.head.derivedField
+    val derivedField = neuralInput.derivedField
 
     assert(inputs.numberOfInputs.equals(4))
     assert(inputs.neuralInput.size.equals(4))
 
     assert(neuralInput.id.contains("0,0"))
+
     assert(derivedField.name.isEmpty)
-    println(derivedField.displayName.isEmpty)
+    assert(derivedField.displayName.isEmpty)
     assert(derivedField.optype.contains("continuous"))
     assert(derivedField.dataType.contains("double"))
-    println(derivedField.intervals)
-    println(derivedField.values)
+    assert(derivedField.intervals.get.isEmpty)
+    assert(derivedField.values.get.isEmpty)
   }
 
   it should "provide Neural Network Model information on neural hidden layers" in {
     val hiddenLayers = model.get.neuralLayer
-    println(hiddenLayers.head)
+    val neuralLayer = hiddenLayers.head
+
+    assert(hiddenLayers.size.equals(2))
+    assert(neuralLayer.neurons.size.equals(3))
+    assert(neuralLayer.activationFunction.isEmpty)
+    assert(neuralLayer.threshold.isEmpty)
+    assert(neuralLayer.altitude.isEmpty)
+    assert(neuralLayer.normalizationMethod.isEmpty)
+
+    assert(neuralLayer.neurons.head.id.equals("1,0"))
+    assert(neuralLayer.neurons.head.altitude.isEmpty)
+    assert(neuralLayer.neurons.head.width.isEmpty)
+    assert(neuralLayer.neurons.head.bias.contains(40.4715596724959))
+
   }
 
   it should "provide Neural Network Model information on neural Outputs" in {
     val outputs = model.get.neuralOutputs
-    println(outputs)
+    val neuralOutput = outputs.neuralOutput.head
+    val derivedField = neuralOutput.derivedField
+    val outputNeuron = neuralOutput.outputNeuron
+
+    assert(outputs.numberOfOutputs.equals(3))
+    assert(outputs.neuralOutput.size.equals(3))
+
+    assert(derivedField.name.isEmpty)
+    assert(derivedField.displayName.isEmpty)
+    assert(derivedField.optype.contains("categorical"))
+    assert(derivedField.dataType.contains("string"))
+    assert(derivedField.intervals.get.isEmpty)
+    assert(derivedField.values.get.isEmpty)
+
+    assert(outputNeuron.contains("2,0"))
   }
+
+  it should "provide model verification information, if available" in {
+    assert(Some(model.get.modelVerification).get.isEmpty)
+  }
+
+  it should "return basic string-based fields" in {
+    assert(Some(model.get.modelName).get.isEmpty)
+    assert(Some(model.get.functionName).contains("classification"))
+    assert(Some(model.get.algorithmName).get.contains("RProp"))
+    assert(Some(model.get.activationFunction).get.equals("logistic"))
+    assert(Some(model.get.normalizationMethod).get.contains("none"))
+  }
+
+  it should "return model-specific numeric-based fields" in {
+    assert(Some(model.get.threshold).contains(0.0))
+    assert(Some(model.get.numberOfHiddenLayers).contains(2))
+  }
+
+  it should "return basic boolean fields" in {
+    assert(Some(model.get.isScorable).get.contains(true))
+  }
+
+  it should "provide information on the target fields if available" in {
+    val targets = evaluator.getTargetFields
+
+    assert(Some(targets.get(0).getName).get.getValue.contains("class"))
+    assert(Some(targets.get(0).getOpType).get.value().contains("categorical"))
+    assert(Some(targets.get(0).getDataType).get.value().contains("string"))
+  }
+
+  it should "return results from observation inputs" in {
+    assert(evaluator.verify().equals(())) // is empty
+
+    val inputFields = evaluator.getInputFields.asScala.map {
+      _.getName.getValue
+    }.toSet[Any]
+
+    val testData = readDataFile(new File(testDataPath), lineNum = 10).head
+    val observations = testData.filterKeys(inputFields)
+
+    val arguments = createArguments(pmmlModel, observations)
+    val results = evaluator.evaluate(arguments)
+
+    val field = FieldName.create("class")
+    assert(Some(results.asScala.keys.head).contains(field))
+    assert(Some(results.asScala(field)).get.toString.contains("result=Iris-setosa"))
+    assert(Some(results.asScala(field)).get.toString.contains("entityId=2,0"))
+  }
+
 }
