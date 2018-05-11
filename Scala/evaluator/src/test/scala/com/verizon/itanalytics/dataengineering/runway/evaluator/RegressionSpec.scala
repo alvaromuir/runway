@@ -31,7 +31,6 @@ class RegressionSpec extends FlatSpec
     val modelClass = "Regression"
 
     assert(evaluator.getSummary == modelClass)
-
   }
 
   it should "provide information on required input fields" in {
@@ -46,6 +45,7 @@ class RegressionSpec extends FlatSpec
     assert(dataFields.head.name.contains("latitude"))
     assert(dataFields.head.displayName.isEmpty)
     assert(dataFields.head.optype.contains("continuous"))
+    assert(dataFields.head.dataType.contains("double"))
     assert(dataFields.head.taxonomy.isEmpty)
     assert(dataFields.head.isCyclic.get.equals("0"))
     assert(dataFields.head.intervals.size.equals(1))
