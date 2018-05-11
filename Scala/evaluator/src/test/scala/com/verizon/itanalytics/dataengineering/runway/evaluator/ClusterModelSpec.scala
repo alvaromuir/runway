@@ -47,6 +47,7 @@ class ClusterModelSpec
     assert(dataFields.head.name.contains("Age"))
     assert(dataFields.head.displayName.isEmpty)
     assert(dataFields.head.optype.contains("continuous"))
+    assert(dataFields.head.dataType.contains("integer"))
     assert(dataFields.head.taxonomy.isEmpty)
     assert(dataFields.head.isCyclic.get.contains("0"))
     assert(dataFields.head.intervals.size.equals(1))
