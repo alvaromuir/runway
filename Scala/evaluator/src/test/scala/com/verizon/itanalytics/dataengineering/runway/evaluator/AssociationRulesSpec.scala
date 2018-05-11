@@ -46,6 +46,7 @@ class AssociationRulesSpec
     assert(dataFields.head.name.contains("transaction"))
     assert(dataFields.head.displayName.isEmpty)
     assert(dataFields.head.optype.contains("categorical"))
+    assert(dataFields.head.dataType.contains("string"))
     assert(dataFields.head.taxonomy.isEmpty)
     assert(dataFields.head.isCyclic.get.contains("0"))
     assert(dataFields.head.intervals.get.isEmpty)
