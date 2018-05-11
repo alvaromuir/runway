@@ -29,10 +29,9 @@ class AssociationRulesSpec
 
   "the evaluator" should
     "read Association models" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val miningFunction = "associationRules"
+    val modelClass = "Association rules"
 
-    assert(pMML.getModels.get(0).getMiningFunction.value() == miningFunction)
+    assert(evaluator.getSummary == modelClass)
   }
 
   it should "provide information on required input fields" in {

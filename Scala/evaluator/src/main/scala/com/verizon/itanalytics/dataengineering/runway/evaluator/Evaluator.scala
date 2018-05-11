@@ -37,7 +37,8 @@ trait Evaluator
     with ClusterModel
     with GaussianProcess
     with GeneralRegression
-    with NeuralNetwork {
+    with NeuralNetwork
+    with NaiveBayes {
   val log: Logger = LoggerFactory.getLogger(getClass.getName)
 
   /** Returns a pMML file from input stream
@@ -243,7 +244,7 @@ trait Evaluator
                         },
                         displayName = df.getDisplayName match {
                           case null => None
-                          case _ => Option(df.getDisplayName)
+                          case _    => Option(df.getDisplayName)
                         },
                         optype = df.getOpType.value(),
                         dataType = df.getDataType.value(),
@@ -270,61 +271,62 @@ trait Evaluator
             ))
       },
       version = pMML.getVersion,
-      associationModel = modelFunction match {
-        case "associationRules" => Option(parseAssociationModel(pMML))
+      associationModel = evaluator.getSummary match {
+        case "Association rules" => Option(parseAssociationModel(pMML))
+        case _                   => None
+      },
+      bayesianNetworkModel = evaluator.getSummary match {
+        case "Bayesian network" => Option(parseBayesianNetworkModel(pMML))
         case _                  => None
       },
-      bayesianNetworkModel = modelFunction match {
-        case "bayesianNetworkModel" => Option(parseBayesianNetworkModel(pMML))
-        case _                      => None
+      clusteringModel = evaluator.getSummary match {
+        case "Clustering model" => Option(parseClusteringModel(pMML))
+        case _                  => None
       },
-      clusteringModel = modelFunction match {
-        case "clustering" => Option(parseClusteringModel(pMML))
-        case _            => None
+      gaussianProcessModel = evaluator.getSummary match {
+        case "Gaussian process" => Option(parseGaussianProcessModel(pMML))
+        case _                  => None
       },
-      gaussianProcessModel = modelFunction match {
-        case "gaussianProcess" => Option(parseGaussianProcessModel(pMML))
-        case _                 => None
+      generalRegressionModel = evaluator.getSummary match {
+        case "General regression" => Option(parseGeneralRegressionModel(pMML))
+        case _                    => None
       },
-      generalRegressionModel = modelFunction match {
-        case "regression" => Option(parseGeneralRegressionModel(pMML))
-        case _            => None
-      },
-      miningModel = modelFunction match {
+      miningModel = evaluator.getSummary match {
         case _ => None
       },
-      naiveBayesModel = modelFunction match {
-        case _ => None
+      naiveBayesModel = evaluator.getSummary match {
+        case "Naive Bayes model" => Option(parseNaiveBayesModel(pMML))
+        case _                    => None
       },
-      nearestNeighborModel = modelFunction match {
+      nearestNeighborModel = evaluator.getSummary match {
         case _ => None
       },
       neuralNetwork = evaluator.getSummary match {
         case "Neural network" => Option(parseNeuralNetworkModel(pMML))
         case _                => None
       },
-      regressionModel = modelFunction match {
+      regressionModel = evaluator.getSummary match {
         case _ => None
       },
-      ruleSetModel = modelFunction match {
+      ruleSetModel = evaluator.getSummary match {
         case _ => None
       },
-      sequenceModel = modelFunction match {
+      sequenceModel = evaluator.getSummary match {
         case _ => None
       },
-      scorecard = modelFunction match {
+      scorecard = evaluator.getSummary match {
         case _ => None
       },
-      supportVectorMachineModel = modelFunction match {
+      supportVectorMachineModel = evaluator.getSummary match {
         case _ => None
       },
-      textModel = modelFunction match {
+      textModel = evaluator.getSummary match {
         case _ => None
       },
-      timeSeriesModel = modelFunction match {
+      timeSeriesModel = evaluator.getSummary match {
         case _ => None
       },
-      treeModel = modelFunction match {
+      treeModel = evaluator.getSummary match {
         case _ => None
       }
     )
@@ -350,7 +352,7 @@ trait Evaluator
 
     pmmlModel.bayesianNetworkModel match {
       // not yet implemented
-      case None =>
+      case None    =>
       case Some(_) =>
     }
 
@@ -372,19 +374,19 @@ trait Evaluator
 
     pmmlModel.gaussianProcessModel match {
       // not yet implemented
-      case None =>
+      case None    =>
       case Some(_) =>
     }
 
     pmmlModel.naiveBayesModel match {
       // not yet implemented
-      case None =>
+      case None    =>
       case Some(_) =>
     }
 
     pmmlModel.nearestNeighborModel match {
       // not yet implemented
-      case None =>
+      case None    =>
       case Some(_) =>
     }
 

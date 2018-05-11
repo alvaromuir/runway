@@ -29,10 +29,10 @@ class GeneralRegressionSpec
 
   "the evaluator" should
     "read General Regression models" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val miningFunction = "regression"
+    val modelClass = "General regression"
 
-    assert(pMML.getModels.get(0).getMiningFunction.value() == miningFunction)
+    assert(evaluator.getSummary == modelClass)
+
   }
 
   it should "provide information on required input fields" in {
@@ -245,6 +245,7 @@ class GeneralRegressionSpec
 
   it should "provide information on the target fields if available" in {
     val targets = evaluator.getTargetFields
+
     assert(Some(targets.get(0).getName.getValue).get.contains("sepal_length"))
     assert(Some(targets.get(0).getOpType).get.value().contains("continuous"))
     assert(Some(targets.get(0).getDataType).get.value().contains("double"))

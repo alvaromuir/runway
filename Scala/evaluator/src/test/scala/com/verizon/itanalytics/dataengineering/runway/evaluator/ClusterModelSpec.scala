@@ -30,10 +30,9 @@ class ClusterModelSpec
 
   "the evaluator" should
     "read Clustering models" in {
-    val pMML: PMML = readPMML(new File(testModelPath))
-    val miningFunction = "clustering"
+    val modelClass = "Clustering model"
 
-    assert(pMML.getModels.get(0).getMiningFunction.value() == miningFunction)
+    assert(evaluator.getSummary == modelClass)
   }
 
   it should "provide information on required input fields" in {
@@ -186,7 +185,7 @@ class ClusterModelSpec
 
   it should "provide information on the target fields if available" in {
     val targets = evaluator.getTargetFields
-    
+
     assert(Some(targets.get(0).getName).contains(null))
     assert(Some(targets.get(0).getOpType).get.value().contains("categorical"))
     assert(Some(targets.get(0).getDataType).get.value().contains("string"))
