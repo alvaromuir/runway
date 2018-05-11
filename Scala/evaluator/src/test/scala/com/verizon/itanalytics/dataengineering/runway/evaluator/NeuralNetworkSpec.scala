@@ -210,8 +210,8 @@ class NeuralNetworkSpec extends FlatSpec
     val targets = evaluator.getTargetFields
 
     assert(Some(targets.get(0).getName).get.getValue.contains("class"))
-    assert(Some(targets.get(0).getOpType).get.value().contains("categorical"))
     assert(Some(targets.get(0).getDataType).get.value().contains("string"))
+    assert(Some(targets.get(0).getOpType).get.value().contains("categorical"))
   }
 
   it should "return results from observation inputs" in {

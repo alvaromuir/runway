@@ -38,7 +38,8 @@ trait Evaluator
     with GaussianProcess
     with GeneralRegression
     with NeuralNetwork
-    with NaiveBayes {
+    with NaiveBayes
+    with Regression {
   val log: Logger = LoggerFactory.getLogger(getClass.getName)
 
   /** Returns a pMML file from input stream
@@ -296,7 +297,7 @@ trait Evaluator
       },
       naiveBayesModel = evaluator.getSummary match {
         case "Naive Bayes model" => Option(parseNaiveBayesModel(pMML))
-        case _                    => None
+        case _                   => None
       },
       nearestNeighborModel = evaluator.getSummary match {
         case _ => None
@@ -306,7 +307,8 @@ trait Evaluator
         case _                => None
       },
       regressionModel = evaluator.getSummary match {
-        case _ => None
+        case "Regression" => Option(parseRegressionModel(pMML))
+        case _            => None
       },
       ruleSetModel = evaluator.getSummary match {
         case _ => None
@@ -342,6 +344,7 @@ trait Evaluator
                       features: Map[Any, Any]): util.Map[FieldName, Any] = {
     val arguments = new mutable.LinkedHashMap[FieldName, Any]
 
+//    todo: improve this logic
     pmmlModel.associationModel match {
       case None =>
       case Some(_) =>
@@ -391,6 +394,14 @@ trait Evaluator
     }
 
     pmmlModel.neuralNetwork match {
+      case None =>
+      case Some(_) =>
+        features.map {
+          case (k, v) => arguments.put(FieldName.create(k.toString), v)
+        }
+    }
+
+    pmmlModel.regressionModel match {
       case None =>
       case Some(_) =>
         features.map {

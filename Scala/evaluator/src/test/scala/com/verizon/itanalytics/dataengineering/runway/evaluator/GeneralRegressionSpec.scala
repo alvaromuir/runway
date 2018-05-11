@@ -136,9 +136,7 @@ class GeneralRegressionSpec
   }
 
   it should "provide local transformation information, if available" in {
-    val localTransformations = model.get.localTransformations
-
-    assert(localTransformations.isEmpty)
+    assert(model.get.localTransformations.isEmpty)
   }
 
   it should "provide General Regression Model parameter list information" in {
