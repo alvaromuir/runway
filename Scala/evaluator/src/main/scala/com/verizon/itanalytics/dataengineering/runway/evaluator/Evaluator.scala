@@ -39,7 +39,8 @@ trait Evaluator
     with GeneralRegression
     with NeuralNetwork
     with NaiveBayes
-    with Regression {
+    with Regression
+    with RuleSet {
   val log: Logger = LoggerFactory.getLogger(getClass.getName)
 
   /** Returns a pMML file from input stream
@@ -66,7 +67,6 @@ trait Evaluator
     * @return Evaluator
     *
     */
-
   @throws[Exception]
   def evaluatePmml(pMML: PMML): ModelEvaluator[_ <: Model] = {
     val valueFactoryFactory: ValueFactoryFactory =
@@ -89,7 +89,6 @@ trait Evaluator
     val miningBuildTask = pMML.getMiningBuildTask
     val dataDictionary = pMML.getDataDictionary
     val transformationDictionary = pMML.getTransformationDictionary
-    val modelFunction = pMML.getModels.get(0).getMiningFunction.value()
     val formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
                                              Locale.ENGLISH).format(new Date())
 
@@ -311,6 +310,7 @@ trait Evaluator
         case _            => None
       },
       ruleSetModel = evaluator.getSummary match {
+        case "Ruleset model" => Option(parseRulSetModel(pMML))
         case _ => None
       },
       sequenceModel = evaluator.getSummary match {
@@ -402,6 +402,14 @@ trait Evaluator
     }
 
     pmmlModel.regressionModel match {
+      case None =>
+      case Some(_) =>
+        features.map {
+          case (k, v) => arguments.put(FieldName.create(k.toString), v)
+        }
+    }
+
+    pmmlModel.ruleSetModel match {
       case None =>
       case Some(_) =>
         features.map {

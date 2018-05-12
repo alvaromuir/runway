@@ -5,7 +5,7 @@ scalaVersion  := "2.11.8"
 
 
 libraryDependencies ++= {
-  val jpmmlVersion = "1.4.0"
+  val jpmmlVersion = "1.4.1"
   Seq(
     "org.jpmml" % "pmml-evaluator" % jpmmlVersion,
     "org.jpmml" % "pmml-evaluator-extension" % jpmmlVersion
