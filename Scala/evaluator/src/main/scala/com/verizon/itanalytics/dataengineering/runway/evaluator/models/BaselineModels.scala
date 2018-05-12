@@ -19,15 +19,15 @@ trait BaselineModels extends BaselineModel {
     * @return BaselineModel
     */
   def parseBaselineModel(pMML: PMML): BaselineModel = {
-    val baselineModel = pMML.getModels
+    val model = pMML.getModels
       .get(0)
       .asInstanceOf[org.dmg.pmml.baseline.BaselineModel]
 
     BaselineModel(
-      extension = baselineModel.getExtensions match {
+      extension = model.getExtensions match {
         case null => None
         case _ =>
-          Option(baselineModel.getExtensions.asScala.map { e =>
+          Option(model.getExtensions.asScala.map { e =>
             Extension(
               extender = e.getExtender match {
                 case null => None
@@ -45,10 +45,10 @@ trait BaselineModels extends BaselineModel {
           })
       },
       miningSchema = MiningSchema(
-        miningFields = baselineModel.getMiningSchema.getMiningFields match {
+        miningFields = model.getMiningSchema.getMiningFields match {
           case null => None
           case _ =>
-            Option(baselineModel.getMiningSchema.getMiningFields.asScala.map {
+            Option(model.getMiningSchema.getMiningFields.asScala.map {
               f =>
                 MiningField(
                   name = f.getName.getValue,
@@ -82,15 +82,15 @@ trait BaselineModels extends BaselineModel {
                 )
             })
         }),
-      output = baselineModel.getOutput match {
+      output = model.getOutput match {
         case null => None
         case _ =>
           Option(
             Output(
-              extension = baselineModel.getExtensions match {
+              extension = model.getExtensions match {
                 case null => None
                 case _ =>
-                  Option(baselineModel.getExtensions.asScala.map { e =>
+                  Option(model.getExtensions.asScala.map { e =>
                     Extension(
                       extender = e.getExtender match {
                         case null => None
@@ -111,7 +111,7 @@ trait BaselineModels extends BaselineModel {
                     )
                   })
               },
-              outputField = baselineModel.getOutput.getOutputFields.asScala
+              outputField = model.getOutput.getOutputFields.asScala
                 .map {
                   o =>
                     OutputField(
@@ -133,17 +133,17 @@ trait BaselineModels extends BaselineModel {
                 }
             ))
       },
-      modelStats = baselineModel.getModelStats match {
+      modelStats = model.getModelStats match {
         case null => None
         case _ =>
           Option(
             ModelStats(
               univariateStats =
-                baselineModel.getModelStats.getUnivariateStats match {
+                model.getModelStats.getUnivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      baselineModel.getModelStats.getUnivariateStats.asScala
+                      model.getModelStats.getUnivariateStats.asScala
                         .map {
                           u =>
                             UnivariateStats(
@@ -257,11 +257,11 @@ trait BaselineModels extends BaselineModel {
                         })
                 },
               multivariateStats =
-                baselineModel.getModelStats.getMultivariateStats match {
+                model.getModelStats.getMultivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      baselineModel.getModelStats.getMultivariateStats.asScala
+                      model.getModelStats.getMultivariateStats.asScala
                         .map {
                           m =>
                             MultivariateStats(
@@ -346,15 +346,15 @@ trait BaselineModels extends BaselineModel {
                 }
             ))
       },
-      modelExplanation = baselineModel.getModelExplanation match {
+      modelExplanation = model.getModelExplanation match {
         case null => None
         case _ =>
           Option(
             ModelExplanation(
-              extension = baselineModel.getModelExplanation.getExtensions match {
+              extension = model.getModelExplanation.getExtensions match {
                 case null => None
                 case _ =>
-                  Option(baselineModel.getModelExplanation.getExtensions.asScala.map { e =>
+                  Option(model.getModelExplanation.getExtensions.asScala.map { e =>
                     Extension(
                       extender = e.getExtender match {
                         case null => None
@@ -371,13 +371,13 @@ trait BaselineModels extends BaselineModel {
                     )
                   })
               },
-              correlations = baselineModel.getModelExplanation.getCorrelations match {
+              correlations = model.getModelExplanation.getCorrelations match {
                 case null => None
                 case _ => Option(
                   Correlations(
-                    extension = baselineModel.getModelExplanation.getCorrelations.getExtensions match {
+                    extension = model.getModelExplanation.getCorrelations.getExtensions match {
                       case null => None
-                      case _ => Option(baselineModel.getModelExplanation.getCorrelations.getExtensions.asScala.map { e =>
+                      case _ => Option(model.getModelExplanation.getCorrelations.getExtensions.asScala.map { e =>
                         Extension(
                           extender = e.getExtender match {
                             case null => None
@@ -395,13 +395,13 @@ trait BaselineModels extends BaselineModel {
                       })
                     },
                     correlationFields = Array(
-                      n = baselineModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
-                      `type` = baselineModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType.value(),
-                      value = baselineModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
+                      n = model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
+                      `type` = model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType.value(),
+                      value = model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
                     ),
                     correlationValues = {
                       val mtx =
-                        baselineModel.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
+                        model.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
                       Matrix(
                         matCell = mtx.getMatCells match {
                           case null => None
@@ -432,11 +432,11 @@ trait BaselineModels extends BaselineModel {
                       )
                     },
                     correlationMethods =
-                      baselineModel.getModelExplanation.getCorrelations.getCorrelationMethods match {
+                      model.getModelExplanation.getCorrelations.getCorrelationMethods match {
                         case null => None
                         case _ =>
                           val mtx =
-                            baselineModel.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
+                            model.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
                           Option(
                             Matrix(
                               matCell = mtx.getMatCells match {
@@ -470,10 +470,10 @@ trait BaselineModels extends BaselineModel {
                       }
                   ))
               },
-              predictiveModelQualities = baselineModel.getModelExplanation.getPredictiveModelQualities match {
+              predictiveModelQualities = model.getModelExplanation.getPredictiveModelQualities match {
                 case null => None
                 case _ =>
-                  Option(baselineModel.getModelExplanation.getPredictiveModelQualities.asScala.map {
+                  Option(model.getModelExplanation.getPredictiveModelQualities.asScala.map {
                     pmq =>
                       PredictiveModelQuality(
                         extension = pmq.getExtensions match {
@@ -527,7 +527,7 @@ trait BaselineModels extends BaselineModel {
                                       extension = pmq.getExtensions match {
                                         case null => None
                                         case _ =>
-                                          Option(baselineModel.getModelExplanation.getExtensions.asScala.map { e =>
+                                          Option(model.getModelExplanation.getExtensions.asScala.map { e =>
                                             Extension(
                                               extender = e.getExtender match {
                                                 case null => None
@@ -890,10 +890,10 @@ trait BaselineModels extends BaselineModel {
                       )
                   })
               },
-              clusteringModelQualities= baselineModel.getModelExplanation.getClusteringModelQualities match {
+              clusteringModelQualities= model.getModelExplanation.getClusteringModelQualities match {
                 case null => None
                 case _ =>
-                  Option(baselineModel.getModelExplanation.getClusteringModelQualities.asScala.map {
+                  Option(model.getModelExplanation.getClusteringModelQualities.asScala.map {
                     cmq =>
                       ClusteringModelQuality(
                         dataName = cmq.getDataName match {
@@ -913,9 +913,9 @@ trait BaselineModels extends BaselineModel {
               }
             ))
       },
-      targets = baselineModel.getTargets match {
+      targets = model.getTargets match {
         case null => None
-        case _ => Option(baselineModel.getTargets.asScala.map {
+        case _ => Option(model.getTargets.asScala.map {
           t =>
             Targets(
               field = t.getField match {
@@ -944,16 +944,16 @@ trait BaselineModels extends BaselineModel {
             )
         })
       },
-      localTransformation = baselineModel.getLocalTransformations match {
+      localTransformation = model.getLocalTransformations match {
         case null => None
         case _ =>
           Option(
             LocalTransformation(derivedFields =
-              baselineModel.getLocalTransformations.getDerivedFields match {
+              model.getLocalTransformations.getDerivedFields match {
                 case null => None
                 case _ =>
                   Option(
-                    baselineModel.getLocalTransformations.getDerivedFields.asScala
+                    model.getLocalTransformations.getDerivedFields.asScala
                       .map { d =>
                         DerivedField(
                           name = d.getName match {
@@ -971,26 +971,26 @@ trait BaselineModels extends BaselineModel {
               }))
       },
       testDistributions = TestDistributions(
-        field = baselineModel.getTestDistributions.getField.getValue,
-        testStatistic = baselineModel.getTestDistributions.getTestStatistic.value(),
-        resetValue = baselineModel.getTestDistributions.getResetValue match {
+        field = model.getTestDistributions.getField.getValue,
+        testStatistic = model.getTestDistributions.getTestStatistic.value(),
+        resetValue = model.getTestDistributions.getResetValue match {
           case null => None
-          case _ => Option(baselineModel.getTestDistributions.getResetValue)
+          case _ => Option(model.getTestDistributions.getResetValue)
         },
-        windowSize = baselineModel.getTestDistributions.getWindowSize match {
+        windowSize = model.getTestDistributions.getWindowSize match {
           case null => None
-          case _ => Option(baselineModel.getTestDistributions.getWindowSize)
+          case _ => Option(model.getTestDistributions.getWindowSize)
         },
-        weightField = baselineModel.getTestDistributions.getWeightField match {
+        weightField = model.getTestDistributions.getWeightField match {
           case null => None
-          case _ => Option(baselineModel.getTestDistributions.getWeightField.getValue)
+          case _ => Option(model.getTestDistributions.getWeightField.getValue)
         },
-        normalizationScheme = baselineModel.getTestDistributions.getNormalizationScheme match {
+        normalizationScheme = model.getTestDistributions.getNormalizationScheme match {
           case null => None
-          case _ => Option(baselineModel.getTestDistributions.getNormalizationScheme)
+          case _ => Option(model.getTestDistributions.getNormalizationScheme)
         },
         baseline = Baseline(
-          fieldRefs = baselineModel.getTestDistributions.getBaseline.getFieldRefs.asScala.map { r =>
+          fieldRefs = model.getTestDistributions.getBaseline.getFieldRefs.asScala.map { r =>
             FieldRef(
               field = r.getField.getValue,
               mapMissingTo = r.getMapMissingTo match {
@@ -1000,15 +1000,15 @@ trait BaselineModels extends BaselineModel {
             )
           },
           continuousDistribution =
-            baselineModel.getTestDistributions.getBaseline.getContinuousDistribution match {
+            model.getTestDistributions.getBaseline.getContinuousDistribution match {
               case null => None
               case _ =>
-                Option(baselineModel.getTestDistributions.getBaseline.getContinuousDistribution.toString) // review this, i *think* its supposed to be a class
+                Option(model.getTestDistributions.getBaseline.getContinuousDistribution.toString) // review this, i *think* its supposed to be a class
             },
-          countTable = baselineModel.getTestDistributions.getBaseline.getCountTable match {
+          countTable = model.getTestDistributions.getBaseline.getCountTable match {
             case null => None
             case _ =>
-              val ct = baselineModel.getTestDistributions.getBaseline.getNormalizedCountTable
+              val ct = model.getTestDistributions.getBaseline.getNormalizedCountTable
               Option(
                 CountTable(
                   fieldValues = ct.getFieldValues match {
@@ -1038,10 +1038,10 @@ trait BaselineModels extends BaselineModel {
                 ))
           },
           normalizedCountTable =
-            baselineModel.getTestDistributions.getBaseline.getNormalizedCountTable match {
+            model.getTestDistributions.getBaseline.getNormalizedCountTable match {
               case null => None
               case _ =>
-                val ct = baselineModel.getTestDistributions.getBaseline.getNormalizedCountTable
+                val ct = model.getTestDistributions.getBaseline.getNormalizedCountTable
                 Option(
                   CountTable(
                     fieldValues = ct.getFieldValues match {
@@ -1071,18 +1071,18 @@ trait BaselineModels extends BaselineModel {
                   ))
             }
         ),
-        alternate = baselineModel.getTestDistributions.getAlternate match {
+        alternate = model.getTestDistributions.getAlternate match {
           case null => None
           case _ =>
             Option(
               Alternate(continuousDistributionType =
-                baselineModel.getTestDistributions.getAlternate.getContinuousDistribution.toString))
+                model.getTestDistributions.getAlternate.getContinuousDistribution.toString))
         }
       ),
-      modelVerification = baselineModel.getModelVerification match {
+      modelVerification = model.getModelVerification match {
         case null => None
         case _ =>
-          val v = baselineModel.getModelVerification
+          val v = model.getModelVerification
           Option(
             ModelVerification(
               recordCount = v.getRecordCount match {
@@ -1096,16 +1096,16 @@ trait BaselineModels extends BaselineModel {
               verificationFields = None
             ))
       },
-      modelName = baselineModel.getModelName match {
+      modelName = model.getModelName match {
         case null => None
-        case _ => Option(baselineModel.getModelName)
+        case _ => Option(model.getModelName)
       },
-      functionName = baselineModel.getMiningFunction.value(),
-      algorithmName = baselineModel.getAlgorithmName match {
+      functionName = model.getMiningFunction.value(),
+      algorithmName = model.getAlgorithmName match {
         case null => None
-        case _ => Option(baselineModel.getAlgorithmName)
+        case _ => Option(model.getAlgorithmName)
       },
-      isScorable = Option(baselineModel.isScorable)
+      isScorable = Option(model.isScorable)
     )
   }
 }
