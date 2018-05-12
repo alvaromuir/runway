@@ -18,7 +18,8 @@ trait BayesianNetworkModel
     with Targets
     with LocalTransformation
     with TestDistributions
-    with ModelVerification {
+    with ModelVerification
+    with Content {
 
   case class BayesianNetworkModel(
       extension: Option[Seq[Extension]] = None,
@@ -40,13 +41,6 @@ trait BayesianNetworkModel
                                   content: Option[Seq[Content]] = None,
                                   discreteNode: Option[DiscreteNode] = None,
                                   continuousNode: Option[ContinuousNode] = None)
-
-  case class Content(locator: Locator)
-
-  case class Locator(publicId: Option[String] = None,
-                     systemId: Option[String] = None,
-                     lineNumber: Int = 1,
-                     columnNumber: Int = 1)
 
   case class ContinuousNode(
       extension: Option[Seq[Extension]] = None,
