@@ -14,6 +14,12 @@ import scala.collection.JavaConverters._
 
 trait ScoreCard extends ScoreCardModel {
 
+  /** Parses provided pMML file as an Scorecard Model
+    *
+    * @param pMML a valid pMML file
+    * @return ScoreCardModel
+    */
+
   def parseScoreCardModel(pMML: PMML): ScoreCardModel = {
     val model = pMML
       .getModels
