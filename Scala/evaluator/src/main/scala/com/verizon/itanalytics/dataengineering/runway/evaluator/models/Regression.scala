@@ -19,15 +19,15 @@ trait Regression extends RegressionModel {
     * @return RegressionModel
     */
   def parseRegressionModel(pMML: PMML): RegressionModel = {
-    val regressionModel = pMML.getModels
+    val model = pMML.getModels
       .get(0)
       .asInstanceOf[org.dmg.pmml.regression.RegressionModel]
 
     RegressionModel(
-      extension = regressionModel.getExtensions match {
+      extension = model.getExtensions match {
         case null => None
         case _ =>
-          Option(regressionModel.getExtensions.asScala.map {
+          Option(model.getExtensions.asScala.map {
             e =>
               Extension(
                 extender = e.getExtender match {
@@ -50,10 +50,10 @@ trait Regression extends RegressionModel {
           })
       },
       miningSchema = MiningSchema(
-        miningFields = regressionModel.getMiningSchema.getMiningFields match {
+        miningFields = model.getMiningSchema.getMiningFields match {
           case null => None
           case _ =>
-            Option(regressionModel.getMiningSchema.getMiningFields.asScala.map {
+            Option(model.getMiningSchema.getMiningFields.asScala.map {
               f =>
                 MiningField(
                   name = f.getName.getValue,
@@ -87,15 +87,15 @@ trait Regression extends RegressionModel {
                 )
             })
         }),
-      output = regressionModel.getOutput match {
+      output = model.getOutput match {
         case null => None
         case _ =>
           Option(
             Output(
-              extension = regressionModel.getOutput.getExtensions match {
+              extension = model.getOutput.getExtensions match {
                 case null => None
                 case _ =>
-                  Option(regressionModel.getOutput.getExtensions.asScala.map {
+                  Option(model.getOutput.getExtensions.asScala.map {
                     e =>
                       Extension(
                         extender = e.getExtender match {
@@ -120,7 +120,7 @@ trait Regression extends RegressionModel {
                       )
                   })
               },
-              outputField = regressionModel.getOutput.getOutputFields.asScala
+              outputField = model.getOutput.getOutputFields.asScala
                 .map {
                   o =>
                     OutputField(
@@ -142,17 +142,17 @@ trait Regression extends RegressionModel {
                 }
             ))
       },
-      modelStats = regressionModel.getModelStats match {
+      modelStats = model.getModelStats match {
         case null => None
         case _ =>
           Option(
             ModelStats(
               univariateStats =
-                regressionModel.getModelStats.getUnivariateStats match {
+                model.getModelStats.getUnivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      regressionModel.getModelStats.getUnivariateStats.asScala
+                      model.getModelStats.getUnivariateStats.asScala
                         .map {
                           u =>
                             UnivariateStats(
@@ -266,11 +266,11 @@ trait Regression extends RegressionModel {
                         })
                 },
               multivariateStats =
-                regressionModel.getModelStats.getMultivariateStats match {
+                model.getModelStats.getMultivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      regressionModel.getModelStats.getMultivariateStats.asScala
+                      model.getModelStats.getMultivariateStats.asScala
                         .map {
                           m =>
                             MultivariateStats(
@@ -355,17 +355,17 @@ trait Regression extends RegressionModel {
                 }
             ))
       },
-      modelExplanation = regressionModel.getModelExplanation match {
+      modelExplanation = model.getModelExplanation match {
         case null => None
         case _ =>
           Option(
             ModelExplanation(
               extension =
-                regressionModel.getModelExplanation.getExtensions match {
+                model.getModelExplanation.getExtensions match {
                   case null => None
                   case _ =>
                     Option(
-                      regressionModel.getModelExplanation.getExtensions.asScala
+                      model.getModelExplanation.getExtensions.asScala
                         .map { e =>
                           Extension(
                             extender = e.getExtender match {
@@ -384,17 +384,17 @@ trait Regression extends RegressionModel {
                         })
                 },
               correlations =
-                regressionModel.getModelExplanation.getCorrelations match {
+                model.getModelExplanation.getCorrelations match {
                   case null => None
                   case _ =>
                     Option(
                       Correlations(
                         extension =
-                          regressionModel.getModelExplanation.getCorrelations.getExtensions match {
+                          model.getModelExplanation.getCorrelations.getExtensions match {
                             case null => None
                             case _ =>
                               Option(
-                                regressionModel.getModelExplanation.getCorrelations.getExtensions.asScala
+                                model.getModelExplanation.getCorrelations.getExtensions.asScala
                                   .map { e =>
                                     Extension(
                                       extender = e.getExtender match {
@@ -414,16 +414,16 @@ trait Regression extends RegressionModel {
                           },
                         correlationFields = Array(
                           n =
-                            regressionModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
+                            model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
                           `type` =
-                            regressionModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType
+                            model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType
                               .value(),
                           value =
-                            regressionModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
+                            model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
                         ),
                         correlationValues = {
                           val mtx =
-                            regressionModel.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
+                            model.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
                           Matrix(
                             matCell = mtx.getMatCells match {
                               case null => None
@@ -454,11 +454,11 @@ trait Regression extends RegressionModel {
                           )
                         },
                         correlationMethods =
-                          regressionModel.getModelExplanation.getCorrelations.getCorrelationMethods match {
+                          model.getModelExplanation.getCorrelations.getCorrelationMethods match {
                             case null => None
                             case _ =>
                               val mtx =
-                                regressionModel.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
+                                model.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
                               Option(
                                 Matrix(
                                   matCell = mtx.getMatCells match {
@@ -492,11 +492,11 @@ trait Regression extends RegressionModel {
                       ))
                 },
               predictiveModelQualities =
-                regressionModel.getModelExplanation.getPredictiveModelQualities match {
+                model.getModelExplanation.getPredictiveModelQualities match {
                   case null => None
                   case _ =>
                     Option(
-                      regressionModel.getModelExplanation.getPredictiveModelQualities.asScala
+                      model.getModelExplanation.getPredictiveModelQualities.asScala
                         .map {
                           pmq =>
                             PredictiveModelQuality(
@@ -555,7 +555,7 @@ trait Regression extends RegressionModel {
                                                 case null => None
                                                 case _ =>
                                                   Option(
-                                                    regressionModel.getModelExplanation.getExtensions.asScala
+                                                    model.getModelExplanation.getExtensions.asScala
                                                       .map { e =>
                                                         Extension(
                                                           extender =
@@ -1101,11 +1101,11 @@ trait Regression extends RegressionModel {
                         })
                 },
               clusteringModelQualities =
-                regressionModel.getModelExplanation.getClusteringModelQualities match {
+                model.getModelExplanation.getClusteringModelQualities match {
                   case null => None
                   case _ =>
                     Option(
-                      regressionModel.getModelExplanation.getClusteringModelQualities.asScala
+                      model.getModelExplanation.getClusteringModelQualities.asScala
                         .map {
                           cmq =>
                             ClusteringModelQuality(
@@ -1126,10 +1126,10 @@ trait Regression extends RegressionModel {
                 }
             ))
       },
-      targets = regressionModel.getTargets match {
+      targets = model.getTargets match {
         case null => None
         case _ =>
-          Option(regressionModel.getTargets.asScala.map {
+          Option(model.getTargets.asScala.map {
             t =>
               Targets(
                 field = t.getField match {
@@ -1158,17 +1158,17 @@ trait Regression extends RegressionModel {
               )
           })
       },
-      localTransformations = regressionModel.getLocalTransformations match {
+      localTransformations = model.getLocalTransformations match {
         case null => None
         case _ =>
           Option(
             LocalTransformation(
               extension =
-                regressionModel.getLocalTransformations.getExtensions match {
+                model.getLocalTransformations.getExtensions match {
                   case null => None
                   case _ =>
                     Option(
-                      regressionModel.getLocalTransformations.getExtensions.asScala
+                      model.getLocalTransformations.getExtensions.asScala
                         .map { e =>
                           Extension(
                             extender = e.getExtender match {
@@ -1187,11 +1187,11 @@ trait Regression extends RegressionModel {
                         })
                 },
               derivedFields =
-                regressionModel.getLocalTransformations.getDerivedFields match {
+                model.getLocalTransformations.getDerivedFields match {
                   case null => None
                   case _ =>
                     Option(
-                      regressionModel.getLocalTransformations.getDerivedFields.asScala
+                      model.getLocalTransformations.getDerivedFields.asScala
                         .map { d =>
                           DerivedField(
                             name = d.getName match {
@@ -1209,7 +1209,7 @@ trait Regression extends RegressionModel {
                 }
             ))
       },
-      regressionTable = regressionModel.getRegressionTables.asScala.map { t =>
+      regressionTable = model.getRegressionTables.asScala.map { t =>
         RegressionTable(
           extension = t.getExtensions match {
             case null => None
@@ -1357,10 +1357,10 @@ trait Regression extends RegressionModel {
           }
         )
       },
-      modelVerification = regressionModel.getModelVerification match {
+      modelVerification = model.getModelVerification match {
         case null => None
         case _ =>
-          val v = regressionModel.getModelVerification
+          val v = model.getModelVerification
           Option(
             ModelVerification(
               recordCount = v.getRecordCount match {
@@ -1374,28 +1374,28 @@ trait Regression extends RegressionModel {
               verificationFields = None
             ))
       },
-      modelName = regressionModel.getModelName match {
+      modelName = model.getModelName match {
         case null => None
-        case _    => Option(regressionModel.getModelName)
+        case _    => Option(model.getModelName)
       },
-      functionName = regressionModel.getMiningFunction.value(),
-      algorithmName = regressionModel.getAlgorithmName match {
+      functionName = model.getMiningFunction.value(),
+      algorithmName = model.getAlgorithmName match {
         case null => None
-        case _    => Option(regressionModel.getAlgorithmName)
+        case _    => Option(model.getAlgorithmName)
       },
-      modelType = regressionModel.getModelType match {
+      modelType = model.getModelType match {
         case null => None
-        case _    => Option(regressionModel.getModelType.value())
+        case _    => Option(model.getModelType.value())
       },
-      targetFieldName = regressionModel.getTargetFieldName match {
+      targetFieldName = model.getTargetFieldName match {
         case null => None
-        case _    => Option(regressionModel.getTargetFieldName.getValue)
+        case _    => Option(model.getTargetFieldName.getValue)
       },
-      normalizationMethod = regressionModel.getNormalizationMethod match {
+      normalizationMethod = model.getNormalizationMethod match {
         case null => None
-        case _    => Option(regressionModel.getNormalizationMethod.value())
+        case _    => Option(model.getNormalizationMethod.value())
       },
-      isScorable = Option(regressionModel.isScorable)
+      isScorable = Option(model.isScorable)
     )
   }
 
