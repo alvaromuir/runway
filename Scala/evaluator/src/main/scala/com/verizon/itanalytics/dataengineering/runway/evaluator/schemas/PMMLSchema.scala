@@ -42,7 +42,7 @@ trait PMMLSchema
                          bayesianNetworkModel: Option[BayesianNetworkModel] = None,
                          clusteringModel: Option[ClusteringModel] = None,
                          gaussianProcessModel: Option[GaussianProcessModel] = None,
-                         generalRegressionModel: Option[GeneralRegression] = None,
+                         generalRegressionModel: Option[GeneralRegressionModel] = None,
                          miningModel: Option[MiningModel] = None,
                          naiveBayesModel: Option[NaiveBayesModel] = None,
                          nearestNeighborModel: Option[NearestNeighborModel] = None,

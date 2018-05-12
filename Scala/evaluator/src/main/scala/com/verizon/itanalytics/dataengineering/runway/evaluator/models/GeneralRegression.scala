@@ -18,16 +18,16 @@ trait GeneralRegression extends GeneralRegressionModel {
     * @param pMML a valid pMML file
     * @return GeneralRegressionModel Schema
     */
-  def parseGeneralRegressionModel(pMML: PMML): GeneralRegression = {
-    val generalRegressionModel = pMML.getModels
+  def parseGeneralRegressionModel(pMML: PMML): GeneralRegressionModel = {
+    val model = pMML.getModels
       .get(0)
       .asInstanceOf[org.dmg.pmml.general_regression.GeneralRegressionModel]
 
-    GeneralRegression(
-      extension = generalRegressionModel.getExtensions match {
+    GeneralRegressionModel(
+      extension = model.getExtensions match {
         case null => None
         case _ =>
-          Option(generalRegressionModel.getExtensions.asScala.map { e =>
+          Option(model.getExtensions.asScala.map { e =>
             Extension(
               extender = e.getExtender match {
                 case null => None
@@ -49,11 +49,11 @@ trait GeneralRegression extends GeneralRegressionModel {
           })
       },
       miningSchema = MiningSchema(
-        miningFields = generalRegressionModel.getMiningSchema.getMiningFields match {
+        miningFields = model.getMiningSchema.getMiningFields match {
           case null => None
           case _ =>
             Option(
-              generalRegressionModel.getMiningSchema.getMiningFields.asScala.map {
+              model.getMiningSchema.getMiningFields.asScala.map {
                 f =>
                   MiningField(
                     name = f.getName.getValue,
@@ -88,15 +88,15 @@ trait GeneralRegression extends GeneralRegressionModel {
                   )
               })
         }),
-      output = generalRegressionModel.getOutput match {
+      output = model.getOutput match {
         case null => None
         case _ =>
           Option(
             Output(
-              extension = generalRegressionModel.getExtensions match {
+              extension = model.getExtensions match {
                 case null => None
                 case _ =>
-                  Option(generalRegressionModel.getExtensions.asScala.map { e =>
+                  Option(model.getExtensions.asScala.map { e =>
                     Extension(
                       extender = e.getExtender match {
                         case null => None
@@ -117,7 +117,7 @@ trait GeneralRegression extends GeneralRegressionModel {
                     )
                   })
               },
-              outputField = generalRegressionModel.getOutput.getOutputFields.asScala
+              outputField = model.getOutput.getOutputFields.asScala
                 .map {
                   o =>
                     OutputField(
@@ -139,17 +139,17 @@ trait GeneralRegression extends GeneralRegressionModel {
                 }
             ))
       },
-      modelStats = generalRegressionModel.getModelStats match {
+      modelStats = model.getModelStats match {
         case null => None
         case _ =>
           Option(
             ModelStats(
               univariateStats =
-                generalRegressionModel.getModelStats.getUnivariateStats match {
+                model.getModelStats.getUnivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      generalRegressionModel.getModelStats.getUnivariateStats.asScala
+                      model.getModelStats.getUnivariateStats.asScala
                         .map {
                           u =>
                             UnivariateStats(
@@ -263,11 +263,11 @@ trait GeneralRegression extends GeneralRegressionModel {
                         })
                 },
               multivariateStats =
-                generalRegressionModel.getModelStats.getMultivariateStats match {
+                model.getModelStats.getMultivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      generalRegressionModel.getModelStats.getMultivariateStats.asScala
+                      model.getModelStats.getMultivariateStats.asScala
                         .map {
                           m =>
                             MultivariateStats(
@@ -352,15 +352,15 @@ trait GeneralRegression extends GeneralRegressionModel {
                 }
             ))
       },
-      modelExplanation = generalRegressionModel.getModelExplanation match {
+      modelExplanation = model.getModelExplanation match {
         case null => None
         case _ =>
           Option(
             ModelExplanation(
-              extension = generalRegressionModel.getModelExplanation.getExtensions match {
+              extension = model.getModelExplanation.getExtensions match {
                 case null => None
                 case _ =>
-                  Option(generalRegressionModel.getModelExplanation.getExtensions.asScala.map { e =>
+                  Option(model.getModelExplanation.getExtensions.asScala.map { e =>
                     Extension(
                       extender = e.getExtender match {
                         case null => None
@@ -377,13 +377,13 @@ trait GeneralRegression extends GeneralRegressionModel {
                     )
                   })
               },
-              correlations = generalRegressionModel.getModelExplanation.getCorrelations match {
+              correlations = model.getModelExplanation.getCorrelations match {
                 case null => None
                 case _ => Option(
                   Correlations(
-                    extension = generalRegressionModel.getModelExplanation.getCorrelations.getExtensions match {
+                    extension = model.getModelExplanation.getCorrelations.getExtensions match {
                       case null => None
-                      case _ => Option(generalRegressionModel.getModelExplanation.getCorrelations.getExtensions.asScala.map { e =>
+                      case _ => Option(model.getModelExplanation.getCorrelations.getExtensions.asScala.map { e =>
                         Extension(
                           extender = e.getExtender match {
                             case null => None
@@ -401,13 +401,13 @@ trait GeneralRegression extends GeneralRegressionModel {
                       })
                     },
                     correlationFields = Array(
-                      n = generalRegressionModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
-                      `type` = generalRegressionModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType.value(),
-                      value = generalRegressionModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
+                      n = model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
+                      `type` = model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType.value(),
+                      value = model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
                     ),
                     correlationValues = {
                       val mtx =
-                        generalRegressionModel.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
+                        model.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
                       Matrix(
                         matCell = mtx.getMatCells match {
                           case null => None
@@ -438,11 +438,11 @@ trait GeneralRegression extends GeneralRegressionModel {
                       )
                     },
                     correlationMethods =
-                      generalRegressionModel.getModelExplanation.getCorrelations.getCorrelationMethods match {
+                      model.getModelExplanation.getCorrelations.getCorrelationMethods match {
                         case null => None
                         case _ =>
                           val mtx =
-                            generalRegressionModel.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
+                            model.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
                           Option(
                             Matrix(
                               matCell = mtx.getMatCells match {
@@ -476,10 +476,10 @@ trait GeneralRegression extends GeneralRegressionModel {
                       }
                   ))
               },
-              predictiveModelQualities = generalRegressionModel.getModelExplanation.getPredictiveModelQualities match {
+              predictiveModelQualities = model.getModelExplanation.getPredictiveModelQualities match {
                 case null => None
                 case _ =>
-                  Option(generalRegressionModel.getModelExplanation.getPredictiveModelQualities.asScala.map {
+                  Option(model.getModelExplanation.getPredictiveModelQualities.asScala.map {
                     pmq =>
                       PredictiveModelQuality(
                         extension = pmq.getExtensions match {
@@ -533,7 +533,7 @@ trait GeneralRegression extends GeneralRegressionModel {
                                       extension = pmq.getExtensions match {
                                         case null => None
                                         case _ =>
-                                          Option(generalRegressionModel.getModelExplanation.getExtensions.asScala.map { e =>
+                                          Option(model.getModelExplanation.getExtensions.asScala.map { e =>
                                             Extension(
                                               extender = e.getExtender match {
                                                 case null => None
@@ -896,10 +896,10 @@ trait GeneralRegression extends GeneralRegressionModel {
                       )
                   })
               },
-              clusteringModelQualities= generalRegressionModel.getModelExplanation.getClusteringModelQualities match {
+              clusteringModelQualities= model.getModelExplanation.getClusteringModelQualities match {
                 case null => None
                 case _ =>
-                  Option(generalRegressionModel.getModelExplanation.getClusteringModelQualities.asScala.map {
+                  Option(model.getModelExplanation.getClusteringModelQualities.asScala.map {
                     cmq =>
                       ClusteringModelQuality(
                         dataName = cmq.getDataName match {
@@ -919,10 +919,10 @@ trait GeneralRegression extends GeneralRegressionModel {
               }
             ))
       },
-      targets = generalRegressionModel.getTargets match {
+      targets = model.getTargets match {
         case null => None
         case _ =>
-          Option(generalRegressionModel.getTargets.asScala.map {
+          Option(model.getTargets.asScala.map {
             t =>
               Targets(
                 field = t.getField match {
@@ -951,13 +951,13 @@ trait GeneralRegression extends GeneralRegressionModel {
               )
           })
       },
-      localTransformations = generalRegressionModel.getLocalTransformations match {
+      localTransformations = model.getLocalTransformations match {
         case null => None
         case _ => Option(LocalTransformation(
-          extension = generalRegressionModel.getLocalTransformations.getExtensions match {
+          extension = model.getLocalTransformations.getExtensions match {
             case null => None
             case _ =>
-              Option(generalRegressionModel.getLocalTransformations.getExtensions.asScala.map { e =>
+              Option(model.getLocalTransformations.getExtensions.asScala.map { e =>
                 Extension(
                   extender = e.getExtender match {
                     case null => None
@@ -974,11 +974,11 @@ trait GeneralRegression extends GeneralRegressionModel {
                 )
               })
           },
-          derivedFields = generalRegressionModel.getLocalTransformations.getDerivedFields match {
+          derivedFields = model.getLocalTransformations.getDerivedFields match {
             case null => None
             case _ =>
               Option(
-                generalRegressionModel.getLocalTransformations.getDerivedFields.asScala
+                model.getLocalTransformations.getDerivedFields.asScala
                   .map { d =>
                     DerivedField(
                       name = d.getName match {
@@ -996,9 +996,9 @@ trait GeneralRegression extends GeneralRegressionModel {
           }
         ))
       },
-      parameterList = generalRegressionModel.getParameterList match {
+      parameterList = model.getParameterList match {
         case null => None
-        case _    => Option(generalRegressionModel.getParameterList.getParameters.asScala.map {
+        case _    => Option(model.getParameterList.getParameters.asScala.map {
           p => Parameter(
             name = p.getName,
             label = p.getLabel match {
@@ -1013,9 +1013,9 @@ trait GeneralRegression extends GeneralRegressionModel {
           )
         })
       },
-      factorsList = generalRegressionModel.getFactorList match {
+      factorsList = model.getFactorList match {
         case null => None
-        case _    => Option(generalRegressionModel.getFactorList.getPredictors.asScala.map {
+        case _    => Option(model.getFactorList.getPredictors.asScala.map {
           p => Predictor(
             name = p.getField.getValue,
             contrastMatrixType = p.getContrastMatrixType match {
@@ -1058,9 +1058,9 @@ trait GeneralRegression extends GeneralRegressionModel {
           )
         })
       },
-      covariateList = generalRegressionModel.getCovariateList match {
+      covariateList = model.getCovariateList match {
         case null => None
-        case _    => Option(generalRegressionModel.getCovariateList.getPredictors.asScala.map {
+        case _    => Option(model.getCovariateList.getPredictors.asScala.map {
           p => Predictor(
             name = p.getField.getValue,
             contrastMatrixType = p.getContrastMatrixType match {
@@ -1103,9 +1103,9 @@ trait GeneralRegression extends GeneralRegressionModel {
           )
         })
       },
-      pPMatrix = generalRegressionModel.getPPMatrix match {
+      pPMatrix = model.getPPMatrix match {
         case null => None
-        case _    => Option(generalRegressionModel.getPPMatrix.getPPCells.asScala.map {
+        case _    => Option(model.getPPMatrix.getPPCells.asScala.map {
           p => PPCell(
             predictorName = p.getField.getValue,
             parameterName = p.getParameterName,
@@ -1120,13 +1120,13 @@ trait GeneralRegression extends GeneralRegressionModel {
           )
         })
       },
-      pCovMatrix = generalRegressionModel.getPCovMatrix match {
+      pCovMatrix = model.getPCovMatrix match {
         case null => None
         case _    => Option(PCovMatrix(
-          `type`=  generalRegressionModel.getPCovMatrix.getType.value(),
-          pCovCells = generalRegressionModel.getPCovMatrix.getPCovCells match {
+          `type`=  model.getPCovMatrix.getType.value(),
+          pCovCells = model.getPCovMatrix.getPCovCells match {
             case null => None
-            case _ => Option(generalRegressionModel.getPCovMatrix.getPCovCells.asScala.map {
+            case _ => Option(model.getPCovMatrix.getPCovCells.asScala.map {
               c => PCovCell(
                 pRow = c.getPRow,
                 pCol = c.getPCol,
@@ -1147,9 +1147,9 @@ trait GeneralRegression extends GeneralRegressionModel {
             })
           }))
       },
-      paramMatrix = generalRegressionModel.getParamMatrix match {
+      paramMatrix = model.getParamMatrix match {
         case null => None
-        case _    => Option(generalRegressionModel.getParamMatrix.getPCells.asScala.map {
+        case _    => Option(model.getParamMatrix.getPCells.asScala.map {
           c => PCell(
             targetCategory = c.getTargetCategory match {
               case null => None
@@ -1161,12 +1161,12 @@ trait GeneralRegression extends GeneralRegressionModel {
           )
         })
       },
-      eventValues = generalRegressionModel.getEventValues match {
+      eventValues = model.getEventValues match {
         case null => None
         case _    => Option(EventValues(
-          values = generalRegressionModel.getEventValues.getValues match {
+          values = model.getEventValues.getValues match {
             case null => None
-            case _ => Option(generalRegressionModel.getEventValues.getValues.asScala.map {
+            case _ => Option(model.getEventValues.getValues.asScala.map {
               v => EventValue(
                 displayValue = v.getDisplayValue,
                 key = v.getKey,
@@ -1181,9 +1181,9 @@ trait GeneralRegression extends GeneralRegressionModel {
               )
             })
           },
-          intervals = generalRegressionModel.getEventValues.getIntervals match {
+          intervals = model.getEventValues.getIntervals match {
             case null => None
-            case _ => Option(generalRegressionModel.getEventValues.getIntervals.asScala.map {
+            case _ => Option(model.getEventValues.getIntervals.asScala.map {
               i => Interval(
                 closure = i.getClosure.value(),
                 leftMargin = i.getLeftMargin match {
@@ -1199,16 +1199,16 @@ trait GeneralRegression extends GeneralRegressionModel {
           }
         ))
       },
-      baseCumHazardTables = generalRegressionModel.getBaseCumHazardTables match {
+      baseCumHazardTables = model.getBaseCumHazardTables match {
         case null => None
         case _ => Option(BaseCumHazardTable(
-          maxTime = generalRegressionModel.getBaseCumHazardTables.getMaxTime match {
+          maxTime = model.getBaseCumHazardTables.getMaxTime match {
             case null => None
-            case _ => Option(generalRegressionModel.getBaseCumHazardTables.getMaxTime.toDouble)
+            case _ => Option(model.getBaseCumHazardTables.getMaxTime.toDouble)
           },
-          baselineStratum = generalRegressionModel.getBaseCumHazardTables.getBaselineStrata match {
+          baselineStratum = model.getBaseCumHazardTables.getBaselineStrata match {
             case null => None
-            case _ => Option(generalRegressionModel.getBaseCumHazardTables.getBaselineStrata.asScala.map {
+            case _ => Option(model.getBaseCumHazardTables.getBaselineStrata.asScala.map {
               s => BaselineStratum(
                 value = s.getValue,
                 label = s.getLabel match {
@@ -1228,9 +1228,9 @@ trait GeneralRegression extends GeneralRegressionModel {
               )
             })
           },
-          baselineCells = generalRegressionModel.getBaseCumHazardTables.getBaselineCells match {
+          baselineCells = model.getBaseCumHazardTables.getBaselineCells match {
             case null => None
-            case _ => Option(generalRegressionModel.getBaseCumHazardTables.getBaselineCells.asScala.map {
+            case _ => Option(model.getBaseCumHazardTables.getBaselineCells.asScala.map {
               c => BaselineCell(
                 time = c.getTime,
                 cumHazard = c.getCumHazard
@@ -1239,10 +1239,10 @@ trait GeneralRegression extends GeneralRegressionModel {
           }
         ))
       },
-      modelVerification = generalRegressionModel.getModelVerification match {
+      modelVerification = model.getModelVerification match {
         case null => None
         case _ =>
-          val v = generalRegressionModel.getModelVerification
+          val v = model.getModelVerification
           Option(
             ModelVerification(
               recordCount = v.getRecordCount match {
@@ -1256,86 +1256,86 @@ trait GeneralRegression extends GeneralRegressionModel {
               verificationFields = None
             ))
       },
-      targetVariableName = generalRegressionModel.getTargetVariableName match {
+      targetVariableName = model.getTargetVariableName match {
         case null => None
-        case _ => Option(generalRegressionModel.getTargetVariableName.getValue)
+        case _ => Option(model.getTargetVariableName.getValue)
       },
-      modelType = generalRegressionModel.getModelType.value(),
-      modelName = generalRegressionModel.getModelName match {
+      modelType = model.getModelType.value(),
+      modelName = model.getModelName match {
         case null => None
-        case _    => Option(generalRegressionModel.getModelName)
+        case _    => Option(model.getModelName)
       },
-      functionName = generalRegressionModel.getMiningFunction.value(),
-      algorithmName = generalRegressionModel.getAlgorithmName match {
+      functionName = model.getMiningFunction.value(),
+      algorithmName = model.getAlgorithmName match {
         case null => None
-        case _    => Option(generalRegressionModel.getAlgorithmName)
+        case _    => Option(model.getAlgorithmName)
       },
       targetReferenceCategory =
-        generalRegressionModel.getTargetReferenceCategory match {
+        model.getTargetReferenceCategory match {
           case null => None
-          case _    => Option(generalRegressionModel.getTargetReferenceCategory)
+          case _    => Option(model.getTargetReferenceCategory)
         },
-      cumulativeLink = generalRegressionModel.getCumulativeLinkFunction match {
+      cumulativeLink = model.getCumulativeLinkFunction match {
         case null => None
-        case _    => Option(generalRegressionModel.getCumulativeLinkFunction.value())
+        case _    => Option(model.getCumulativeLinkFunction.value())
       },
-      linkFunction = generalRegressionModel.getLinkFunction match {
+      linkFunction = model.getLinkFunction match {
         case null => None
-        case _    => Option(generalRegressionModel.getLinkFunction.value())
+        case _    => Option(model.getLinkFunction.value())
       },
-      linkParameter = generalRegressionModel.getLinkParameter match {
+      linkParameter = model.getLinkParameter match {
         case null => None
-        case _    => Option(generalRegressionModel.getLinkParameter.toDouble)
+        case _    => Option(model.getLinkParameter.toDouble)
       },
-      trialsVariable = generalRegressionModel.getTrialsVariable match {
+      trialsVariable = model.getTrialsVariable match {
         case null => None
-        case _    => Option(generalRegressionModel.getTrialsVariable.getValue)
+        case _    => Option(model.getTrialsVariable.getValue)
       },
-      trialsValue = generalRegressionModel.getTrialsValue match {
+      trialsValue = model.getTrialsValue match {
         case null => None
-        case _    => Option(generalRegressionModel.getTrialsValue.toInt)
+        case _    => Option(model.getTrialsValue.toInt)
       },
-      distribution = generalRegressionModel.getDistribution match {
+      distribution = model.getDistribution match {
         case null => None
-        case _ => Option(generalRegressionModel.getDistribution.value())
+        case _ => Option(model.getDistribution.value())
       },
-      distParameter = generalRegressionModel.getDistParameter match {
+      distParameter = model.getDistParameter match {
         case null => None
-        case _    => Option(generalRegressionModel.getDistParameter.toDouble)
+        case _    => Option(model.getDistParameter.toDouble)
       },
-      offsetVariable = generalRegressionModel.getOffsetVariable match {
+      offsetVariable = model.getOffsetVariable match {
         case null => None
-        case _    => Option(generalRegressionModel.getOffsetVariable.getValue)
+        case _    => Option(model.getOffsetVariable.getValue)
       },
-      offsetValue = generalRegressionModel.getOffsetValue match {
+      offsetValue = model.getOffsetValue match {
         case null => None
-        case _    => Option(generalRegressionModel.getOffsetValue.toDouble)
+        case _    => Option(model.getOffsetValue.toDouble)
       },
-      modelDF = generalRegressionModel.getModelDF match {
+      modelDF = model.getModelDF match {
         case null => None
-        case _    => Option(generalRegressionModel.getModelDF.toDouble)
+        case _    => Option(model.getModelDF.toDouble)
       },
-      endTimeVariable = generalRegressionModel.getEndTimeVariable match {
+      endTimeVariable = model.getEndTimeVariable match {
         case null => None
-        case _    => Option(generalRegressionModel.getEndTimeVariable.getValue)
+        case _    => Option(model.getEndTimeVariable.getValue)
       },
-      startTimeVariable = generalRegressionModel.getStartTimeVariable match {
+      startTimeVariable = model.getStartTimeVariable match {
         case null => None
-        case _    => Option(generalRegressionModel.getStartTimeVariable.getValue)
+        case _    => Option(model.getStartTimeVariable.getValue)
       },
-      subjectIDVariable = generalRegressionModel.getSubjectIDVariable match {
+      subjectIDVariable = model.getSubjectIDVariable match {
         case null => None
-        case _    => Option(generalRegressionModel.getSubjectIDVariable.getValue)
+        case _    => Option(model.getSubjectIDVariable.getValue)
       },
-      statusVariable = generalRegressionModel.getStatusVariable match {
+      statusVariable = model.getStatusVariable match {
         case null => None
-        case _    => Option(generalRegressionModel.getStatusVariable.getValue)
+        case _    => Option(model.getStatusVariable.getValue)
       },
-      baselineStrataVariable = generalRegressionModel.getBaselineStrataVariable match {
+      baselineStrataVariable = model.getBaselineStrataVariable match {
         case null => None
-        case _    => Option(generalRegressionModel.getBaselineStrataVariable.getValue)
+        case _    => Option(model.getBaselineStrataVariable.getValue)
       },
-      isScorable = Option(generalRegressionModel.isScorable)
+      isScorable = Option(model.isScorable)
     )
   }
 }

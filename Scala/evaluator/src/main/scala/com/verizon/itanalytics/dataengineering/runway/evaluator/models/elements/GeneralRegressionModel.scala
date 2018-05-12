@@ -25,7 +25,7 @@ trait GeneralRegressionModel
     with LocalTransformation
     with ModelVerification {
 
-  case class GeneralRegression(
+  case class GeneralRegressionModel(
       extension: Option[Seq[Extension]] = None,
       miningSchema: MiningSchema,
       output: Option[Output] = None,

@@ -25,7 +25,7 @@ class GeneralRegressionSpec
   val pMML: PMML = readPMML(new File(testModelPath))
   val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
   val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
-  val model: Option[GeneralRegression] = pmmlModel.generalRegressionModel
+  val model: Option[GeneralRegressionModel] = pmmlModel.generalRegressionModel
 
   "the evaluator" should
     "read General Regression models" in {
