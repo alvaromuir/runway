@@ -20,15 +20,15 @@ trait MiningModels extends MiningModel {
     */
   def parseMiningModel(pMML: PMML): MiningModel = {
 
-    val miningModel = pMML.getModels
+    val model = pMML.getModels
       .get(0)
       .asInstanceOf[org.dmg.pmml.mining.MiningModel]
 
     MiningModel(
-      extension = miningModel.getExtensions match {
+      extension = model.getExtensions match {
         case null => None
         case _ =>
-          Option(miningModel.getExtensions.asScala.map { e =>
+          Option(model.getExtensions.asScala.map { e =>
             Extension(
               extender = e.getExtender match {
                 case null => None
@@ -50,10 +50,10 @@ trait MiningModels extends MiningModel {
           })
       },
       miningSchema = MiningSchema(
-        miningFields = miningModel.getMiningSchema.getMiningFields match {
+        miningFields = model.getMiningSchema.getMiningFields match {
           case null => None
           case _ =>
-            Option(miningModel.getMiningSchema.getMiningFields.asScala.map {
+            Option(model.getMiningSchema.getMiningFields.asScala.map {
               f =>
                 MiningField(
                   name = f.getName.getValue,
@@ -87,15 +87,15 @@ trait MiningModels extends MiningModel {
                 )
             })
         }),
-      output = miningModel.getOutput match {
+      output = model.getOutput match {
         case null => None
         case _ =>
           Option(
             Output(
-              extension = miningModel.getExtensions match {
+              extension = model.getExtensions match {
                 case null => None
                 case _ =>
-                  Option(miningModel.getExtensions.asScala.map { e =>
+                  Option(model.getExtensions.asScala.map { e =>
                     Extension(
                       extender = e.getExtender match {
                         case null => None
@@ -116,7 +116,7 @@ trait MiningModels extends MiningModel {
                     )
                   })
               },
-              outputField = miningModel.getOutput.getOutputFields.asScala
+              outputField = model.getOutput.getOutputFields.asScala
                 .map {
                   o =>
                     OutputField(
@@ -138,17 +138,17 @@ trait MiningModels extends MiningModel {
                 }
             ))
       },
-      modelStats = miningModel.getModelStats match {
+      modelStats = model.getModelStats match {
         case null => None
         case _ =>
           Option(
             ModelStats(
               univariateStats =
-                miningModel.getModelStats.getUnivariateStats match {
+                model.getModelStats.getUnivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      miningModel.getModelStats.getUnivariateStats.asScala
+                      model.getModelStats.getUnivariateStats.asScala
                         .map {
                           u =>
                             UnivariateStats(
@@ -262,11 +262,11 @@ trait MiningModels extends MiningModel {
                         })
                 },
               multivariateStats =
-                miningModel.getModelStats.getMultivariateStats match {
+                model.getModelStats.getMultivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      miningModel.getModelStats.getMultivariateStats.asScala
+                      model.getModelStats.getMultivariateStats.asScala
                         .map {
                           m =>
                             MultivariateStats(
@@ -351,16 +351,16 @@ trait MiningModels extends MiningModel {
                 }
             ))
       },
-      modelExplanation = miningModel.getModelExplanation match {
+      modelExplanation = model.getModelExplanation match {
         case null => None
         case _ =>
           Option(
             ModelExplanation(
-              extension = miningModel.getModelExplanation.getExtensions match {
+              extension = model.getModelExplanation.getExtensions match {
                 case null => None
                 case _ =>
                   Option(
-                    miningModel.getModelExplanation.getExtensions.asScala.map {
+                    model.getModelExplanation.getExtensions.asScala.map {
                       e =>
                         Extension(
                           extender = e.getExtender match {
@@ -379,17 +379,17 @@ trait MiningModels extends MiningModel {
                     })
               },
               correlations =
-                miningModel.getModelExplanation.getCorrelations match {
+                model.getModelExplanation.getCorrelations match {
                   case null => None
                   case _ =>
                     Option(
                       Correlations(
                         extension =
-                          miningModel.getModelExplanation.getCorrelations.getExtensions match {
+                          model.getModelExplanation.getCorrelations.getExtensions match {
                             case null => None
                             case _ =>
                               Option(
-                                miningModel.getModelExplanation.getCorrelations.getExtensions.asScala
+                                model.getModelExplanation.getCorrelations.getExtensions.asScala
                                   .map { e =>
                                     Extension(
                                       extender = e.getExtender match {
@@ -409,16 +409,16 @@ trait MiningModels extends MiningModel {
                           },
                         correlationFields = Array(
                           n =
-                            miningModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
+                            model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
                           `type` =
-                            miningModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType
+                            model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType
                               .value(),
                           value =
-                            miningModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
+                            model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
                         ),
                         correlationValues = {
                           val mtx =
-                            miningModel.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
+                            model.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
                           Matrix(
                             matCell = mtx.getMatCells match {
                               case null => None
@@ -449,11 +449,11 @@ trait MiningModels extends MiningModel {
                           )
                         },
                         correlationMethods =
-                          miningModel.getModelExplanation.getCorrelations.getCorrelationMethods match {
+                          model.getModelExplanation.getCorrelations.getCorrelationMethods match {
                             case null => None
                             case _ =>
                               val mtx =
-                                miningModel.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
+                                model.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
                               Option(
                                 Matrix(
                                   matCell = mtx.getMatCells match {
@@ -487,11 +487,11 @@ trait MiningModels extends MiningModel {
                       ))
                 },
               predictiveModelQualities =
-                miningModel.getModelExplanation.getPredictiveModelQualities match {
+                model.getModelExplanation.getPredictiveModelQualities match {
                   case null => None
                   case _ =>
                     Option(
-                      miningModel.getModelExplanation.getPredictiveModelQualities.asScala
+                      model.getModelExplanation.getPredictiveModelQualities.asScala
                         .map {
                           pmq =>
                             PredictiveModelQuality(
@@ -550,7 +550,7 @@ trait MiningModels extends MiningModel {
                                                 case null => None
                                                 case _ =>
                                                   Option(
-                                                    miningModel.getModelExplanation.getExtensions.asScala
+                                                    model.getModelExplanation.getExtensions.asScala
                                                       .map { e =>
                                                         Extension(
                                                           extender =
@@ -1096,11 +1096,11 @@ trait MiningModels extends MiningModel {
                         })
                 },
               clusteringModelQualities =
-                miningModel.getModelExplanation.getClusteringModelQualities match {
+                model.getModelExplanation.getClusteringModelQualities match {
                   case null => None
                   case _ =>
                     Option(
-                      miningModel.getModelExplanation.getClusteringModelQualities.asScala
+                      model.getModelExplanation.getClusteringModelQualities.asScala
                         .map {
                           cmq =>
                             ClusteringModelQuality(
@@ -1121,10 +1121,10 @@ trait MiningModels extends MiningModel {
                 }
             ))
       },
-      targets = miningModel.getTargets match {
+      targets = model.getTargets match {
         case null => None
         case _ =>
-          Option(miningModel.getTargets.asScala.map {
+          Option(model.getTargets.asScala.map {
             t =>
               Targets(
                 field = t.getField match {
@@ -1153,17 +1153,17 @@ trait MiningModels extends MiningModel {
               )
           })
       },
-      localTransformations = miningModel.getLocalTransformations match {
+      localTransformations = model.getLocalTransformations match {
         case null => None
         case _ =>
           Option(
             LocalTransformation(
               extension =
-                miningModel.getLocalTransformations.getExtensions match {
+                model.getLocalTransformations.getExtensions match {
                   case null => None
                   case _ =>
                     Option(
-                      miningModel.getLocalTransformations.getExtensions.asScala
+                      model.getLocalTransformations.getExtensions.asScala
                         .map { e =>
                           Extension(
                             extender = e.getExtender match {
@@ -1182,11 +1182,11 @@ trait MiningModels extends MiningModel {
                         })
                 },
               derivedFields =
-                miningModel.getLocalTransformations.getDerivedFields match {
+                model.getLocalTransformations.getDerivedFields match {
                   case null => None
                   case _ =>
                     Option(
-                      miningModel.getLocalTransformations.getDerivedFields.asScala
+                      model.getLocalTransformations.getDerivedFields.asScala
                         .map { d =>
                           DerivedField(
                             name = d.getName match {
@@ -1204,17 +1204,17 @@ trait MiningModels extends MiningModel {
                 }
             ))
       },
-      segmentation = miningModel.getSegmentation match {
+      segmentation = model.getSegmentation match {
         case null => None
         case _ =>
           Option(
             Segmentation(
               multipleModelMethod =
-                miningModel.getSegmentation.getMultipleModelMethod.value,
-              segments = miningModel.getSegmentation.getSegments match {
+                model.getSegmentation.getMultipleModelMethod.value,
+              segments = model.getSegmentation.getSegments match {
                 case null => None
                 case _ =>
-                  Option(miningModel.getSegmentation.getSegments.asScala.map {
+                  Option(model.getSegmentation.getSegments.asScala.map {
                     s =>
                       Segment(
                         id = s.getId match {
@@ -1226,15 +1226,15 @@ trait MiningModels extends MiningModel {
                       )
                   })
               },
-              localTransformation = miningModel.getLocalTransformations match {
+              localTransformation = model.getLocalTransformations match {
                 case null => None
                 case _ =>
                   Option(LocalTransformation(derivedFields =
-                    miningModel.getLocalTransformations.getDerivedFields match {
+                    model.getLocalTransformations.getDerivedFields match {
                       case null => None
                       case _ =>
                         Option(
-                          miningModel.getLocalTransformations.getDerivedFields.asScala
+                          model.getLocalTransformations.getDerivedFields.asScala
                             .map { d =>
                               DerivedField(
                                 name = d.getName match {
@@ -1253,10 +1253,10 @@ trait MiningModels extends MiningModel {
               }
             ))
       },
-      modelVerification = miningModel.getModelVerification match {
+      modelVerification = model.getModelVerification match {
         case null => None
         case _ =>
-          val v = miningModel.getModelVerification
+          val v = model.getModelVerification
           Option(
             ModelVerification(
               recordCount = v.getRecordCount match {
@@ -1270,10 +1270,10 @@ trait MiningModels extends MiningModel {
               verificationFields = None
             ))
       },
-      embeddedModels = miningModel.getEmbeddedModels match {
+      embeddedModels = model.getEmbeddedModels match {
         case null => None
         case _ =>
-          Option(miningModel.getEmbeddedModels.asScala.map { m =>
+          Option(model.getEmbeddedModels.asScala.map { m =>
             EmbeddedModels(
               modelName = m.getModelName match {
                 case null => None
@@ -1631,16 +1631,16 @@ trait MiningModels extends MiningModel {
             )
           })
       },
-      modelName = miningModel.getModelName match {
+      modelName = model.getModelName match {
         case null => None
-        case _    => Option(miningModel.getModelName)
+        case _    => Option(model.getModelName)
       },
-      functionName = miningModel.getMiningFunction.value(),
-      algorithmName = miningModel.getAlgorithmName match {
+      functionName = model.getMiningFunction.value(),
+      algorithmName = model.getAlgorithmName match {
         case null => None
-        case _    => Option(miningModel.getAlgorithmName)
+        case _    => Option(model.getAlgorithmName)
       },
-      isScorable = Option(miningModel.isScorable)
+      isScorable = Option(model.isScorable)
     )
   }
 }
