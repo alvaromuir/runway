@@ -15,7 +15,7 @@ trait NearestNeighborModel
     with TestDistributions
     with TrainingInstances {
 
-  case class KNearestNeighbor(
+  case class NearestNeighborModel(
       extension: Option[Seq[Extension]] = None,
       miningSchema: MiningSchema,
       output: Option[Output] = None,

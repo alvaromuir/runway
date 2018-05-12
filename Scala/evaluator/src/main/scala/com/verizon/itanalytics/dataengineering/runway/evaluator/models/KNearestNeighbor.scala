@@ -13,17 +13,17 @@ import scala.collection.JavaConverters._
 
 trait KNearestNeighbor extends NearestNeighborModel {
 
-  def parseNearestNeighborModel(pMML: PMML): KNearestNeighbor = {
-    val nearestNeighborModel = pMML
+  def parseNearestNeighborModel(pMML: PMML): NearestNeighborModel = {
+    val model = pMML
       .getModels
       .get(0)
       .asInstanceOf[org.dmg.pmml.nearest_neighbor.NearestNeighborModel]
 
-    KNearestNeighbor(
-      extension = nearestNeighborModel.getExtensions match {
+    NearestNeighborModel(
+      extension = model.getExtensions match {
         case null => None
         case _ =>
-          Option(nearestNeighborModel.getExtensions.asScala.map {
+          Option(model.getExtensions.asScala.map {
             e =>
               Extension(
                 extender = e.getExtender match {
@@ -49,11 +49,11 @@ trait KNearestNeighbor extends NearestNeighborModel {
           })
       },
       miningSchema = MiningSchema(miningFields =
-        nearestNeighborModel.getMiningSchema.getMiningFields match {
+        model.getMiningSchema.getMiningFields match {
           case null => None
           case _ =>
             Option(
-              nearestNeighborModel.getMiningSchema.getMiningFields.asScala.map {
+              model.getMiningSchema.getMiningFields.asScala.map {
                 f =>
                   MiningField(
                     name = f.getName.getValue,
@@ -88,15 +88,15 @@ trait KNearestNeighbor extends NearestNeighborModel {
                   )
               })
         }),
-      output = nearestNeighborModel.getOutput match {
+      output = model.getOutput match {
         case null => None
         case _ =>
           Option(
             Output(
-              extension = nearestNeighborModel.getExtensions match {
+              extension = model.getExtensions match {
                 case null => None
                 case _ =>
-                  Option(nearestNeighborModel.getExtensions.asScala.map {
+                  Option(model.getExtensions.asScala.map {
                     e =>
                       Extension(
                         extender = e.getExtender match {
@@ -122,7 +122,7 @@ trait KNearestNeighbor extends NearestNeighborModel {
                   })
               },
               outputField =
-                nearestNeighborModel.getOutput.getOutputFields.asScala
+                model.getOutput.getOutputFields.asScala
                   .map {
                     o =>
                       OutputField(
@@ -144,17 +144,17 @@ trait KNearestNeighbor extends NearestNeighborModel {
                   }
             ))
       },
-      modelStats = nearestNeighborModel.getModelStats match {
+      modelStats = model.getModelStats match {
         case null => None
         case _ =>
           Option(
             ModelStats(
               univariateStats =
-                nearestNeighborModel.getModelStats.getUnivariateStats match {
+                model.getModelStats.getUnivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      nearestNeighborModel.getModelStats.getUnivariateStats.asScala
+                      model.getModelStats.getUnivariateStats.asScala
                         .map {
                           u =>
                             UnivariateStats(
@@ -268,11 +268,11 @@ trait KNearestNeighbor extends NearestNeighborModel {
                         })
                 },
               multivariateStats =
-                nearestNeighborModel.getModelStats.getMultivariateStats match {
+                model.getModelStats.getMultivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      nearestNeighborModel.getModelStats.getMultivariateStats.asScala
+                      model.getModelStats.getMultivariateStats.asScala
                         .map {
                           m =>
                             MultivariateStats(
@@ -357,17 +357,17 @@ trait KNearestNeighbor extends NearestNeighborModel {
                 }
             ))
       },
-      modelExplanation = nearestNeighborModel.getModelExplanation match {
+      modelExplanation = model.getModelExplanation match {
         case null => None
         case _ =>
           Option(
             ModelExplanation(
               extension =
-                nearestNeighborModel.getModelExplanation.getExtensions match {
+                model.getModelExplanation.getExtensions match {
                   case null => None
                   case _ =>
                     Option(
-                      nearestNeighborModel.getModelExplanation.getExtensions.asScala
+                      model.getModelExplanation.getExtensions.asScala
                         .map { e =>
                           Extension(
                             extender = e.getExtender match {
@@ -386,17 +386,17 @@ trait KNearestNeighbor extends NearestNeighborModel {
                         })
                 },
               correlations =
-                nearestNeighborModel.getModelExplanation.getCorrelations match {
+                model.getModelExplanation.getCorrelations match {
                   case null => None
                   case _ =>
                     Option(
                       Correlations(
                         extension =
-                          nearestNeighborModel.getModelExplanation.getCorrelations.getExtensions match {
+                          model.getModelExplanation.getCorrelations.getExtensions match {
                             case null => None
                             case _ =>
                               Option(
-                                nearestNeighborModel.getModelExplanation.getCorrelations.getExtensions.asScala
+                                model.getModelExplanation.getCorrelations.getExtensions.asScala
                                   .map { e =>
                                     Extension(
                                       extender = e.getExtender match {
@@ -416,16 +416,16 @@ trait KNearestNeighbor extends NearestNeighborModel {
                           },
                         correlationFields = Array(
                           n =
-                            nearestNeighborModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
+                            model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
                           `type` =
-                            nearestNeighborModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType
+                            model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType
                               .value(),
                           value =
-                            nearestNeighborModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
+                            model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
                         ),
                         correlationValues = {
                           val mtx =
-                            nearestNeighborModel.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
+                            model.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
                           Matrix(
                             matCell = mtx.getMatCells match {
                               case null => None
@@ -456,11 +456,11 @@ trait KNearestNeighbor extends NearestNeighborModel {
                           )
                         },
                         correlationMethods =
-                          nearestNeighborModel.getModelExplanation.getCorrelations.getCorrelationMethods match {
+                          model.getModelExplanation.getCorrelations.getCorrelationMethods match {
                             case null => None
                             case _ =>
                               val mtx =
-                                nearestNeighborModel.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
+                                model.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
                               Option(
                                 Matrix(
                                   matCell = mtx.getMatCells match {
@@ -494,11 +494,11 @@ trait KNearestNeighbor extends NearestNeighborModel {
                       ))
                 },
               predictiveModelQualities =
-                nearestNeighborModel.getModelExplanation.getPredictiveModelQualities match {
+                model.getModelExplanation.getPredictiveModelQualities match {
                   case null => None
                   case _ =>
                     Option(
-                      nearestNeighborModel.getModelExplanation.getPredictiveModelQualities.asScala
+                      model.getModelExplanation.getPredictiveModelQualities.asScala
                         .map {
                           pmq =>
                             PredictiveModelQuality(
@@ -557,7 +557,7 @@ trait KNearestNeighbor extends NearestNeighborModel {
                                                 case null => None
                                                 case _ =>
                                                   Option(
-                                                    nearestNeighborModel.getModelExplanation.getExtensions.asScala
+                                                    model.getModelExplanation.getExtensions.asScala
                                                       .map { e =>
                                                         Extension(
                                                           extender =
@@ -1103,11 +1103,11 @@ trait KNearestNeighbor extends NearestNeighborModel {
                         })
                 },
               clusteringModelQualities =
-                nearestNeighborModel.getModelExplanation.getClusteringModelQualities match {
+                model.getModelExplanation.getClusteringModelQualities match {
                   case null => None
                   case _ =>
                     Option(
-                      nearestNeighborModel.getModelExplanation.getClusteringModelQualities.asScala
+                      model.getModelExplanation.getClusteringModelQualities.asScala
                         .map {
                           cmq =>
                             ClusteringModelQuality(
@@ -1128,10 +1128,10 @@ trait KNearestNeighbor extends NearestNeighborModel {
                 }
             ))
       },
-      targets = nearestNeighborModel.getTargets match {
+      targets = model.getTargets match {
         case null => None
         case _ =>
-          Option(nearestNeighborModel.getTargets.asScala.map {
+          Option(model.getTargets.asScala.map {
             t =>
               Targets(
                 field = t.getField match {
@@ -1160,17 +1160,17 @@ trait KNearestNeighbor extends NearestNeighborModel {
               )
           })
       },
-      localTransformations = nearestNeighborModel.getLocalTransformations match {
+      localTransformations = model.getLocalTransformations match {
         case null => None
         case _ =>
           Option(
             LocalTransformation(
               extension =
-                nearestNeighborModel.getLocalTransformations.getExtensions match {
+                model.getLocalTransformations.getExtensions match {
                   case null => None
                   case _ =>
                     Option(
-                      nearestNeighborModel.getLocalTransformations.getExtensions.asScala
+                      model.getLocalTransformations.getExtensions.asScala
                         .map { e =>
                           Extension(
                             extender = e.getExtender match {
@@ -1189,11 +1189,11 @@ trait KNearestNeighbor extends NearestNeighborModel {
                         })
                 },
               derivedFields =
-                nearestNeighborModel.getLocalTransformations.getDerivedFields match {
+                model.getLocalTransformations.getDerivedFields match {
                   case null => None
                   case _ =>
                     Option(
-                      nearestNeighborModel.getLocalTransformations.getDerivedFields.asScala
+                      model.getLocalTransformations.getDerivedFields.asScala
                         .map { d =>
                           DerivedField(
                             name = d.getName match {
@@ -1211,33 +1211,33 @@ trait KNearestNeighbor extends NearestNeighborModel {
                 }
             ))
       },
-      trainingInstances = nearestNeighborModel.getTrainingInstances match {
+      trainingInstances = model.getTrainingInstances match {
         case null => None
         case _ =>
           Option(
             TrainingInstances(
               isTransformed =
-                nearestNeighborModel.getTrainingInstances.isTransformed,
+                model.getTrainingInstances.isTransformed,
               recordCount =
-                nearestNeighborModel.getTrainingInstances.getRecordCount match {
+                model.getTrainingInstances.getRecordCount match {
                   case null => None
                   case _ =>
                     Option(
-                      nearestNeighborModel.getTrainingInstances.getRecordCount.toInt)
+                      model.getTrainingInstances.getRecordCount.toInt)
                 },
               fieldCount =
-                nearestNeighborModel.getTrainingInstances.getFieldCount match {
+                model.getTrainingInstances.getFieldCount match {
                   case null => None
                   case _ =>
                     Option(
-                      nearestNeighborModel.getTrainingInstances.getFieldCount.toInt)
+                      model.getTrainingInstances.getFieldCount.toInt)
                 },
               instanceFields =
-                nearestNeighborModel.getTrainingInstances.getInstanceFields match {
+                model.getTrainingInstances.getInstanceFields match {
                   case null => None
                   case _ =>
                     Option(
-                      nearestNeighborModel.getTrainingInstances.getInstanceFields.asScala
+                      model.getTrainingInstances.getInstanceFields.asScala
                         .map { f =>
                           InstanceField(
                             field = f.getField.getValue,
@@ -1247,33 +1247,33 @@ trait KNearestNeighbor extends NearestNeighborModel {
                         })
                 },
               tableLocator =
-                nearestNeighborModel.getTrainingInstances.getTableLocator match {
+                model.getTrainingInstances.getTableLocator match {
                   case null => None
                   case _ =>
                     Option(
-                      nearestNeighborModel.getTrainingInstances.getTableLocator.toString) // not sure what this is
+                      model.getTrainingInstances.getTableLocator.toString) // not sure what this is
                 },
               inlineTables =
-                nearestNeighborModel.getTrainingInstances.getInlineTable match {
+                model.getTrainingInstances.getInlineTable match {
                   case null => None
                   case _ =>
                     Option(
-                      nearestNeighborModel.getTrainingInstances.getInlineTable.getRows.asScala
+                      model.getTrainingInstances.getInlineTable.getRows.asScala
                         .map(r => Row(row = r.toString)))
                 }
             ))
       },
-      comparisonMeasure = nearestNeighborModel.getComparisonMeasure match {
+      comparisonMeasure = model.getComparisonMeasure match {
         case null => None
         case _ =>
           Option(
             ComparisonMeasure(
               extension =
-                nearestNeighborModel.getComparisonMeasure.getExtensions match {
+                model.getComparisonMeasure.getExtensions match {
                   case null => None
                   case _ =>
                     Option(
-                      nearestNeighborModel.getComparisonMeasure.getExtensions.asScala
+                      model.getComparisonMeasure.getExtensions.asScala
                         .map {
                           e =>
                             Extension(
@@ -1299,41 +1299,41 @@ trait KNearestNeighbor extends NearestNeighborModel {
                             )
                         })
                 },
-              kind = nearestNeighborModel.getComparisonMeasure.getKind.value(),
+              kind = model.getComparisonMeasure.getKind.value(),
               compareFunction =
-                nearestNeighborModel.getComparisonMeasure.getCompareFunction
+                model.getComparisonMeasure.getCompareFunction
                   .value(),
               minimum =
-                nearestNeighborModel.getComparisonMeasure.getMinimum match {
+                model.getComparisonMeasure.getMinimum match {
                   case null => None
                   case _ =>
                     Option(
-                      nearestNeighborModel.getComparisonMeasure.getMinimum.toDouble)
+                      model.getComparisonMeasure.getMinimum.toDouble)
                 },
               maximum =
-                nearestNeighborModel.getComparisonMeasure.getMaximum match {
+                model.getComparisonMeasure.getMaximum match {
                   case null => None
                   case _ =>
                     Option(
-                      nearestNeighborModel.getComparisonMeasure.getMaximum.toDouble)
+                      model.getComparisonMeasure.getMaximum.toDouble)
                 },
               measure =
-                nearestNeighborModel.getComparisonMeasure.getMeasure match {
+                model.getComparisonMeasure.getMeasure match {
                   case null => None
                   case _ =>
                     Option(
-                      nearestNeighborModel.getComparisonMeasure.getMeasure.toString) // revist
+                      model.getComparisonMeasure.getMeasure.toString) // revist
                 }
             ))
       },
-      knnInputs = nearestNeighborModel.getKNNInputs match {
+      knnInputs = model.getKNNInputs match {
         case null => None
         case _    => None
       },
-      modelVerification = nearestNeighborModel.getModelVerification match {
+      modelVerification = model.getModelVerification match {
         case null => None
         case _ =>
-          val v = nearestNeighborModel.getModelVerification
+          val v = model.getModelVerification
           Option(
             ModelVerification(
               recordCount = v.getRecordCount match {
@@ -1347,26 +1347,26 @@ trait KNearestNeighbor extends NearestNeighborModel {
               verificationFields = None
             ))
       },
-      modelName = nearestNeighborModel.getModelName match {
+      modelName = model.getModelName match {
         case null => None
-        case _    => Option(nearestNeighborModel.getModelName)
+        case _    => Option(model.getModelName)
       },
-      functionName = nearestNeighborModel.getMiningFunction.value(),
-      algorithmName = nearestNeighborModel.getAlgorithmName match {
+      functionName = model.getMiningFunction.value(),
+      algorithmName = model.getAlgorithmName match {
         case null => None
-        case _    => Option(nearestNeighborModel.getAlgorithmName)
+        case _    => Option(model.getAlgorithmName)
       },
-      numberOfNeighbors = nearestNeighborModel.getNumberOfNeighbors,
+      numberOfNeighbors = model.getNumberOfNeighbors,
       continuousScoringMethod =
-        nearestNeighborModel.getContinuousScoringMethod.value(),
+        model.getContinuousScoringMethod.value(),
       categoricalScoringMethod =
-        nearestNeighborModel.getCategoricalScoringMethod.value(),
-      instanceIdVariable = nearestNeighborModel.getInstanceIdVariable match {
+        model.getCategoricalScoringMethod.value(),
+      instanceIdVariable = model.getInstanceIdVariable match {
         case null => None
         case _    => None
       },
-      threshold = nearestNeighborModel.getThreshold.toDouble,
-      isScorable = Option(nearestNeighborModel.isScorable)
+      threshold = model.getThreshold.toDouble,
+      isScorable = Option(model.isScorable)
     )
   }
 }
