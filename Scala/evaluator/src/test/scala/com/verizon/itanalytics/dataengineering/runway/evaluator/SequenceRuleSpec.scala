@@ -2,10 +2,9 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator
 
 import java.io.File
 
-import scala.collection.JavaConverters._
 import com.verizon.itanalytics.dataengineering.runway.evaluator.testutils.TestUtils
-import org.dmg.pmml.{FieldName, Model, PMML}
-import org.jpmml.evaluator.{ModelEvaluator, UnsupportedElementException}
+import org.dmg.pmml.PMML
+import org.jpmml.evaluator.UnsupportedElementException
 import org.scalatest.FlatSpec
 
 /*
