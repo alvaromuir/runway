@@ -19,14 +19,14 @@ trait ClusterModel extends ClusteringModel {
     * @return ClusteringModel
     */
   def parseClusteringModel(pMML: PMML): ClusteringModel = {
-    val clusteringModel = pMML.getModels
+    val model = pMML.getModels
       .get(0)
       .asInstanceOf[org.dmg.pmml.clustering.ClusteringModel]
 
     ClusteringModel(
-      extension = clusteringModel.getExtensions match {
+      extension = model.getExtensions match {
         case null => None
-        case _ => Option(clusteringModel.getExtensions.asScala.map {
+        case _ => Option(model.getExtensions.asScala.map {
           e => Extension(
             extender = e.getExtender match {
               case null => None
@@ -44,11 +44,11 @@ trait ClusterModel extends ClusteringModel {
         })
       },
       miningSchema = MiningSchema(
-        miningFields = clusteringModel.getMiningSchema.getMiningFields match {
+        miningFields = model.getMiningSchema.getMiningFields match {
           case null => None
           case _ =>
             Option(
-              clusteringModel.getMiningSchema.getMiningFields.asScala.map {
+              model.getMiningSchema.getMiningFields.asScala.map {
                 f =>
                   MiningField(
                     name = f.getName.getValue,
@@ -83,13 +83,13 @@ trait ClusterModel extends ClusteringModel {
                   )
               })
         }),
-      output = clusteringModel.getOutput match {
+      output = model.getOutput match {
         case null => None
         case _ =>
           Option(Output(
-            extension = clusteringModel.getExtensions match {
+            extension = model.getExtensions match {
               case null => None
-              case _ => Option(clusteringModel.getExtensions.asScala.map {
+              case _ => Option(model.getExtensions.asScala.map {
                 e => Extension(
                   extender = e.getExtender match {
                     case null => None
@@ -110,7 +110,7 @@ trait ClusterModel extends ClusteringModel {
                 )
               })
             },
-            outputField = clusteringModel.getOutput.getOutputFields.asScala
+            outputField = model.getOutput.getOutputFields.asScala
               .map {
                 o =>
                   OutputField(
@@ -132,17 +132,17 @@ trait ClusterModel extends ClusteringModel {
               })
           )
       },
-      modelStats = clusteringModel.getModelStats match {
+      modelStats = model.getModelStats match {
         case null => None
         case _ =>
           Option(
             ModelStats(
               univariateStats =
-                clusteringModel.getModelStats.getUnivariateStats match {
+                model.getModelStats.getUnivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      clusteringModel.getModelStats.getUnivariateStats.asScala
+                      model.getModelStats.getUnivariateStats.asScala
                         .map {
                           u =>
                             UnivariateStats(
@@ -256,11 +256,11 @@ trait ClusterModel extends ClusteringModel {
                         })
                 },
               multivariateStats =
-                clusteringModel.getModelStats.getMultivariateStats match {
+                model.getModelStats.getMultivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      clusteringModel.getModelStats.getMultivariateStats.asScala
+                      model.getModelStats.getMultivariateStats.asScala
                         .map {
                           m =>
                             MultivariateStats(
@@ -345,15 +345,15 @@ trait ClusterModel extends ClusteringModel {
                 }
             ))
       },
-      modelExplanation = clusteringModel.getModelExplanation match {
+      modelExplanation = model.getModelExplanation match {
         case null => None
         case _ =>
           Option(
             ModelExplanation(
-              extension = clusteringModel.getModelExplanation.getExtensions match {
+              extension = model.getModelExplanation.getExtensions match {
                 case null => None
                 case _ =>
-                  Option(clusteringModel.getModelExplanation.getExtensions.asScala.map { e =>
+                  Option(model.getModelExplanation.getExtensions.asScala.map { e =>
                     Extension(
                       extender = e.getExtender match {
                         case null => None
@@ -370,13 +370,13 @@ trait ClusterModel extends ClusteringModel {
                     )
                   })
               },
-              correlations = clusteringModel.getModelExplanation.getCorrelations match {
+              correlations = model.getModelExplanation.getCorrelations match {
                 case null => None
                 case _ => Option(
                   Correlations(
-                    extension = clusteringModel.getModelExplanation.getCorrelations.getExtensions match {
+                    extension = model.getModelExplanation.getCorrelations.getExtensions match {
                       case null => None
-                      case _ => Option(clusteringModel.getModelExplanation.getCorrelations.getExtensions.asScala.map { e =>
+                      case _ => Option(model.getModelExplanation.getCorrelations.getExtensions.asScala.map { e =>
                         Extension(
                           extender = e.getExtender match {
                             case null => None
@@ -398,13 +398,13 @@ trait ClusterModel extends ClusteringModel {
                       })
                     },
                     correlationFields = Array(
-                      n = clusteringModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
-                      `type` = clusteringModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType.value(),
-                      value = clusteringModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
+                      n = model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
+                      `type` = model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType.value(),
+                      value = model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
                     ),
                     correlationValues = {
                       val mtx =
-                        clusteringModel.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
+                        model.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
                       Matrix(
                         matCell = mtx.getMatCells match {
                           case null => None
@@ -435,11 +435,11 @@ trait ClusterModel extends ClusteringModel {
                       )
                     },
                     correlationMethods =
-                      clusteringModel.getModelExplanation.getCorrelations.getCorrelationMethods match {
+                      model.getModelExplanation.getCorrelations.getCorrelationMethods match {
                         case null => None
                         case _ =>
                           val mtx =
-                            clusteringModel.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
+                            model.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
                           Option(
                             Matrix(
                               matCell = mtx.getMatCells match {
@@ -473,10 +473,10 @@ trait ClusterModel extends ClusteringModel {
                       }
                   ))
               },
-              predictiveModelQualities = clusteringModel.getModelExplanation.getPredictiveModelQualities match {
+              predictiveModelQualities = model.getModelExplanation.getPredictiveModelQualities match {
                 case null => None
                 case _ =>
-                  Option(clusteringModel.getModelExplanation.getPredictiveModelQualities.asScala.map {
+                  Option(model.getModelExplanation.getPredictiveModelQualities.asScala.map {
                     pmq =>
                       PredictiveModelQuality(
                         extension = pmq.getExtensions match {
@@ -530,7 +530,7 @@ trait ClusterModel extends ClusteringModel {
                                       extension = pmq.getExtensions match {
                                         case null => None
                                         case _ =>
-                                          Option(clusteringModel.getModelExplanation.getExtensions.asScala.map { e =>
+                                          Option(model.getModelExplanation.getExtensions.asScala.map { e =>
                                             Extension(
                                               extender = e.getExtender match {
                                                 case null => None
@@ -893,10 +893,10 @@ trait ClusterModel extends ClusteringModel {
                       )
                   })
               },
-              clusteringModelQualities = clusteringModel.getModelExplanation.getClusteringModelQualities match {
+              clusteringModelQualities = model.getModelExplanation.getClusteringModelQualities match {
                 case null => None
                 case _ =>
-                  Option(clusteringModel.getModelExplanation.getClusteringModelQualities.asScala.map {
+                  Option(model.getModelExplanation.getClusteringModelQualities.asScala.map {
                     cmq =>
                       ClusteringModelQuality(
                         dataName = cmq.getDataName match {
@@ -916,16 +916,16 @@ trait ClusterModel extends ClusteringModel {
               }
             ))
       },
-      localTransformations = clusteringModel.getLocalTransformations match {
+      localTransformations = model.getLocalTransformations match {
         case null => None
         case _ =>
           Option(
             LocalTransformation(derivedFields =
-              clusteringModel.getLocalTransformations.getDerivedFields match {
+              model.getLocalTransformations.getDerivedFields match {
                 case null => None
                 case _ =>
                   Option(
-                    clusteringModel.getLocalTransformations.getDerivedFields.asScala
+                    model.getLocalTransformations.getDerivedFields.asScala
                       .map { d =>
                         DerivedField(
                           name = d.getName match {
@@ -943,11 +943,11 @@ trait ClusterModel extends ClusteringModel {
               }))
       },
       comparisonMeasure = ComparisonMeasure(
-        extension = clusteringModel.getExtensions match {
+        extension = model.getExtensions match {
           case null => None
           case _ =>
             Option(
-              clusteringModel.getExtensions.asScala.map { e =>
+              model.getExtensions.asScala.map { e =>
                 Extension(
                   extender = e.getExtender match {
                     case null => None
@@ -968,25 +968,25 @@ trait ClusterModel extends ClusteringModel {
                 )
               })
         },
-        kind = clusteringModel.getComparisonMeasure.getKind.value(),
-        compareFunction = clusteringModel.getComparisonMeasure.getCompareFunction.value(),
-        minimum = clusteringModel.getComparisonMeasure.getMinimum match {
+        kind = model.getComparisonMeasure.getKind.value(),
+        compareFunction = model.getComparisonMeasure.getCompareFunction.value(),
+        minimum = model.getComparisonMeasure.getMinimum match {
           case null => None
-          case _ => Option(clusteringModel.getComparisonMeasure.getMinimum)
+          case _ => Option(model.getComparisonMeasure.getMinimum)
         },
-        maximum = clusteringModel.getComparisonMeasure.getMaximum match {
+        maximum = model.getComparisonMeasure.getMaximum match {
           case null => None
-          case _ => Option(clusteringModel.getComparisonMeasure.getMaximum)
+          case _ => Option(model.getComparisonMeasure.getMaximum)
         },
-        measure = clusteringModel.getComparisonMeasure.getMeasure match {
+        measure = model.getComparisonMeasure.getMeasure match {
           case null => None
-          case _ => Option(clusteringModel.getComparisonMeasure.getMeasure
+          case _ => Option(model.getComparisonMeasure.getMeasure
             .toString
             .split("org.dmg.pmml.")
             .tail.head.split("@").head) // this should be of "Measure" type and RegEx
         }
       ),
-      clusteringFields = clusteringModel.getClusteringFields.asScala.map {
+      clusteringFields = model.getClusteringFields.asScala.map {
         f => ClusteringField(
           extension = f.getExtensions match {
             case null => None
@@ -1019,15 +1019,15 @@ trait ClusterModel extends ClusteringModel {
             case _ => Option(f.getCompareFunction.value())
           })
       },
-      missingValueWeights = clusteringModel.getMissingValueWeights match {
+      missingValueWeights = model.getMissingValueWeights match {
         case null => None
         case _ => Option(Array(
-          n = clusteringModel.getMissingValueWeights.getArray.getN.toInt,
-          `type` = clusteringModel.getMissingValueWeights.getArray.getType.value(),
-          value = clusteringModel.getMissingValueWeights.getArray.getValue
+          n = model.getMissingValueWeights.getArray.getN.toInt,
+          `type` = model.getMissingValueWeights.getArray.getType.value(),
+          value = model.getMissingValueWeights.getArray.getValue
         ))
       },
-      cluster = clusteringModel.getClusters.asScala.map {
+      cluster = model.getClusters.asScala.map {
         c => Cluster(
           extension = c.getExtensions match {
             case null => None
@@ -1121,10 +1121,10 @@ trait ClusterModel extends ClusteringModel {
             ))
           })
       },
-      modelVerification = clusteringModel.getModelVerification match {
+      modelVerification = model.getModelVerification match {
         case null => None
         case _ =>
-          val v = clusteringModel.getModelVerification
+          val v = model.getModelVerification
           Option(
             ModelVerification(
               recordCount = v.getRecordCount match {
@@ -1138,18 +1138,18 @@ trait ClusterModel extends ClusteringModel {
               verificationFields = None
             ))
       },
-      modelName = clusteringModel.getModelName match {
+      modelName = model.getModelName match {
         case null => None
-        case _    => Option(clusteringModel.getModelName)
+        case _    => Option(model.getModelName)
       },
-      functionName = clusteringModel.getMiningFunction.value(),
-      algorithmName = clusteringModel.getAlgorithmName match {
+      functionName = model.getMiningFunction.value(),
+      algorithmName = model.getAlgorithmName match {
         case null => None
-        case _ => Option(clusteringModel.getAlgorithmName)
+        case _ => Option(model.getAlgorithmName)
       },
-      modelClass = clusteringModel.getModelClass.value(),
-      numberOfClusters = clusteringModel.getNumberOfClusters,
-      isScorable = Option(clusteringModel.isScorable)
+      modelClass = model.getModelClass.value(),
+      numberOfClusters = model.getNumberOfClusters,
+      isScorable = Option(model.isScorable)
     )
   }
 }
