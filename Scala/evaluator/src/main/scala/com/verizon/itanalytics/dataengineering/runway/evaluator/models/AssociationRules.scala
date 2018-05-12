@@ -19,15 +19,15 @@ trait AssociationRules extends AssociationModel {
     * @return AssociationModel
     */
   def parseAssociationModel(pMML: PMML): AssociationModel = {
-    val associationModel = pMML.getModels
+    val model = pMML.getModels
       .get(0)
       .asInstanceOf[org.dmg.pmml.association.AssociationModel]
 
     AssociationModel(
-      extension = associationModel.getExtensions match {
+      extension = model.getExtensions match {
         case null => None
         case _ =>
-          Option(associationModel.getExtensions.asScala.map { e =>
+          Option(model.getExtensions.asScala.map { e =>
             Extension(
               extender = e.getExtender match {
                 case null => None
@@ -49,11 +49,11 @@ trait AssociationRules extends AssociationModel {
           })
       },
       miningSchema = MiningSchema(
-        miningFields = associationModel.getMiningSchema.getMiningFields match {
+        miningFields = model.getMiningSchema.getMiningFields match {
           case null => None
           case _ =>
             Option(
-              associationModel.getMiningSchema.getMiningFields.asScala.map {
+              model.getMiningSchema.getMiningFields.asScala.map {
                 f =>
                   MiningField(
                     name = f.getName.getValue,
@@ -88,15 +88,15 @@ trait AssociationRules extends AssociationModel {
                   )
               })
         }),
-      output = associationModel.getOutput match {
+      output = model.getOutput match {
         case null => None
         case _ =>
           Option(
             Output(
-              extension = associationModel.getExtensions match {
+              extension = model.getExtensions match {
                 case null => None
                 case _ =>
-                  Option(associationModel.getExtensions.asScala.map { e =>
+                  Option(model.getExtensions.asScala.map { e =>
                     Extension(
                       extender = e.getExtender match {
                         case null => None
@@ -117,7 +117,7 @@ trait AssociationRules extends AssociationModel {
                     )
                   })
               },
-              outputField = associationModel.getOutput.getOutputFields.asScala
+              outputField = model.getOutput.getOutputFields.asScala
                 .map {
                   o =>
                     OutputField(
@@ -139,17 +139,17 @@ trait AssociationRules extends AssociationModel {
                 }
             ))
       },
-      modelStats = associationModel.getModelStats match {
+      modelStats = model.getModelStats match {
         case null => None
         case _ =>
           Option(
             ModelStats(
               univariateStats =
-                associationModel.getModelStats.getUnivariateStats match {
+                model.getModelStats.getUnivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      associationModel.getModelStats.getUnivariateStats.asScala
+                      model.getModelStats.getUnivariateStats.asScala
                         .map {
                           u =>
                             UnivariateStats(
@@ -263,11 +263,11 @@ trait AssociationRules extends AssociationModel {
                         })
                 },
               multivariateStats =
-                associationModel.getModelStats.getMultivariateStats match {
+                model.getModelStats.getMultivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      associationModel.getModelStats.getMultivariateStats.asScala
+                      model.getModelStats.getMultivariateStats.asScala
                         .map {
                           m =>
                             MultivariateStats(
@@ -352,16 +352,16 @@ trait AssociationRules extends AssociationModel {
                 }
             ))
       },
-      localTransformations = associationModel.getLocalTransformations match {
+      localTransformations = model.getLocalTransformations match {
         case null => None
         case _ =>
           Option(
             LocalTransformation(derivedFields =
-              associationModel.getLocalTransformations.getDerivedFields match {
+              model.getLocalTransformations.getDerivedFields match {
                 case null => None
                 case _ =>
                   Option(
-                    associationModel.getLocalTransformations.getDerivedFields.asScala
+                    model.getLocalTransformations.getDerivedFields.asScala
                       .map { d =>
                         DerivedField(
                           name = d.getName match {
@@ -378,11 +378,11 @@ trait AssociationRules extends AssociationModel {
                       })
               }))
       },
-      item = associationModel.getItems match {
+      item = model.getItems match {
         case null => None
         case _ =>
           Option(
-            associationModel.getItems.asScala
+            model.getItems.asScala
               .map {
                 i =>
                   Item(
@@ -421,11 +421,11 @@ trait AssociationRules extends AssociationModel {
                   )
               })
       },
-      itemSet = associationModel.getItemsets match {
+      itemSet = model.getItemsets match {
         case null => None
         case _ =>
           Option(
-            associationModel.getItemsets.asScala
+            model.getItemsets.asScala
               .map { s =>
                 ItemSet(
                   extension = s.getExtensions match {
@@ -481,9 +481,9 @@ trait AssociationRules extends AssociationModel {
                 )
               })
       },
-      associationRule = associationModel.getAssociationRules match {
+      associationRule = model.getAssociationRules match {
         case null => None
-        case _ => Option(associationModel.getAssociationRules.asScala.map {
+        case _ => Option(model.getAssociationRules.asScala.map {
           a => AssociationRule(
             extension = a.getExtensions match {
               case null => None
@@ -528,10 +528,10 @@ trait AssociationRules extends AssociationModel {
           )
         })
       },
-      modelVerification = associationModel.getModelVerification match {
+      modelVerification = model.getModelVerification match {
         case null => None
         case _ =>
-          val v = associationModel.getModelVerification
+          val v = model.getModelVerification
           Option(
             ModelVerification(
               recordCount = v.getRecordCount match {
@@ -545,34 +545,34 @@ trait AssociationRules extends AssociationModel {
               verificationFields = None
             ))
       },
-      modelName = associationModel.getModelName match {
+      modelName = model.getModelName match {
         case null => None
-        case _    => Option(associationModel.getModelName)
+        case _    => Option(model.getModelName)
       },
-      functionName = associationModel.getMiningFunction.value(),
-      algorithmName = associationModel.getAlgorithmName match {
+      functionName = model.getMiningFunction.value(),
+      algorithmName = model.getAlgorithmName match {
         case null => None
-        case _    => Option(associationModel.getAlgorithmName)
+        case _    => Option(model.getAlgorithmName)
       },
-      numberOfTransactions = associationModel.getNumberOfTransactions,
-      maxNumberOfItemsPerTA = associationModel.getAvgNumberOfItemsPerTA match {
+      numberOfTransactions = model.getNumberOfTransactions,
+      maxNumberOfItemsPerTA = model.getAvgNumberOfItemsPerTA match {
         case null => None
-        case _    => Option(associationModel.getAvgNumberOfItemsPerTA.toInt)
+        case _    => Option(model.getAvgNumberOfItemsPerTA.toInt)
       },
-      avgNumberOfItemsPerTA = associationModel.getAvgNumberOfItemsPerTA match {
+      avgNumberOfItemsPerTA = model.getAvgNumberOfItemsPerTA match {
         case null => None
-        case _    => Option(associationModel.getAvgNumberOfItemsPerTA.toDouble)
+        case _    => Option(model.getAvgNumberOfItemsPerTA.toDouble)
       },
-      minimumSupport = associationModel.getMinimumSupport,
-      minimumConfidence = associationModel.getMinimumConfidence,
-      lengthLimit = associationModel.getLengthLimit match {
+      minimumSupport = model.getMinimumSupport,
+      minimumConfidence = model.getMinimumConfidence,
+      lengthLimit = model.getLengthLimit match {
         case null => None
-        case _    => Option(associationModel.getLengthLimit)
+        case _    => Option(model.getLengthLimit)
       },
-      numberOfItems = associationModel.getNumberOfItems,
-      numberOfItemsets = associationModel.getNumberOfItemsets,
-      numberOfRules = associationModel.getNumberOfRules,
-      isScorable = Option(associationModel.isScorable)
+      numberOfItems = model.getNumberOfItems,
+      numberOfItemsets = model.getNumberOfItemsets,
+      numberOfRules = model.getNumberOfRules,
+      isScorable = Option(model.isScorable)
     )
   }
 }
