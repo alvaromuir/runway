@@ -20,7 +20,7 @@ trait GaussianProcessModel
     with TrainingInstances
     with ModelVerification {
 
-  case class GaussianProcess(
+  case class GaussianProcessModel(
       extension: Option[Seq[Extension]] = None,
       miningSchema: MiningSchema,
       output: Option[Output] = None,

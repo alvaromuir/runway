@@ -41,7 +41,7 @@ trait PMMLSchema
                          associationModel: Option[AssociationModel] = None,
                          bayesianNetworkModel: Option[BayesianNetworkModel] = None,
                          clusteringModel: Option[ClusteringModel] = None,
-                         gaussianProcessModel: Option[GaussianProcess] = None,
+                         gaussianProcessModel: Option[GaussianProcessModel] = None,
                          generalRegressionModel: Option[GeneralRegression] = None,
                          miningModel: Option[MiningModel] = None,
                          naiveBayesModel: Option[NaiveBayesModel] = None,

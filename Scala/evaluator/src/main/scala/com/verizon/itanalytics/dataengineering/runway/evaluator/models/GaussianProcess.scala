@@ -19,17 +19,17 @@ trait GaussianProcess extends GaussianProcessModel {
     * @param pMML a valid pMML file
     * @return GaussianProcessModel Schema
     */
-  def parseGaussianProcessModel(pMML: PMML): GaussianProcess = {
+  def parseGaussianProcessModel(pMML: PMML): GaussianProcessModel = {
 
-    val gaussianProcessModel = pMML.getModels
+    val model = pMML.getModels
       .get(0)
       .asInstanceOf[org.dmg.pmml.gaussian_process.GaussianProcessModel]
 
-    GaussianProcess(
-      extension = gaussianProcessModel.getExtensions match {
+    GaussianProcessModel(
+      extension = model.getExtensions match {
         case null => None
         case _ =>
-          Option(gaussianProcessModel.getExtensions.asScala.map { e =>
+          Option(model.getExtensions.asScala.map { e =>
             Extension(
               extender = e.getExtender match {
                 case null => None
@@ -51,11 +51,11 @@ trait GaussianProcess extends GaussianProcessModel {
           })
       },
       miningSchema = MiningSchema(
-        miningFields = gaussianProcessModel.getMiningSchema.getMiningFields match {
+        miningFields = model.getMiningSchema.getMiningFields match {
           case null => None
           case _ =>
             Option(
-              gaussianProcessModel.getMiningSchema.getMiningFields.asScala.map {
+              model.getMiningSchema.getMiningFields.asScala.map {
                 f =>
                   MiningField(
                     name = f.getName.getValue,
@@ -90,15 +90,15 @@ trait GaussianProcess extends GaussianProcessModel {
                   )
               })
         }),
-      output = gaussianProcessModel.getOutput match {
+      output = model.getOutput match {
         case null => None
         case _ =>
           Option(
             Output(
-              extension = gaussianProcessModel.getExtensions match {
+              extension = model.getExtensions match {
                 case null => None
                 case _ =>
-                  Option(gaussianProcessModel.getExtensions.asScala.map { e =>
+                  Option(model.getExtensions.asScala.map { e =>
                     Extension(
                       extender = e.getExtender match {
                         case null => None
@@ -119,7 +119,7 @@ trait GaussianProcess extends GaussianProcessModel {
                     )
                   })
               },
-              outputField = gaussianProcessModel.getOutput.getOutputFields.asScala
+              outputField = model.getOutput.getOutputFields.asScala
                 .map {
                   o =>
                     OutputField(
@@ -141,17 +141,17 @@ trait GaussianProcess extends GaussianProcessModel {
                 }
             ))
       },
-      modelStats = gaussianProcessModel.getModelStats match {
+      modelStats = model.getModelStats match {
         case null => None
         case _ =>
           Option(
             ModelStats(
               univariateStats =
-                gaussianProcessModel.getModelStats.getUnivariateStats match {
+                model.getModelStats.getUnivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      gaussianProcessModel.getModelStats.getUnivariateStats.asScala
+                      model.getModelStats.getUnivariateStats.asScala
                         .map {
                           u =>
                             UnivariateStats(
@@ -265,11 +265,11 @@ trait GaussianProcess extends GaussianProcessModel {
                         })
                 },
               multivariateStats =
-                gaussianProcessModel.getModelStats.getMultivariateStats match {
+                model.getModelStats.getMultivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      gaussianProcessModel.getModelStats.getMultivariateStats.asScala
+                      model.getModelStats.getMultivariateStats.asScala
                         .map {
                           m =>
                             MultivariateStats(
@@ -354,15 +354,15 @@ trait GaussianProcess extends GaussianProcessModel {
                 }
             ))
       },
-      modelExplanation = gaussianProcessModel.getModelExplanation match {
+      modelExplanation = model.getModelExplanation match {
         case null => None
         case _ =>
           Option(
             ModelExplanation(
-              extension = gaussianProcessModel.getModelExplanation.getExtensions match {
+              extension = model.getModelExplanation.getExtensions match {
                 case null => None
                 case _ =>
-                  Option(gaussianProcessModel.getModelExplanation.getExtensions.asScala.map { e =>
+                  Option(model.getModelExplanation.getExtensions.asScala.map { e =>
                     Extension(
                       extender = e.getExtender match {
                         case null => None
@@ -379,13 +379,13 @@ trait GaussianProcess extends GaussianProcessModel {
                     )
                   })
               },
-              correlations = gaussianProcessModel.getModelExplanation.getCorrelations match {
+              correlations = model.getModelExplanation.getCorrelations match {
                 case null => None
                 case _ => Option(
                   Correlations(
-                    extension = gaussianProcessModel.getModelExplanation.getCorrelations.getExtensions match {
+                    extension = model.getModelExplanation.getCorrelations.getExtensions match {
                       case null => None
-                      case _ => Option(gaussianProcessModel.getModelExplanation.getCorrelations.getExtensions.asScala.map { e =>
+                      case _ => Option(model.getModelExplanation.getCorrelations.getExtensions.asScala.map { e =>
                         Extension(
                           extender = e.getExtender match {
                             case null => None
@@ -403,13 +403,13 @@ trait GaussianProcess extends GaussianProcessModel {
                       })
                     },
                     correlationFields = Array(
-                      n = gaussianProcessModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
-                      `type` = gaussianProcessModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType.value(),
-                      value = gaussianProcessModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
+                      n = model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
+                      `type` = model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType.value(),
+                      value = model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
                     ),
                     correlationValues = {
                       val mtx =
-                        gaussianProcessModel.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
+                        model.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
                       Matrix(
                         matCell = mtx.getMatCells match {
                           case null => None
@@ -440,11 +440,11 @@ trait GaussianProcess extends GaussianProcessModel {
                       )
                     },
                     correlationMethods =
-                      gaussianProcessModel.getModelExplanation.getCorrelations.getCorrelationMethods match {
+                      model.getModelExplanation.getCorrelations.getCorrelationMethods match {
                         case null => None
                         case _ =>
                           val mtx =
-                            gaussianProcessModel.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
+                            model.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
                           Option(
                             Matrix(
                               matCell = mtx.getMatCells match {
@@ -478,10 +478,10 @@ trait GaussianProcess extends GaussianProcessModel {
                       }
                   ))
               },
-              predictiveModelQualities = gaussianProcessModel.getModelExplanation.getPredictiveModelQualities match {
+              predictiveModelQualities = model.getModelExplanation.getPredictiveModelQualities match {
                 case null => None
                 case _ =>
-                  Option(gaussianProcessModel.getModelExplanation.getPredictiveModelQualities.asScala.map {
+                  Option(model.getModelExplanation.getPredictiveModelQualities.asScala.map {
                     pmq =>
                       PredictiveModelQuality(
                         extension = pmq.getExtensions match {
@@ -535,7 +535,7 @@ trait GaussianProcess extends GaussianProcessModel {
                                       extension = pmq.getExtensions match {
                                         case null => None
                                         case _ =>
-                                          Option(gaussianProcessModel.getModelExplanation.getExtensions.asScala.map { e =>
+                                          Option(model.getModelExplanation.getExtensions.asScala.map { e =>
                                             Extension(
                                               extender = e.getExtender match {
                                                 case null => None
@@ -898,10 +898,10 @@ trait GaussianProcess extends GaussianProcessModel {
                       )
                   })
               },
-              clusteringModelQualities= gaussianProcessModel.getModelExplanation.getClusteringModelQualities match {
+              clusteringModelQualities= model.getModelExplanation.getClusteringModelQualities match {
                 case null => None
                 case _ =>
-                  Option(gaussianProcessModel.getModelExplanation.getClusteringModelQualities.asScala.map {
+                  Option(model.getModelExplanation.getClusteringModelQualities.asScala.map {
                     cmq =>
                       ClusteringModelQuality(
                         dataName = cmq.getDataName match {
@@ -921,10 +921,10 @@ trait GaussianProcess extends GaussianProcessModel {
               }
             ))
       },
-      targets = gaussianProcessModel.getTargets match {
+      targets = model.getTargets match {
         case null => None
         case _ =>
-          Option(gaussianProcessModel.getTargets.asScala.map {
+          Option(model.getTargets.asScala.map {
             t =>
               Targets(
                 field = t.getField match {
@@ -953,13 +953,13 @@ trait GaussianProcess extends GaussianProcessModel {
               )
           })
       },
-      localTransformations = gaussianProcessModel.getLocalTransformations match {
+      localTransformations = model.getLocalTransformations match {
         case null => None
         case _ => Option(LocalTransformation(
-          extension = gaussianProcessModel.getLocalTransformations.getExtensions match {
+          extension = model.getLocalTransformations.getExtensions match {
             case null => None
             case _ =>
-              Option(gaussianProcessModel.getLocalTransformations.getExtensions.asScala.map { e =>
+              Option(model.getLocalTransformations.getExtensions.asScala.map { e =>
                 Extension(
                   extender = e.getExtender match {
                     case null => None
@@ -976,11 +976,11 @@ trait GaussianProcess extends GaussianProcessModel {
                 )
               })
           },
-          derivedFields = gaussianProcessModel.getLocalTransformations.getDerivedFields match {
+          derivedFields = model.getLocalTransformations.getDerivedFields match {
             case null => None
             case _ =>
               Option(
-                gaussianProcessModel.getLocalTransformations.getDerivedFields.asScala
+                model.getLocalTransformations.getDerivedFields.asScala
                   .map { d =>
                     DerivedField(
                       name = d.getName match {
@@ -998,13 +998,13 @@ trait GaussianProcess extends GaussianProcessModel {
           }
         ))
       },
-      radialBasisKernel = gaussianProcessModel.getRadialBasisKernel match {
+      radialBasisKernel = model.getRadialBasisKernel match {
         case null => None
         case _ => Option(RadialBasisKernel(
-          extension = gaussianProcessModel.getRadialBasisKernel.getExtensions match {
+          extension = model.getRadialBasisKernel.getExtensions match {
             case null => None
             case _ =>
-              Option(gaussianProcessModel.getRadialBasisKernel.getExtensions.asScala.map { e =>
+              Option(model.getRadialBasisKernel.getExtensions.asScala.map { e =>
                 Extension(
                   extender = e.getExtender match {
                     case null => None
@@ -1021,22 +1021,22 @@ trait GaussianProcess extends GaussianProcessModel {
                 )
               })
           },
-          description = gaussianProcessModel.getRadialBasisKernel.getDescription match {
+          description = model.getRadialBasisKernel.getDescription match {
             case null => None
-            case _ => Option(gaussianProcessModel.getRadialBasisKernel.getDescription)
+            case _ => Option(model.getRadialBasisKernel.getDescription)
           },
-          gamma = gaussianProcessModel.getRadialBasisKernel.getGamma.toDouble,
-          noiseVariance = gaussianProcessModel.getRadialBasisKernel.getNoiseVariance.toDouble,
-          lambda = gaussianProcessModel.getRadialBasisKernel.getLambda.toDouble
+          gamma = model.getRadialBasisKernel.getGamma.toDouble,
+          noiseVariance = model.getRadialBasisKernel.getNoiseVariance.toDouble,
+          lambda = model.getRadialBasisKernel.getLambda.toDouble
         ))
       },
-      aRDSquaredExponentialKernel = gaussianProcessModel.getARDSquaredExponentialKernel match {
+      aRDSquaredExponentialKernel = model.getARDSquaredExponentialKernel match {
         case null => None
         case _ => Option(ARDSquaredExponentialKernel(
-          extension = gaussianProcessModel.getARDSquaredExponentialKernel.getExtensions match {
+          extension = model.getARDSquaredExponentialKernel.getExtensions match {
             case null => None
             case _ =>
-              Option(gaussianProcessModel.getARDSquaredExponentialKernel.getExtensions.asScala.map { e =>
+              Option(model.getARDSquaredExponentialKernel.getExtensions.asScala.map { e =>
                 Extension(
                   extender = e.getExtender match {
                     case null => None
@@ -1053,27 +1053,27 @@ trait GaussianProcess extends GaussianProcessModel {
                 )
               })
           },
-          lambda = gaussianProcessModel.getARDSquaredExponentialKernel.getLambdas match {
+          lambda = model.getARDSquaredExponentialKernel.getLambdas match {
             case null => None
-            case _ => Option(gaussianProcessModel.getARDSquaredExponentialKernel.getLambdas.asScala.map {
+            case _ => Option(model.getARDSquaredExponentialKernel.getLambdas.asScala.map {
               l => Lambda(n = l.getArray.getN.intValue(), `type` = l.getArray.getType.value(), value = l.getArray.getValue)
             })
           },
-          description = gaussianProcessModel.getARDSquaredExponentialKernel.getDescription match {
+          description = model.getARDSquaredExponentialKernel.getDescription match {
             case null => None
-            case _ => Option(gaussianProcessModel.getRadialBasisKernel.getDescription)
+            case _ => Option(model.getRadialBasisKernel.getDescription)
           },
-          gamma = gaussianProcessModel.getARDSquaredExponentialKernel.getGamma.toDouble,
-          noiseVariance = gaussianProcessModel.getARDSquaredExponentialKernel.getNoiseVariance.toDouble
+          gamma = model.getARDSquaredExponentialKernel.getGamma.toDouble,
+          noiseVariance = model.getARDSquaredExponentialKernel.getNoiseVariance.toDouble
         ))
       },
-      absoluteExponentialKernel = gaussianProcessModel.getAbsoluteExponentialKernel match {
+      absoluteExponentialKernel = model.getAbsoluteExponentialKernel match {
         case null => None
         case _ => Option(AbsoluteExponentialKernel(
-          extension = gaussianProcessModel.getAbsoluteExponentialKernel.getExtensions match {
+          extension = model.getAbsoluteExponentialKernel.getExtensions match {
             case null => None
             case _ =>
-              Option(gaussianProcessModel.getARDSquaredExponentialKernel.getExtensions.asScala.map { e =>
+              Option(model.getARDSquaredExponentialKernel.getExtensions.asScala.map { e =>
                 Extension(
                   extender = e.getExtender match {
                     case null => None
@@ -1090,27 +1090,27 @@ trait GaussianProcess extends GaussianProcessModel {
                 )
               })
           },
-          lambda = gaussianProcessModel.getAbsoluteExponentialKernel.getLambdas match {
+          lambda = model.getAbsoluteExponentialKernel.getLambdas match {
             case null => None
-            case _ => Option(gaussianProcessModel.getAbsoluteExponentialKernel.getLambdas.asScala.map {
+            case _ => Option(model.getAbsoluteExponentialKernel.getLambdas.asScala.map {
               l => Lambda(n = l.getArray.getN.intValue(), `type` = l.getArray.getType.value(), value = l.getArray.getValue)
             })
           },
-          description = gaussianProcessModel.getAbsoluteExponentialKernel.getDescription match {
+          description = model.getAbsoluteExponentialKernel.getDescription match {
             case null => None
-            case _ => Option(gaussianProcessModel.getRadialBasisKernel.getDescription)
+            case _ => Option(model.getRadialBasisKernel.getDescription)
           },
-          gamma = gaussianProcessModel.getAbsoluteExponentialKernel.getGamma.toDouble,
-          noiseVariance = gaussianProcessModel.getAbsoluteExponentialKernel.getNoiseVariance.toDouble
+          gamma = model.getAbsoluteExponentialKernel.getGamma.toDouble,
+          noiseVariance = model.getAbsoluteExponentialKernel.getNoiseVariance.toDouble
         ))
       },
-      generalizedExponentialKernel = gaussianProcessModel.getGeneralizedExponentialKernel match {
+      generalizedExponentialKernel = model.getGeneralizedExponentialKernel match {
         case null => None
         case _ => Option(GeneralizedExponentialKernel(
-          extension = gaussianProcessModel.getGeneralizedExponentialKernel .getExtensions match {
+          extension = model.getGeneralizedExponentialKernel .getExtensions match {
             case null => None
             case _ =>
-              Option(gaussianProcessModel.getARDSquaredExponentialKernel.getExtensions.asScala.map { e =>
+              Option(model.getARDSquaredExponentialKernel.getExtensions.asScala.map { e =>
                 Extension(
                   extender = e.getExtender match {
                     case null => None
@@ -1127,36 +1127,36 @@ trait GaussianProcess extends GaussianProcessModel {
                 )
               })
           },
-          lambda = gaussianProcessModel.getGeneralizedExponentialKernel .getLambdas match {
+          lambda = model.getGeneralizedExponentialKernel .getLambdas match {
             case null => None
-            case _ => Option(gaussianProcessModel.getGeneralizedExponentialKernel .getLambdas.asScala.map {
+            case _ => Option(model.getGeneralizedExponentialKernel .getLambdas.asScala.map {
               l => Lambda(n = l.getArray.getN.intValue(), `type` = l.getArray.getType.value(), value = l.getArray.getValue)
             })
           },
-          description = gaussianProcessModel.getGeneralizedExponentialKernel .getDescription match {
+          description = model.getGeneralizedExponentialKernel .getDescription match {
             case null => None
-            case _ => Option(gaussianProcessModel.getRadialBasisKernel.getDescription)
+            case _ => Option(model.getRadialBasisKernel.getDescription)
           },
-          gamma = gaussianProcessModel.getGeneralizedExponentialKernel .getGamma.toDouble,
-          noiseVariance = gaussianProcessModel.getGeneralizedExponentialKernel .getNoiseVariance.toDouble,
-          degree = gaussianProcessModel.getGeneralizedExponentialKernel.getDegree.toDouble
+          gamma = model.getGeneralizedExponentialKernel .getGamma.toDouble,
+          noiseVariance = model.getGeneralizedExponentialKernel .getNoiseVariance.toDouble,
+          degree = model.getGeneralizedExponentialKernel.getDegree.toDouble
         ))
       },
-      trainingInstances = gaussianProcessModel.getTrainingInstances match {
+      trainingInstances = model.getTrainingInstances match {
         case null => None
         case _ => Option(TrainingInstances(
-          isTransformed = gaussianProcessModel.getTrainingInstances.isTransformed,
-          recordCount = gaussianProcessModel.getTrainingInstances.getRecordCount match {
+          isTransformed = model.getTrainingInstances.isTransformed,
+          recordCount = model.getTrainingInstances.getRecordCount match {
             case null => None
-            case _ => Option(gaussianProcessModel.getTrainingInstances.getRecordCount.toInt)
+            case _ => Option(model.getTrainingInstances.getRecordCount.toInt)
           },
-          fieldCount = gaussianProcessModel.getTrainingInstances.getFieldCount match {
+          fieldCount = model.getTrainingInstances.getFieldCount match {
             case null => None
-            case _ => Option(gaussianProcessModel.getTrainingInstances.getFieldCount.toInt)
+            case _ => Option(model.getTrainingInstances.getFieldCount.toInt)
           },
-          instanceFields = gaussianProcessModel.getTrainingInstances.getInstanceFields match {
+          instanceFields = model.getTrainingInstances.getInstanceFields match {
             case null => None
-            case _ => Option(gaussianProcessModel.getTrainingInstances.getInstanceFields.asScala.map {
+            case _ => Option(model.getTrainingInstances.getInstanceFields.asScala.map {
               f => InstanceField(
                 field = f.getField.getValue,
                 key = Option(f.getKey.getValue),
@@ -1164,21 +1164,21 @@ trait GaussianProcess extends GaussianProcessModel {
               )
             })
           },
-          tableLocator = gaussianProcessModel.getTrainingInstances.getTableLocator match {
+          tableLocator = model.getTrainingInstances.getTableLocator match {
             case null => None
-            case _ => Option(gaussianProcessModel.getTrainingInstances.getTableLocator.toString) // not sure what this is
+            case _ => Option(model.getTrainingInstances.getTableLocator.toString) // not sure what this is
           },
-          inlineTables = gaussianProcessModel.getTrainingInstances.getInlineTable match {
+          inlineTables = model.getTrainingInstances.getInlineTable match {
             case null => None
-            case _ => Option(gaussianProcessModel.getTrainingInstances.getInlineTable.getRows.asScala.map(r =>
+            case _ => Option(model.getTrainingInstances.getInlineTable.getRows.asScala.map(r =>
               Row(row = r.toString)))
           }
         ))
       },
-      modelVerification = gaussianProcessModel.getModelVerification match {
+      modelVerification = model.getModelVerification match {
         case null => None
         case _ =>
-          val v = gaussianProcessModel.getModelVerification
+          val v = model.getModelVerification
           Option(
             ModelVerification(
               recordCount = v.getRecordCount match {
@@ -1192,20 +1192,20 @@ trait GaussianProcess extends GaussianProcessModel {
               verificationFields = None
             ))
       },
-      modelName = gaussianProcessModel.getModelName match {
+      modelName = model.getModelName match {
         case null => None
-        case _    => Option(gaussianProcessModel.getModelName)
+        case _    => Option(model.getModelName)
       },
-      functionName = gaussianProcessModel.getMiningFunction.value(),
-      algorithmName = gaussianProcessModel.getAlgorithmName match {
+      functionName = model.getMiningFunction.value(),
+      algorithmName = model.getAlgorithmName match {
         case null => None
-        case _    => Option(gaussianProcessModel.getAlgorithmName)
+        case _    => Option(model.getAlgorithmName)
       },
-      optimizer = gaussianProcessModel.getOptimizer match {
+      optimizer = model.getOptimizer match {
         case null => None
-        case _ => Option(gaussianProcessModel.getOptimizer)
+        case _ => Option(model.getOptimizer)
       },
-      isScorable = Option(gaussianProcessModel.isScorable)
+      isScorable = Option(model.isScorable)
     )
   }
 
