@@ -20,15 +20,15 @@ trait RuleSet extends RuleSetModel {
     */
 
   def parseRulSetModel(pMML: PMML): RuleSetModel = {
-    val ruleSetModel = pMML.getModels
+    val model = pMML.getModels
       .get(0)
       .asInstanceOf[org.dmg.pmml.rule_set.RuleSetModel]
 
     RuleSetModel(
-      extension = ruleSetModel.getExtensions match {
+      extension = model.getExtensions match {
       case null => None
       case _ =>
-        Option(ruleSetModel.getExtensions.asScala.map {
+        Option(model.getExtensions.asScala.map {
           e =>
             Extension(
               extender = e.getExtender match {
@@ -51,10 +51,10 @@ trait RuleSet extends RuleSetModel {
         })
     },
       miningSchema = MiningSchema(
-        miningFields = ruleSetModel.getMiningSchema.getMiningFields match {
+        miningFields = model.getMiningSchema.getMiningFields match {
           case null => None
           case _ =>
-            Option(ruleSetModel.getMiningSchema.getMiningFields.asScala.map {
+            Option(model.getMiningSchema.getMiningFields.asScala.map {
               f =>
                 MiningField(
                   name = f.getName.getValue,
@@ -88,15 +88,15 @@ trait RuleSet extends RuleSetModel {
                 )
             })
         }),
-      output = ruleSetModel.getOutput match {
+      output = model.getOutput match {
         case null => None
         case _ =>
           Option(
             Output(
-              extension = ruleSetModel.getOutput.getExtensions match {
+              extension = model.getOutput.getExtensions match {
                 case null => None
                 case _ =>
-                  Option(ruleSetModel.getOutput.getExtensions.asScala.map {
+                  Option(model.getOutput.getExtensions.asScala.map {
                     e =>
                       Extension(
                         extender = e.getExtender match {
@@ -121,7 +121,7 @@ trait RuleSet extends RuleSetModel {
                       )
                   })
               },
-              outputField = ruleSetModel.getOutput.getOutputFields.asScala
+              outputField = model.getOutput.getOutputFields.asScala
                 .map {
                   o =>
                     OutputField(
@@ -143,17 +143,17 @@ trait RuleSet extends RuleSetModel {
                 }
             ))
       },
-      modelStats = ruleSetModel.getModelStats match {
+      modelStats = model.getModelStats match {
         case null => None
         case _ =>
           Option(
             ModelStats(
               univariateStats =
-                ruleSetModel.getModelStats.getUnivariateStats match {
+                model.getModelStats.getUnivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      ruleSetModel.getModelStats.getUnivariateStats.asScala
+                      model.getModelStats.getUnivariateStats.asScala
                         .map {
                           u =>
                             UnivariateStats(
@@ -267,11 +267,11 @@ trait RuleSet extends RuleSetModel {
                         })
                 },
               multivariateStats =
-                ruleSetModel.getModelStats.getMultivariateStats match {
+                model.getModelStats.getMultivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      ruleSetModel.getModelStats.getMultivariateStats.asScala
+                      model.getModelStats.getMultivariateStats.asScala
                         .map {
                           m =>
                             MultivariateStats(
@@ -356,17 +356,17 @@ trait RuleSet extends RuleSetModel {
                 }
             ))
       },
-      modelExplanation = ruleSetModel.getModelExplanation match {
+      modelExplanation = model.getModelExplanation match {
         case null => None
         case _ =>
           Option(
             ModelExplanation(
               extension =
-                ruleSetModel.getModelExplanation.getExtensions match {
+                model.getModelExplanation.getExtensions match {
                   case null => None
                   case _ =>
                     Option(
-                      ruleSetModel.getModelExplanation.getExtensions.asScala
+                      model.getModelExplanation.getExtensions.asScala
                         .map { e =>
                           Extension(
                             extender = e.getExtender match {
@@ -385,17 +385,17 @@ trait RuleSet extends RuleSetModel {
                         })
                 },
               correlations =
-                ruleSetModel.getModelExplanation.getCorrelations match {
+                model.getModelExplanation.getCorrelations match {
                   case null => None
                   case _ =>
                     Option(
                       Correlations(
                         extension =
-                          ruleSetModel.getModelExplanation.getCorrelations.getExtensions match {
+                          model.getModelExplanation.getCorrelations.getExtensions match {
                             case null => None
                             case _ =>
                               Option(
-                                ruleSetModel.getModelExplanation.getCorrelations.getExtensions.asScala
+                                model.getModelExplanation.getCorrelations.getExtensions.asScala
                                   .map { e =>
                                     Extension(
                                       extender = e.getExtender match {
@@ -415,16 +415,16 @@ trait RuleSet extends RuleSetModel {
                           },
                         correlationFields = Array(
                           n =
-                            ruleSetModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
+                            model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
                           `type` =
-                            ruleSetModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType
+                            model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType
                               .value(),
                           value =
-                            ruleSetModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
+                            model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
                         ),
                         correlationValues = {
                           val mtx =
-                            ruleSetModel.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
+                            model.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
                           Matrix(
                             matCell = mtx.getMatCells match {
                               case null => None
@@ -455,11 +455,11 @@ trait RuleSet extends RuleSetModel {
                           )
                         },
                         correlationMethods =
-                          ruleSetModel.getModelExplanation.getCorrelations.getCorrelationMethods match {
+                          model.getModelExplanation.getCorrelations.getCorrelationMethods match {
                             case null => None
                             case _ =>
                               val mtx =
-                                ruleSetModel.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
+                                model.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
                               Option(
                                 Matrix(
                                   matCell = mtx.getMatCells match {
@@ -493,11 +493,11 @@ trait RuleSet extends RuleSetModel {
                       ))
                 },
               predictiveModelQualities =
-                ruleSetModel.getModelExplanation.getPredictiveModelQualities match {
+                model.getModelExplanation.getPredictiveModelQualities match {
                   case null => None
                   case _ =>
                     Option(
-                      ruleSetModel.getModelExplanation.getPredictiveModelQualities.asScala
+                      model.getModelExplanation.getPredictiveModelQualities.asScala
                         .map {
                           pmq =>
                             PredictiveModelQuality(
@@ -556,7 +556,7 @@ trait RuleSet extends RuleSetModel {
                                                 case null => None
                                                 case _ =>
                                                   Option(
-                                                    ruleSetModel.getModelExplanation.getExtensions.asScala
+                                                    model.getModelExplanation.getExtensions.asScala
                                                       .map { e =>
                                                         Extension(
                                                           extender =
@@ -1102,11 +1102,11 @@ trait RuleSet extends RuleSetModel {
                         })
                 },
               clusteringModelQualities =
-                ruleSetModel.getModelExplanation.getClusteringModelQualities match {
+                model.getModelExplanation.getClusteringModelQualities match {
                   case null => None
                   case _ =>
                     Option(
-                      ruleSetModel.getModelExplanation.getClusteringModelQualities.asScala
+                      model.getModelExplanation.getClusteringModelQualities.asScala
                         .map {
                           cmq =>
                             ClusteringModelQuality(
@@ -1127,10 +1127,10 @@ trait RuleSet extends RuleSetModel {
                 }
             ))
       },
-      targets = ruleSetModel.getTargets match {
+      targets = model.getTargets match {
         case null => None
         case _ =>
-          Option(ruleSetModel.getTargets.asScala.map {
+          Option(model.getTargets.asScala.map {
             t =>
               Targets(
                 field = t.getField match {
@@ -1159,17 +1159,17 @@ trait RuleSet extends RuleSetModel {
               )
           })
       },
-      localTransformations = ruleSetModel.getLocalTransformations match {
+      localTransformations = model.getLocalTransformations match {
         case null => None
         case _ =>
           Option(
             LocalTransformation(
               extension =
-                ruleSetModel.getLocalTransformations.getExtensions match {
+                model.getLocalTransformations.getExtensions match {
                   case null => None
                   case _ =>
                     Option(
-                      ruleSetModel.getLocalTransformations.getExtensions.asScala
+                      model.getLocalTransformations.getExtensions.asScala
                         .map { e =>
                           Extension(
                             extender = e.getExtender match {
@@ -1188,11 +1188,11 @@ trait RuleSet extends RuleSetModel {
                         })
                 },
               derivedFields =
-                ruleSetModel.getLocalTransformations.getDerivedFields match {
+                model.getLocalTransformations.getDerivedFields match {
                   case null => None
                   case _ =>
                     Option(
-                      ruleSetModel.getLocalTransformations.getDerivedFields.asScala
+                      model.getLocalTransformations.getDerivedFields.asScala
                         .map { d =>
                           DerivedField(
                             name = d.getName match {
@@ -1211,10 +1211,10 @@ trait RuleSet extends RuleSetModel {
             ))
       },
       ruleSet = RuleSet(
-        extension = ruleSetModel.getRuleSet.getExtensions match {
+        extension = model.getRuleSet.getExtensions match {
           case null => None
           case _ =>
-            Option(ruleSetModel.getRuleSet.getExtensions.asScala.map {
+            Option(model.getRuleSet.getExtensions.asScala.map {
               e =>
                 Extension(
                   extender = e.getExtender match {
@@ -1236,7 +1236,7 @@ trait RuleSet extends RuleSetModel {
                 )
             })
         },
-        ruleSectionMethod = ruleSetModel.getRuleSet.getRuleSelectionMethods.asScala.map {
+        ruleSectionMethod = model.getRuleSet.getRuleSelectionMethods.asScala.map {
           m => RuleSelectionMethod(
             extension = m.getExtensions match {
               case null => None
@@ -1266,9 +1266,9 @@ trait RuleSet extends RuleSetModel {
             criterion = m.getCriterion.value()
           )
         },
-        scoreDistribution = ruleSetModel.getRuleSet.getScoreDistributions match {
+        scoreDistribution = model.getRuleSet.getScoreDistributions match {
           case null => None
-          case _ => Option(ruleSetModel.getRuleSet.getScoreDistributions.asScala.map {
+          case _ => Option(model.getRuleSet.getScoreDistributions.asScala.map {
             d => ScoreDistribution(
               extension = d.getExtensions match {
                 case null => None
@@ -1308,7 +1308,7 @@ trait RuleSet extends RuleSetModel {
             )
           })
         },
-        rules = ruleSetModel.getRuleSet.getRules.asScala.map {
+        rules = model.getRuleSet.getRules.asScala.map {
           rule => Rule(
             simpleRule = ruleType(rule) match {
               case "simple" =>
@@ -1321,27 +1321,27 @@ trait RuleSet extends RuleSetModel {
             }
           )
         },
-        recordCount = ruleSetModel.getRuleSet.getRecordCount match {
+        recordCount = model.getRuleSet.getRecordCount match {
           case null => None
-          case _ => Option(ruleSetModel.getRuleSet.getRecordCount.toDouble)
+          case _ => Option(model.getRuleSet.getRecordCount.toDouble)
         },
-        nbCorrect = ruleSetModel.getRuleSet.getNbCorrect match {
+        nbCorrect = model.getRuleSet.getNbCorrect match {
           case null => None
-          case _ => Option(ruleSetModel.getRuleSet.getNbCorrect.toDouble)
+          case _ => Option(model.getRuleSet.getNbCorrect.toDouble)
         },
-        defaultScore = ruleSetModel.getRuleSet.getDefaultScore match {
+        defaultScore = model.getRuleSet.getDefaultScore match {
           case null => None
-          case _ => Option(ruleSetModel.getRuleSet.getDefaultScore)
+          case _ => Option(model.getRuleSet.getDefaultScore)
         },
-        defaultConfidence = ruleSetModel.getRuleSet.getDefaultConfidence match {
+        defaultConfidence = model.getRuleSet.getDefaultConfidence match {
           case null => None
-          case _ => Option(ruleSetModel.getRuleSet.getDefaultConfidence.toDouble)
+          case _ => Option(model.getRuleSet.getDefaultConfidence.toDouble)
         }
       ),
-      modelVerification = ruleSetModel.getModelVerification match {
+      modelVerification = model.getModelVerification match {
         case null => None
         case _ =>
-          val v = ruleSetModel.getModelVerification
+          val v = model.getModelVerification
           Option(
             ModelVerification(
               recordCount = v.getRecordCount match {
@@ -1355,16 +1355,16 @@ trait RuleSet extends RuleSetModel {
               verificationFields = None
             ))
       },
-      modelName = ruleSetModel.getModelName match {
+      modelName = model.getModelName match {
         case null => None
-        case _    => Option(ruleSetModel.getModelName)
+        case _    => Option(model.getModelName)
       },
-      functionName = ruleSetModel.getMiningFunction.value(),
-      algorithmName = ruleSetModel.getAlgorithmName match {
+      functionName = model.getMiningFunction.value(),
+      algorithmName = model.getAlgorithmName match {
         case null => None
-        case _    => Option(ruleSetModel.getAlgorithmName)
+        case _    => Option(model.getAlgorithmName)
       },
-      isScorable = Option(ruleSetModel.isScorable)
+      isScorable = Option(model.isScorable)
     )
   }
 
