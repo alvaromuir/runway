@@ -20,16 +20,9 @@ class GaussianProcessSpec
   val testModelPath = mapModels("gaussian")
   val testDataPath = mapData("gaussian")
   val pMML: PMML = readPMML(new File(testModelPath))
-  val miningFunction = "regression"
 
   "the evaluator" should
-    "read Gaussian Process models" in {
-
-
-    assert(pMML.getModels.get(0).getMiningFunction.value() == miningFunction)
-  }
-
-  it should "throw an UnsupportedElementException if trying to load a gaussian process model" in {
+    "throw an UnsupportedElementException if trying to load a gaussian process model" in {
     val pMML: PMML = readPMML(new File(testModelPath))
 
     intercept[UnsupportedElementException] {
