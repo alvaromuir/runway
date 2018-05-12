@@ -20,15 +20,15 @@ trait NaiveBayes extends NaiveBayesModel {
     */
   def parseNaiveBayesModel(pMML: PMML): NaiveBayesModel = {
 
-    val naiveBayesModel = pMML.getModels
+    val model = pMML.getModels
       .get(0)
       .asInstanceOf[org.dmg.pmml.naive_bayes.NaiveBayesModel]
 
     NaiveBayesModel(
-      extension = naiveBayesModel.getExtensions match {
+      extension = model.getExtensions match {
         case null => None
         case _ =>
-          Option(naiveBayesModel.getExtensions.asScala.map { e =>
+          Option(model.getExtensions.asScala.map { e =>
             Extension(
               extender = e.getExtender match {
                 case null => None
@@ -50,10 +50,10 @@ trait NaiveBayes extends NaiveBayesModel {
           })
       },
       miningSchema = MiningSchema(
-        miningFields = naiveBayesModel.getMiningSchema.getMiningFields match {
+        miningFields = model.getMiningSchema.getMiningFields match {
           case null => None
           case _ =>
-            Option(naiveBayesModel.getMiningSchema.getMiningFields.asScala.map {
+            Option(model.getMiningSchema.getMiningFields.asScala.map {
               f =>
                 MiningField(
                   name = f.getName.getValue,
@@ -87,15 +87,15 @@ trait NaiveBayes extends NaiveBayesModel {
                 )
             })
         }),
-      output = naiveBayesModel.getOutput match {
+      output = model.getOutput match {
         case null => None
         case _ =>
           Option(
             Output(
-              extension = naiveBayesModel.getOutput .getExtensions match {
+              extension = model.getOutput .getExtensions match {
                 case null => None
                 case _ =>
-                  Option(naiveBayesModel.getOutput .getExtensions.asScala.map { e =>
+                  Option(model.getOutput .getExtensions.asScala.map { e =>
                     Extension(
                       extender = e.getExtender match {
                         case null => None
@@ -116,7 +116,7 @@ trait NaiveBayes extends NaiveBayesModel {
                     )
                   })
               },
-              outputField = naiveBayesModel.getOutput.getOutputFields.asScala
+              outputField = model.getOutput.getOutputFields.asScala
                 .map {
                   o =>
                     OutputField(
@@ -138,17 +138,17 @@ trait NaiveBayes extends NaiveBayesModel {
                 }
             ))
       },
-      modelStats = naiveBayesModel.getModelStats match {
+      modelStats = model.getModelStats match {
         case null => None
         case _ =>
           Option(
             ModelStats(
               univariateStats =
-                naiveBayesModel.getModelStats.getUnivariateStats match {
+                model.getModelStats.getUnivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      naiveBayesModel.getModelStats.getUnivariateStats.asScala
+                      model.getModelStats.getUnivariateStats.asScala
                         .map {
                           u =>
                             UnivariateStats(
@@ -262,11 +262,11 @@ trait NaiveBayes extends NaiveBayesModel {
                         })
                 },
               multivariateStats =
-                naiveBayesModel.getModelStats.getMultivariateStats match {
+                model.getModelStats.getMultivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      naiveBayesModel.getModelStats.getMultivariateStats.asScala
+                      model.getModelStats.getMultivariateStats.asScala
                         .map {
                           m =>
                             MultivariateStats(
@@ -351,17 +351,17 @@ trait NaiveBayes extends NaiveBayesModel {
                 }
             ))
       },
-      modelExplanation = naiveBayesModel.getModelExplanation match {
+      modelExplanation = model.getModelExplanation match {
         case null => None
         case _ =>
           Option(
             ModelExplanation(
               extension =
-                naiveBayesModel.getModelExplanation.getExtensions match {
+                model.getModelExplanation.getExtensions match {
                   case null => None
                   case _ =>
                     Option(
-                      naiveBayesModel.getModelExplanation.getExtensions.asScala
+                      model.getModelExplanation.getExtensions.asScala
                         .map { e =>
                           Extension(
                             extender = e.getExtender match {
@@ -380,17 +380,17 @@ trait NaiveBayes extends NaiveBayesModel {
                         })
                 },
               correlations =
-                naiveBayesModel.getModelExplanation.getCorrelations match {
+                model.getModelExplanation.getCorrelations match {
                   case null => None
                   case _ =>
                     Option(
                       Correlations(
                         extension =
-                          naiveBayesModel.getModelExplanation.getCorrelations.getExtensions match {
+                          model.getModelExplanation.getCorrelations.getExtensions match {
                             case null => None
                             case _ =>
                               Option(
-                                naiveBayesModel.getModelExplanation.getCorrelations.getExtensions.asScala
+                                model.getModelExplanation.getCorrelations.getExtensions.asScala
                                   .map { e =>
                                     Extension(
                                       extender = e.getExtender match {
@@ -410,16 +410,16 @@ trait NaiveBayes extends NaiveBayesModel {
                           },
                         correlationFields = Array(
                           n =
-                            naiveBayesModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
+                            model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
                           `type` =
-                            naiveBayesModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType
+                            model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType
                               .value(),
                           value =
-                            naiveBayesModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
+                            model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
                         ),
                         correlationValues = {
                           val mtx =
-                            naiveBayesModel.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
+                            model.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
                           Matrix(
                             matCell = mtx.getMatCells match {
                               case null => None
@@ -450,11 +450,11 @@ trait NaiveBayes extends NaiveBayesModel {
                           )
                         },
                         correlationMethods =
-                          naiveBayesModel.getModelExplanation.getCorrelations.getCorrelationMethods match {
+                          model.getModelExplanation.getCorrelations.getCorrelationMethods match {
                             case null => None
                             case _ =>
                               val mtx =
-                                naiveBayesModel.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
+                                model.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
                               Option(
                                 Matrix(
                                   matCell = mtx.getMatCells match {
@@ -488,11 +488,11 @@ trait NaiveBayes extends NaiveBayesModel {
                       ))
                 },
               predictiveModelQualities =
-                naiveBayesModel.getModelExplanation.getPredictiveModelQualities match {
+                model.getModelExplanation.getPredictiveModelQualities match {
                   case null => None
                   case _ =>
                     Option(
-                      naiveBayesModel.getModelExplanation.getPredictiveModelQualities.asScala
+                      model.getModelExplanation.getPredictiveModelQualities.asScala
                         .map {
                           pmq =>
                             PredictiveModelQuality(
@@ -551,7 +551,7 @@ trait NaiveBayes extends NaiveBayesModel {
                                                 case null => None
                                                 case _ =>
                                                   Option(
-                                                    naiveBayesModel.getModelExplanation.getExtensions.asScala
+                                                    model.getModelExplanation.getExtensions.asScala
                                                       .map { e =>
                                                         Extension(
                                                           extender =
@@ -1097,11 +1097,11 @@ trait NaiveBayes extends NaiveBayesModel {
                         })
                 },
               clusteringModelQualities =
-                naiveBayesModel.getModelExplanation.getClusteringModelQualities match {
+                model.getModelExplanation.getClusteringModelQualities match {
                   case null => None
                   case _ =>
                     Option(
-                      naiveBayesModel.getModelExplanation.getClusteringModelQualities.asScala
+                      model.getModelExplanation.getClusteringModelQualities.asScala
                         .map {
                           cmq =>
                             ClusteringModelQuality(
@@ -1122,10 +1122,10 @@ trait NaiveBayes extends NaiveBayesModel {
                 }
             ))
       },
-      targets = naiveBayesModel.getTargets match {
+      targets = model.getTargets match {
         case null => None
         case _ =>
-          Option(naiveBayesModel.getTargets.asScala.map {
+          Option(model.getTargets.asScala.map {
             t =>
               Targets(
                 field = t.getField match {
@@ -1154,7 +1154,7 @@ trait NaiveBayes extends NaiveBayesModel {
               )
           })
       },
-      bayesInputs = naiveBayesModel.getBayesInputs.asScala.map { i =>
+      bayesInputs = model.getBayesInputs.asScala.map { i =>
         BayesInput(
           extension = i.getExtensions match {
             case null => None
@@ -1279,10 +1279,10 @@ trait NaiveBayes extends NaiveBayesModel {
         )
       },
       bayesOutput = BayesOutput(
-        extension = naiveBayesModel.getBayesOutput.getExtensions match {
+        extension = model.getBayesOutput.getExtensions match {
           case null => None
           case _ =>
-            Option(naiveBayesModel.getBayesOutput.getExtensions.asScala.map { e =>
+            Option(model.getBayesOutput.getExtensions.asScala.map { e =>
               Extension(
                 extender = e.getExtender match {
                   case null => None
@@ -1299,7 +1299,7 @@ trait NaiveBayes extends NaiveBayesModel {
               )
             })
         },
-        targetValueCounts = naiveBayesModel.getBayesOutput.getTargetValueCounts.asScala.map {
+        targetValueCounts = model.getBayesOutput.getTargetValueCounts.asScala.map {
           c => TargetValueCount(
             extension = c.getExtensions match {
               case null => None
@@ -1326,17 +1326,17 @@ trait NaiveBayes extends NaiveBayesModel {
           )
         }
       ),
-      localTransformations = naiveBayesModel.getLocalTransformations match {
+      localTransformations = model.getLocalTransformations match {
         case null => None
         case _ =>
           Option(
             LocalTransformation(
               extension =
-                naiveBayesModel.getLocalTransformations.getExtensions match {
+                model.getLocalTransformations.getExtensions match {
                   case null => None
                   case _ =>
                     Option(
-                      naiveBayesModel.getLocalTransformations.getExtensions.asScala
+                      model.getLocalTransformations.getExtensions.asScala
                         .map { e =>
                           Extension(
                             extender = e.getExtender match {
@@ -1355,11 +1355,11 @@ trait NaiveBayes extends NaiveBayesModel {
                         })
                 },
               derivedFields =
-                naiveBayesModel.getLocalTransformations.getDerivedFields match {
+                model.getLocalTransformations.getDerivedFields match {
                   case null => None
                   case _ =>
                     Option(
-                      naiveBayesModel.getLocalTransformations.getDerivedFields.asScala
+                      model.getLocalTransformations.getDerivedFields.asScala
                         .map { d =>
                           DerivedField(
                             name = d.getName match {
@@ -1377,10 +1377,10 @@ trait NaiveBayes extends NaiveBayesModel {
                 }
             ))
       },
-      modelVerification = naiveBayesModel.getModelVerification match {
+      modelVerification = model.getModelVerification match {
         case null => None
         case _ =>
-          val v = naiveBayesModel.getModelVerification
+          val v = model.getModelVerification
           Option(
             ModelVerification(
               recordCount = v.getRecordCount match {
@@ -1394,17 +1394,17 @@ trait NaiveBayes extends NaiveBayesModel {
               verificationFields = None
             ))
       },
-      modelName = naiveBayesModel.getModelName match {
+      modelName = model.getModelName match {
         case null => None
-        case _    => Option(naiveBayesModel.getModelName)
+        case _    => Option(model.getModelName)
       },
-      threshold = naiveBayesModel.getThreshold,
-      functionName = naiveBayesModel.getMiningFunction.value(),
-      algorithmName = naiveBayesModel.getAlgorithmName match {
+      threshold = model.getThreshold,
+      functionName = model.getMiningFunction.value(),
+      algorithmName = model.getAlgorithmName match {
         case null => None
-        case _    => Option(naiveBayesModel.getAlgorithmName)
+        case _    => Option(model.getAlgorithmName)
       },
-      isScorable = Option(naiveBayesModel.isScorable)
+      isScorable = Option(model.isScorable)
     )
   }
 
