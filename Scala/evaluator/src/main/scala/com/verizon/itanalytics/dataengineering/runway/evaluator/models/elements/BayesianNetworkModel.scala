@@ -20,7 +20,7 @@ trait BayesianNetworkModel
     with TestDistributions
     with ModelVerification {
 
-  case class BayesianNetwork(
+  case class BayesianNetworkModel(
       extension: Option[Seq[Extension]] = None,
       miningSchema: MiningSchema,
       output: Option[Output] = None,

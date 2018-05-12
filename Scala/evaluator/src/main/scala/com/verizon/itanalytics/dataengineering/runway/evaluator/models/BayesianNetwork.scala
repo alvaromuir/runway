@@ -18,16 +18,16 @@ trait BayesianNetwork extends BayesianNetworkModel {
     * @param pMML a valid pMML file
     * @return BayesianNetworkModel
     */
-  def parseBayesianNetworkModel(pMML: PMML): BayesianNetwork = {
-    val bayesianNetworkModel = pMML.getModels
+  def parseBayesianNetworkModel(pMML: PMML): BayesianNetworkModel = {
+    val model = pMML.getModels
       .get(0)
       .asInstanceOf[org.dmg.pmml.bayesian_network.BayesianNetworkModel]
 
-    BayesianNetwork(
-      extension = bayesianNetworkModel.getExtensions match {
+    BayesianNetworkModel(
+      extension = model.getExtensions match {
         case null => None
         case _ =>
-          Option(bayesianNetworkModel.getExtensions.asScala.map { e =>
+          Option(model.getExtensions.asScala.map { e =>
             Extension(
               extender = e.getExtender match {
                 case null => None
@@ -49,11 +49,11 @@ trait BayesianNetwork extends BayesianNetworkModel {
           })
       },
       miningSchema = MiningSchema(miningFields =
-        bayesianNetworkModel.getMiningSchema.getMiningFields match {
+        model.getMiningSchema.getMiningFields match {
           case null => None
           case _ =>
             Option(
-              bayesianNetworkModel.getMiningSchema.getMiningFields.asScala.map {
+              model.getMiningSchema.getMiningFields.asScala.map {
                 f =>
                   MiningField(
                     name = f.getName.getValue,
@@ -88,15 +88,15 @@ trait BayesianNetwork extends BayesianNetworkModel {
                   )
               })
         }),
-      output = bayesianNetworkModel.getOutput match {
+      output = model.getOutput match {
         case null => None
         case _ =>
           Option(
             Output(
-              extension = bayesianNetworkModel.getExtensions match {
+              extension = model.getExtensions match {
                 case null => None
                 case _ =>
-                  Option(bayesianNetworkModel.getExtensions.asScala.map { e =>
+                  Option(model.getExtensions.asScala.map { e =>
                     Extension(
                       extender = e.getExtender match {
                         case null => None
@@ -118,7 +118,7 @@ trait BayesianNetwork extends BayesianNetworkModel {
                   })
               },
               outputField =
-                bayesianNetworkModel.getOutput.getOutputFields.asScala
+                model.getOutput.getOutputFields.asScala
                   .map {
                     o =>
                       OutputField(
@@ -140,17 +140,17 @@ trait BayesianNetwork extends BayesianNetworkModel {
                   }
             ))
       },
-      modelStats = bayesianNetworkModel.getModelStats match {
+      modelStats = model.getModelStats match {
         case null => None
         case _ =>
           Option(
             ModelStats(
               univariateStats =
-                bayesianNetworkModel.getModelStats.getUnivariateStats match {
+                model.getModelStats.getUnivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      bayesianNetworkModel.getModelStats.getUnivariateStats.asScala
+                      model.getModelStats.getUnivariateStats.asScala
                         .map {
                           u =>
                             UnivariateStats(
@@ -264,11 +264,11 @@ trait BayesianNetwork extends BayesianNetworkModel {
                         })
                 },
               multivariateStats =
-                bayesianNetworkModel.getModelStats.getMultivariateStats match {
+                model.getModelStats.getMultivariateStats match {
                   case null => None
                   case _ =>
                     Option(
-                      bayesianNetworkModel.getModelStats.getMultivariateStats.asScala
+                      model.getModelStats.getMultivariateStats.asScala
                         .map {
                           m =>
                             MultivariateStats(
@@ -353,15 +353,15 @@ trait BayesianNetwork extends BayesianNetworkModel {
                 }
             ))
       },
-      modelExplanation = bayesianNetworkModel.getModelExplanation match {
+      modelExplanation = model.getModelExplanation match {
         case null => None
         case _ =>
           Option(
             ModelExplanation(
-              extension = bayesianNetworkModel.getModelExplanation.getExtensions match {
+              extension = model.getModelExplanation.getExtensions match {
                 case null => None
                 case _ =>
-                  Option(bayesianNetworkModel.getModelExplanation.getExtensions.asScala.map { e =>
+                  Option(model.getModelExplanation.getExtensions.asScala.map { e =>
                     Extension(
                       extender = e.getExtender match {
                         case null => None
@@ -378,13 +378,13 @@ trait BayesianNetwork extends BayesianNetworkModel {
                     )
                   })
               },
-              correlations = bayesianNetworkModel.getModelExplanation.getCorrelations match {
+              correlations = model.getModelExplanation.getCorrelations match {
                 case null => None
                 case _ => Option(
                   Correlations(
-                    extension = bayesianNetworkModel.getModelExplanation.getCorrelations.getExtensions match {
+                    extension = model.getModelExplanation.getCorrelations.getExtensions match {
                       case null => None
-                      case _ => Option(bayesianNetworkModel.getModelExplanation.getCorrelations.getExtensions.asScala.map { e =>
+                      case _ => Option(model.getModelExplanation.getCorrelations.getExtensions.asScala.map { e =>
                         Extension(
                           extender = e.getExtender match {
                             case null => None
@@ -402,13 +402,13 @@ trait BayesianNetwork extends BayesianNetworkModel {
                       })
                     },
                     correlationFields = Array(
-                      n = bayesianNetworkModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
-                      `type` = bayesianNetworkModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType.value(),
-                      value = bayesianNetworkModel.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
+                      n = model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getN.toInt,
+                      `type` = model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getType.value(),
+                      value = model.getModelExplanation.getCorrelations.getCorrelationFields.getArray.getValue
                     ),
                     correlationValues = {
                       val mtx =
-                        bayesianNetworkModel.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
+                        model.getModelExplanation.getCorrelations.getCorrelationValues.getMatrix
                       Matrix(
                         matCell = mtx.getMatCells match {
                           case null => None
@@ -439,11 +439,11 @@ trait BayesianNetwork extends BayesianNetworkModel {
                       )
                     },
                     correlationMethods =
-                      bayesianNetworkModel.getModelExplanation.getCorrelations.getCorrelationMethods match {
+                      model.getModelExplanation.getCorrelations.getCorrelationMethods match {
                         case null => None
                         case _ =>
                           val mtx =
-                            bayesianNetworkModel.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
+                            model.getModelExplanation.getCorrelations.getCorrelationMethods.getMatrix
                           Option(
                             Matrix(
                               matCell = mtx.getMatCells match {
@@ -477,10 +477,10 @@ trait BayesianNetwork extends BayesianNetworkModel {
                       }
                   ))
               },
-              predictiveModelQualities = bayesianNetworkModel.getModelExplanation.getPredictiveModelQualities match {
+              predictiveModelQualities = model.getModelExplanation.getPredictiveModelQualities match {
                 case null => None
                 case _ =>
-                  Option(bayesianNetworkModel.getModelExplanation.getPredictiveModelQualities.asScala.map {
+                  Option(model.getModelExplanation.getPredictiveModelQualities.asScala.map {
                     pmq =>
                       PredictiveModelQuality(
                         extension = pmq.getExtensions match {
@@ -534,7 +534,7 @@ trait BayesianNetwork extends BayesianNetworkModel {
                                       extension = pmq.getExtensions match {
                                         case null => None
                                         case _ =>
-                                          Option(bayesianNetworkModel.getModelExplanation.getExtensions.asScala.map { e =>
+                                          Option(model.getModelExplanation.getExtensions.asScala.map { e =>
                                             Extension(
                                               extender = e.getExtender match {
                                                 case null => None
@@ -897,10 +897,10 @@ trait BayesianNetwork extends BayesianNetworkModel {
                       )
                   })
               },
-              clusteringModelQualities= bayesianNetworkModel.getModelExplanation.getClusteringModelQualities match {
+              clusteringModelQualities= model.getModelExplanation.getClusteringModelQualities match {
                 case null => None
                 case _ =>
-                  Option(bayesianNetworkModel.getModelExplanation.getClusteringModelQualities.asScala.map {
+                  Option(model.getModelExplanation.getClusteringModelQualities.asScala.map {
                     cmq =>
                       ClusteringModelQuality(
                         dataName = cmq.getDataName match {
@@ -920,10 +920,10 @@ trait BayesianNetwork extends BayesianNetworkModel {
               }
             ))
       },
-      targets = bayesianNetworkModel.getTargets match {
+      targets = model.getTargets match {
         case null => None
         case _ =>
-          Option(bayesianNetworkModel.getTargets.asScala.map {
+          Option(model.getTargets.asScala.map {
             t =>
               Targets(
                 field = t.getField match {
@@ -952,13 +952,13 @@ trait BayesianNetwork extends BayesianNetworkModel {
               )
           })
       },
-      localTransformations = bayesianNetworkModel.getLocalTransformations match {
+      localTransformations = model.getLocalTransformations match {
         case null => None
         case _ => Option(LocalTransformation(
-          extension = bayesianNetworkModel.getLocalTransformations.getExtensions match {
+          extension = model.getLocalTransformations.getExtensions match {
             case null => None
             case _ =>
-              Option(bayesianNetworkModel.getLocalTransformations.getExtensions.asScala.map { e =>
+              Option(model.getLocalTransformations.getExtensions.asScala.map { e =>
                 Extension(
                   extender = e.getExtender match {
                     case null => None
@@ -975,11 +975,11 @@ trait BayesianNetwork extends BayesianNetworkModel {
                 )
               })
           },
-          derivedFields = bayesianNetworkModel.getLocalTransformations.getDerivedFields match {
+          derivedFields = model.getLocalTransformations.getDerivedFields match {
             case null => None
             case _ =>
               Option(
-                bayesianNetworkModel.getLocalTransformations.getDerivedFields.asScala
+                model.getLocalTransformations.getDerivedFields.asScala
                   .map { d =>
                     DerivedField(
                       name = d.getName match {
@@ -998,9 +998,9 @@ trait BayesianNetwork extends BayesianNetworkModel {
         ))
       },
       bayesianNetworkNodes = BayesianNetworkNodes(
-        extension = bayesianNetworkModel.getBayesianNetworkNodes.getExtensions match {
+        extension = model.getBayesianNetworkNodes.getExtensions match {
           case null => None
-          case _ => Option(bayesianNetworkModel.getBayesianNetworkNodes.getExtensions.asScala.map { e =>
+          case _ => Option(model.getBayesianNetworkNodes.getExtensions.asScala.map { e =>
             Extension(
               extender = e.getExtender match {
                 case null => None
@@ -1021,9 +1021,9 @@ trait BayesianNetwork extends BayesianNetworkModel {
             )
           })
         },
-        content = bayesianNetworkModel.getBayesianNetworkNodes.getContent match {
+        content = model.getBayesianNetworkNodes.getContent match {
           case null => None
-          case _ => Option(bayesianNetworkModel.getBayesianNetworkNodes.getContent.asScala.map {
+          case _ => Option(model.getBayesianNetworkNodes.getContent.asScala.map {
               c => Content(
                 locator = Locator(
                   publicId = c.getLocator.getPublicId match {
@@ -1043,10 +1043,10 @@ trait BayesianNetwork extends BayesianNetworkModel {
         discreteNode = None,
         continuousNode = None
       ),
-      modelVerification = bayesianNetworkModel.getModelVerification match {
+      modelVerification = model.getModelVerification match {
         case null => None
         case _ =>
-          val v = bayesianNetworkModel.getModelVerification
+          val v = model.getModelVerification
           Option(
             ModelVerification(
               recordCount = v.getRecordCount match {
@@ -1060,16 +1060,16 @@ trait BayesianNetwork extends BayesianNetworkModel {
               verificationFields = None
             ))
       },
-      modelName = bayesianNetworkModel.getModelName match {
+      modelName = model.getModelName match {
         case null => None
-        case _    => Option(bayesianNetworkModel.getModelName)
+        case _    => Option(model.getModelName)
       },
-      functionName = bayesianNetworkModel.getMiningFunction.value(),
-      algorithmName = bayesianNetworkModel.getAlgorithmName match {
+      functionName = model.getMiningFunction.value(),
+      algorithmName = model.getAlgorithmName match {
         case null => None
-        case _    => Option(bayesianNetworkModel.getAlgorithmName)
+        case _    => Option(model.getAlgorithmName)
       },
-      isScorable = Option(bayesianNetworkModel.isScorable)
+      isScorable = Option(model.isScorable)
     )
   }
 }

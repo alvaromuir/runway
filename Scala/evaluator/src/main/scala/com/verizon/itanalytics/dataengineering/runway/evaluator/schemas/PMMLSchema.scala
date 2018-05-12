@@ -25,7 +25,7 @@ trait PMMLSchema
     with NeuralNetworkModel
     with RegressionModel
     with RuleSetModel
-    with Scorecard
+    with ScoreCardModel
     with SequenceModel
     with SupportVectorMachineModel
     with TextModel
@@ -39,7 +39,7 @@ trait PMMLSchema
                          transformationDictionary: Option[TransformationDictionary] = None,
                          version: String,
                          associationModel: Option[AssociationModel] = None,
-                         bayesianNetworkModel: Option[BayesianNetwork] = None,
+                         bayesianNetworkModel: Option[BayesianNetworkModel] = None,
                          clusteringModel: Option[ClusteringModel] = None,
                          gaussianProcessModel: Option[GaussianProcess] = None,
                          generalRegressionModel: Option[GeneralRegression] = None,
@@ -50,7 +50,7 @@ trait PMMLSchema
                          regressionModel: Option[RegressionModel] = None,
                          ruleSetModel: Option[RuleSetModel] = None,
                          sequenceModel: Option[SequenceModel] = None,
-                         scorecard: Option[Scorecard] = None,
+                         scoreCardModel: Option[ScoreCardModel] = None,
                          supportVectorMachineModel: Option[SupportVectorMachineModel] = None,
                          textModel: Option[TextModel] = None,
                          timeSeriesModel: Option[TimeSeriesModel] = None,

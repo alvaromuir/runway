@@ -12,16 +12,10 @@ import java.util
 import java.util.{Date, Locale}
 
 import com.verizon.itanalytics.dataengineering.runway.evaluator.models._
-
 import javax.xml.bind.JAXBException
 import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas.PMMLSchema
 import org.dmg.pmml.{FieldName, Model, PMML}
-import org.jpmml.evaluator.{
-  ModelEvaluator,
-  ModelEvaluatorFactory,
-  ReportingValueFactoryFactory,
-  ValueFactoryFactory
-}
+import org.jpmml.evaluator.{ModelEvaluator, ModelEvaluatorFactory, ReportingValueFactoryFactory, ValueFactoryFactory}
 import org.jpmml.model.PMMLUtil
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -40,7 +34,8 @@ trait Evaluator
     with NeuralNetwork
     with NaiveBayes
     with Regression
-    with RuleSet {
+    with RuleSet
+    with ScoreCard {
   val log: Logger = LoggerFactory.getLogger(getClass.getName)
 
   /** Returns a pMML file from input stream
@@ -277,7 +272,7 @@ trait Evaluator
       },
       bayesianNetworkModel = evaluator.getSummary match {
         case "Bayesian network" => Option(parseBayesianNetworkModel(pMML))
-        case _                  => None
+        case _ => None
       },
       clusteringModel = evaluator.getSummary match {
         case "Clustering model" => Option(parseClusteringModel(pMML))
@@ -316,7 +311,8 @@ trait Evaluator
       sequenceModel = evaluator.getSummary match {
         case _ => None
       },
-      scorecard = evaluator.getSummary match {
+      scoreCardModel = evaluator.getSummary match {
+        case "Scorecard model" => Option(parseScoreCardModel(pMML))
         case _ => None
       },
       supportVectorMachineModel = evaluator.getSummary match {
