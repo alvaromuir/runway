@@ -3,7 +3,7 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator
 import java.io.File
 
 import org.dmg.pmml.{Model, PMML}
-import org.jpmml.evaluator.ModelEvaluator
+import org.jpmml.evaluator.{ModelEvaluator, UnsupportedElementException}
 import org.scalatest.FlatSpec
 
 /*

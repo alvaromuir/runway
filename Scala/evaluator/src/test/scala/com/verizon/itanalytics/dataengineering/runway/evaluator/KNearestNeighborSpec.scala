@@ -9,11 +9,23 @@ import org.scalatest.FlatSpec
 */
 
 class KNearestNeighborSpec
-  extends FlatSpec {
+  extends FlatSpec
+    with Builder
+    with Evaluator {
 
-    "the evaluator" should
-      "read K-Nearest Neighbor models" in {
-      val status = "not yet implemented, requires a test file"
-      assert(status != null)
-    }
+  //  val testModelPath = mapModels("nearestNeighbor")
+  //  val testDataPath = mapData("nearestNeighbor")
+  //  val pMML: PMML = readPMML(new File(testModelPath))
+  //  val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
+  //  val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
+  //  val model: Option[BayesianNetworkModel] = pmmlModel.bayesianNetworkModel
+
+  "the evaluator" should
+    "read Nearest neighbor models" in {
+    val status = "not yet implemented, requires a test file"
+
+    assert(status != null)
+    //    val modelClass = "Nearest neighbor model"
+    //    assert(evaluator.getSummary == modelClass)
+  }
 }
