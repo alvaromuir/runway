@@ -13,11 +13,13 @@ trait Builder extends BeforeAndAfterEach {
   val modelsSrcPath = "./evaluator/src/test/resources/models"
   val mapModels = Map(
     "association" -> s"$modelsSrcPath/ShoppingAssocRules.xml",
+    "baseline" -> s"",
     "bayesianNetwork" -> s"$modelsSrcPath/BayesianTest.xml",
     "clustering" -> s"$modelsSrcPath/single_audit_kmeans.xml",
     "gaussian" -> s"$modelsSrcPath/GaussianTest.xml",
     "generalRegression" -> s"$modelsSrcPath/IrisGeneralRegression.xml",
     "naiveBayes" -> s"$modelsSrcPath/NaiveBayesTest.xml",
+    "nearestNeighbord"  -> s"",
     "neuralNetwork" -> s"$modelsSrcPath/single_iris_mlp.xml",
     "regression" -> s"$modelsSrcPath/ElNinoLinearReg.xml",
     "ruleSet" -> s"$modelsSrcPath/RuleSetCompoundTest.xml",
@@ -33,10 +35,12 @@ trait Builder extends BeforeAndAfterEach {
   val mapData = Map(
     "association" -> s"$dataSrcPath/baskets1ntrans.csv",
     "bayesianNetwork" -> s"$dataSrcPath/ALARM10k.csv",
+    "baseline" -> s"",
     "clustering" -> s"$dataSrcPath/Audit.csv",
     "gaussian" -> s"$dataSrcPath/GaussianTest.csv",
     "generalRegression" -> s"$dataSrcPath/Iris.csv",
     "naiveBayes" -> s"",
+    "nearestNeighbord"  -> s"",
     "neuralNetwork" -> s"$dataSrcPath/Iris.csv",
     "regression" -> s"$dataSrcPath/Elnino.csv",
     "ruleSet" -> s"$dataSrcPath/switzerland.data",
