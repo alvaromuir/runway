@@ -20,7 +20,13 @@ trait Builder extends BeforeAndAfterEach {
     "naiveBayes" -> s"$modelsSrcPath/NaiveBayesTest.xml",
     "neuralNetwork" -> s"$modelsSrcPath/single_iris_mlp.xml",
     "regression" -> s"$modelsSrcPath/ElNinoLinearReg.xml",
-    "ruleSet" -> s"$modelsSrcPath/RuleSetCompoundTest.xml"
+    "ruleSet" -> s"$modelsSrcPath/RuleSetCompoundTest.xml",
+    "sequence" -> s"",
+    "supportVectorMachine" -> s"",
+    "text" -> s"",
+    "timeSeries" -> s"",
+    "tree" -> s"",
+    "scoreCard" -> s""
   )
 
   val dataSrcPath = "./evaluator/src/test/resources/data"
@@ -30,9 +36,16 @@ trait Builder extends BeforeAndAfterEach {
     "clustering" -> s"$dataSrcPath/Audit.csv",
     "gaussian" -> s"$dataSrcPath/GaussianTest.csv",
     "generalRegression" -> s"$dataSrcPath/Iris.csv",
+    "naiveBayes" -> s"",
     "neuralNetwork" -> s"$dataSrcPath/Iris.csv",
     "regression" -> s"$dataSrcPath/Elnino.csv",
-    "ruleSet" -> s"$dataSrcPath/switzerland.data"
+    "ruleSet" -> s"$dataSrcPath/switzerland.data",
+    "sequence" -> s"",
+    "supportVectorMachine" -> s"",
+    "text" -> s"",
+    "timeSeries" -> s"",
+    "tree" -> s"",
+    "scoreCard" -> s""
   )
 
   override def beforeEach() {
