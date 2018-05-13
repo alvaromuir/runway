@@ -8,6 +8,7 @@ import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas._
  * 04 30, 2018
  */
 
+// http://dmg.org/pmml/v4-3/MultipleModels.html#xsdElement_MiningModel
 trait MiningModel
     extends Extension
     with MiningSchema
