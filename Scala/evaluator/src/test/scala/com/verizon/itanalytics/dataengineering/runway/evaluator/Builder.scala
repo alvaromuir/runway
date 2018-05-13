@@ -19,7 +19,7 @@ trait Builder extends BeforeAndAfterEach {
     "gaussian" -> s"$modelsSrcPath/GaussianTest.xml",
     "generalRegression" -> s"$modelsSrcPath/IrisGeneralRegression.xml",
     "naiveBayes" -> s"$modelsSrcPath/NaiveBayesTest.xml",
-    "nearestNeighbord"  -> s"",
+    "nearestNeighbor"  -> s"",
     "neuralNetwork" -> s"$modelsSrcPath/single_iris_mlp.xml",
     "regression" -> s"$modelsSrcPath/ElNinoLinearReg.xml",
     "ruleSet" -> s"$modelsSrcPath/RuleSetCompoundTest.xml",
