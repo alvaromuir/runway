@@ -8,7 +8,7 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 
 
 trait Content {
-  case class Content(locator: Locator)
+  case class Content(locator: Option[Locator] = None)
 
   case class Locator(publicId: Option[String] = None,
                      systemId: Option[String] = None,

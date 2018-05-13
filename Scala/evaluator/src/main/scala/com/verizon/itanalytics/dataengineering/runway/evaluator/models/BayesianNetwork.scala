@@ -1024,21 +1024,24 @@ trait BayesianNetwork extends BayesianNetworkModel {
         content = model.getBayesianNetworkNodes.getContent match {
           case null => None
           case _ => Option(model.getBayesianNetworkNodes.getContent.asScala.map {
-              c => Content(
-                locator = Locator(
-                  publicId = c.getLocator.getPublicId match {
-                    case null => None
-                    case _ => Option(c.getLocator.getPublicId)
-                  },
-                  systemId = c.getLocator.getSystemId match {
-                    case null => None
-                    case _ => Option(c.getLocator.getSystemId)
-                  },
-                  lineNumber = c.getLocator.getLineNumber,
-                  columnNumber = c.getLocator.getColumnNumber
-                )
-              )
-            })
+            c =>
+              Content(
+                locator = c.getLocator match {
+                  case null => None
+                  case _ => Option(Locator(
+                    publicId = c.getLocator.getPublicId match {
+                      case null => None
+                      case _ => Option(c.getLocator.getPublicId)
+                    },
+                    systemId = c.getLocator.getSystemId match {
+                      case null => None
+                      case _ => Option(c.getLocator.getSystemId)
+                    },
+                    lineNumber = c.getLocator.getLineNumber,
+                    columnNumber = c.getLocator.getColumnNumber
+                  ))
+                })
+          })
         },
         discreteNode = None,
         continuousNode = None

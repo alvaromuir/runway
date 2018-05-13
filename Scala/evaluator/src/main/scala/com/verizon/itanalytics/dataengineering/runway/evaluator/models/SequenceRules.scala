@@ -618,20 +618,23 @@ trait SequenceRules extends SequenceModel {
           content = s.getContent match {
             case null => None
             case _ => Option(s.getContent.asScala.map {
-              c => Content(
-                locator = Locator(
-                  publicId = c.getLocator.getPublicId match {
+              c =>
+                Content(
+                  locator = c.getLocator match {
                     case null => None
-                    case _ => Option(c.getLocator.getPublicId)
-                  },
-                  systemId = c.getLocator.getSystemId match {
-                    case null => None
-                    case _ => Option(c.getLocator.getSystemId)
-                  },
-                  lineNumber = c.getLocator.getLineNumber,
-                  columnNumber = c.getLocator.getColumnNumber
-                )
-              )
+                    case _ => Option(Locator(
+                      publicId = c.getLocator.getPublicId match {
+                        case null => None
+                        case _ => Option(c.getLocator.getPublicId)
+                      },
+                      systemId = c.getLocator.getSystemId match {
+                        case null => None
+                        case _ => Option(c.getLocator.getSystemId)
+                      },
+                      lineNumber = c.getLocator.getLineNumber,
+                      columnNumber = c.getLocator.getColumnNumber
+                    ))
+                  })
             })
           },
           numberOfSets = s.getNumberOfSets match {
