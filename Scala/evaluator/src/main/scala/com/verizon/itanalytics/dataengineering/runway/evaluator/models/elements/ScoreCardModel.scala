@@ -8,6 +8,7 @@ import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas._
  * 05 12, 2018
  */
 
+// http://dmg.org/pmml/v4-3/Scorecard.html
 trait ScoreCardModel
     extends Extension
     with MiningSchema

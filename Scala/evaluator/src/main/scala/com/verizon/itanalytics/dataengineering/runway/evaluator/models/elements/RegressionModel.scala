@@ -8,6 +8,7 @@ import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas._
  * 05 06, 2018
  */
 
+// http://dmg.org/pmml/v4-3/Regression.html#xsdElement_RegressionModel
 trait RegressionModel
     extends Extension
     with MiningSchema

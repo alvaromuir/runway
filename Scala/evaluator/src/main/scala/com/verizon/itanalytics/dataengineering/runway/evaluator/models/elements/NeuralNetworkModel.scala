@@ -8,6 +8,7 @@ import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas._
  * 05 06, 2018
  */
 
+// http://dmg.org/pmml/v4-3/NeuralNetwork.html
 trait NeuralNetworkModel
     extends Extension
     with MiningSchema

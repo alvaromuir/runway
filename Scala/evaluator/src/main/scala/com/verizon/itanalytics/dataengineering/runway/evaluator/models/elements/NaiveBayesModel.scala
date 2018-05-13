@@ -8,6 +8,7 @@ import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas._
  * 04 30, 2018
  */
 
+// http://dmg.org/pmml/v4-3/NaiveBayes.html
 trait NaiveBayesModel
     extends MiningSchema
     with Output

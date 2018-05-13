@@ -2,6 +2,13 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.models.elements
 
 import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas._
 
+/*
+ * Project: Runway
+ * Alvaro Muir, Verizon IT Analytics: Data Engineering
+ * 05 05, 2018
+ */
+
+// http://dmg.org/pmml/v4-3/SupportVectorMachine.html
 trait SupportVectorMachineModel
     extends Extension
     with MiningSchema

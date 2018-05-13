@@ -2,6 +2,13 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.models.elements
 
 import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas._
 
+/*
+ * Project: Runway
+ * Alvaro Muir, Verizon IT Analytics: Data Engineering
+ * 04 30, 2018
+ */
+
+// http://dmg.org/pmml/v4-3/KNN.html
 trait NearestNeighborModel
     extends Extension
     with MiningSchema
