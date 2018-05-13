@@ -173,6 +173,6 @@ class RuleSetSpec extends FlatSpec with Builder with TestUtils with Evaluator {
 
     val field = FieldName.create("$C-Drug")
     assert(Some(results.asScala.keys.head).contains(field))
-    assert(Some(results.asScala(field)).get.toString.contains("result=drugA, confidence_entries=[drugB=0.3, drugA=0.32], entityId=RULE2}"))
+    assert(Some(results.asScala(field)).get.toString.contains("result=drugY, confidence_entries=[drugY=0.0], entityId=null}"))
   }
 }
