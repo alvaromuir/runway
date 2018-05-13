@@ -35,7 +35,8 @@ trait Evaluator
     with NaiveBayes
     with Regression
     with RuleSet
-    with ScoreCard {
+    with ScoreCard
+    with VectorMachine {
   val log: Logger = LoggerFactory.getLogger(getClass.getName)
 
   /** Returns a pMML file from input stream
@@ -316,6 +317,7 @@ trait Evaluator
         case _ => None
       },
       supportVectorMachineModel = evaluator.getSummary match {
+        case "Support vector machine" => Option(parseSupportVectorMachineModel(pMML))
         case _ => None
       },
       textModel = evaluator.getSummary match {
