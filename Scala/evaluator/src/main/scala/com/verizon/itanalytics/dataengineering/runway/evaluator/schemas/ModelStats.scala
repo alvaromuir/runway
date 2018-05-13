@@ -1,5 +1,7 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 
+import org.dmg.pmml.NumericInfo
+
 /*
 * Project: Runway
 * Alvaro Muir, Verizon IT Analytics: Data Engineering
@@ -7,7 +9,7 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 */
 
 // http://dmg.org/pmml/v4-3/Statistics.html
-trait ModelStats extends DataDictionary {
+trait ModelStats extends DataDictionary with Counts with Targets {
 
   case class ModelStats(
       univariateStats: Option[Seq[UnivariateStats]] = None,
@@ -21,17 +23,6 @@ trait ModelStats extends DataDictionary {
                              contStats: Option[ContStats] = None,
                              anova: Option[Anova] = None)
 
-  case class Counts(totalFreq: Double,
-                    missingFreq: Option[Double] = None,
-                    invalidFreq: Option[Double] = None,
-                    cardinality: Option[Int] = None)
-
-  case class NumericInfo(minimum: Option[Double] = None,
-                         maximum: Option[Double] = None,
-                         mean: Option[Double] = None,
-                         standardDeviation: Option[Double] = None,
-                         median: Option[Double] = None,
-                         interQuartileRange: Option[Double] = None)
 
   case class DiscStats(arrays: Option[Seq[String]] = None,
                        modalValue: Option[String] = None)

@@ -151,32 +151,56 @@ trait BaselineModels extends BaselineModel {
                               weighted = u.getWeighted.value(),
                               counts = u.getCounts match {
                                 case null => None
-                                case _ =>
-                                  Option(Counts(
+                                case _ => Option(Counts(
                                     totalFreq = u.getCounts.getTotalFreq,
                                     missingFreq = Option(
                                       u.getCounts.getMissingFreq.toDouble),
                                     invalidFreq = Option(
                                       u.getCounts.getInvalidFreq.toDouble),
-                                    cardinality =
-                                      Option(u.getCounts.getCardinality.toInt)
+                                    cardinality = Option(u.getCounts.getCardinality.toInt)
                                   ))
                               },
                               numericInfo = u.getNumericInfo match {
                                 case null => None
-                                case _ =>
-                                  Option(NumericInfo(
-                                    minimum =
-                                      Option(u.getNumericInfo.getMinimum),
-                                    maximum =
-                                      Option(u.getNumericInfo.getMaximum),
-                                    mean = Option(u.getNumericInfo.getMean),
-                                    standardDeviation = Option(
-                                      u.getNumericInfo.getStandardDeviation),
-                                    median = Option(u.getNumericInfo.getMedian),
-                                    interQuartileRange = Option(
-                                      u.getNumericInfo.getInterQuartileRange)
-                                  ))
+                                case _ => Option(NumericInfo(
+                                  quantile = u.getNumericInfo.getQuantiles match {
+                                      case null => None
+                                      case _ => Option(u.getNumericInfo.getQuantiles.asScala.map {
+                                        q => Quantile(
+                                          extension = q.getExtensions match {
+                                            case null => None
+                                            case _ =>
+                                              Option(q.getExtensions.asScala.map { e =>
+                                                Extension(
+                                                  extender = e.getExtender match {
+                                                    case null => None
+                                                    case _ => Option(e.getExtender)
+                                                  },
+                                                  name = e.getName match {
+                                                    case null => None
+                                                    case _ => Option(e.getName)
+                                                  },
+                                                  value = e.getValue match {
+                                                    case null => None
+                                                    case _ => Option(e.getValue)
+                                                  }
+                                                )
+                                              })
+                                          },
+                                          quantileLimit = q.getQuantileLimit,
+                                          quantileValue = q.getQuantileValue
+                                        )
+                                      })
+                                    },
+                                  minimum = Option(u.getNumericInfo.getMinimum),
+                                  maximum = Option(u.getNumericInfo.getMaximum),
+                                  mean = Option(u.getNumericInfo.getMean),
+                                  standardDeviation = Option(
+                                    u.getNumericInfo.getStandardDeviation),
+                                  median = Option(u.getNumericInfo.getMedian),
+                                  interQuartileRange = Option(
+                                    u.getNumericInfo.getInterQuartileRange)
+                                ))
                               },
                               discStats = u.getDiscrStats match {
                                 case null => None

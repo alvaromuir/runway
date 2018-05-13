@@ -7,7 +7,7 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
  */
 
 // http://dmg.org/pmml/v4-3/Targets.html
-trait Targets {
+trait Targets extends Extension {
 
   case class Targets(
       field: Option[String] = None,
@@ -43,14 +43,10 @@ trait Targets {
       field: String,
       weighted: Option[Int] = Some(0))
 
-  case class Counts(extension: Option[Seq[Extension]] = None,
-                    totalFreq: Double,
-                    missingFreq: Option[Double] = None,
-                    invalidFreq: Option[Double] = None,
-                    cardinality: Option[Int] = None)
+
 
   case class NumericInfo(extension: Option[Seq[Extension]] = None,
-                         quantile: Option[Quantile] = None,
+                         quantile: Option[Iterable[Quantile]] = None,
                          minimum: Option[Double] = None,
                          maximum: Option[Double] = None,
                          mean: Option[Double] = None,
