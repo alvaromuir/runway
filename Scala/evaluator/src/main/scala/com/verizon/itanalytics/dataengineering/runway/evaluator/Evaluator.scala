@@ -342,6 +342,7 @@ trait Evaluator
                       features: Map[Any, Any]): util.Map[FieldName, Any] = {
     val arguments = new mutable.LinkedHashMap[FieldName, Any]
 
+
 //    todo: improve this logic
     pmmlModel.associationModel match {
       case None =>
@@ -407,7 +408,16 @@ trait Evaluator
         }
     }
 
-    pmmlModel.ruleSetModel match {
+    pmmlModel.regressionModel match {
+      case None =>
+      case Some(_) =>
+        features.map {
+          case (k, v) => arguments.put(FieldName.create(k.toString), v)
+        }
+    }
+
+
+    pmmlModel.supportVectorMachineModel match {
       case None =>
       case Some(_) =>
         features.map {
