@@ -3,8 +3,8 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.models
 import com.verizon.itanalytics.dataengineering.runway.evaluator.models.elements.RuleSetModel
 import org.dmg.pmml.PMML
 
-import scala.annotation.tailrec
 import scala.collection.JavaConverters._
+
 /*
 * Project: Runway
 * Alvaro Muir, Verizon IT Analytics: Data Engineering
