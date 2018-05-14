@@ -11,7 +11,7 @@ import org.scalatest.FlatSpec
 class TextModelSpec extends FlatSpec with Builder with Evaluator {
 
   "the evaluator" should
-    "read Scorecard models" in {
+    "read Text models" in {
     val status = "not yet implemented, requires a test file"
 
     assert(status != null)
