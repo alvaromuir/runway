@@ -1171,7 +1171,7 @@ trait GaussianProcess extends GaussianProcessModel {
           inlineTables = model.getTrainingInstances.getInlineTable match {
             case null => None
             case _ => Option(model.getTrainingInstances.getInlineTable.getRows.asScala.map(r =>
-              Row(row = r.toString)))
+              Row(content = r.getContent.asScala.map { _.toString })))
           }
         ))
       },

@@ -7,7 +7,7 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
  */
 
 // http://dmg.org/pmml/v4-3/Taxonomy.html
-trait Taxonomy {
+trait Taxonomy extends Extension{
   case class Taxonomy(extension: Option[Seq[Extension]] = None,
                       name: String,
                       childParents: Option[Seq[ChildParent]] = None)
@@ -17,13 +17,13 @@ trait Taxonomy {
                          parentField: String,
                          parentLevelField: Option[String] = None,
                          isRecursive: String = "false",
-                         tableLocator: Option[String],
-                         inlineTables: Option[Seq[Row]] = None)
+                         tableLocator: Option[TableLocator] = None,
+                         inlineTables: Option[InlineTable] = None)
 
   case class TableLocator(extension: Option[Seq[Extension]] = None)
 
   case class InlineTable(extension: Option[Seq[Extension]] = None,
                          row: Option[Seq[Row]])
 
-  case class Row(row: String)
+  case class Row(content: Iterable[String])
 }

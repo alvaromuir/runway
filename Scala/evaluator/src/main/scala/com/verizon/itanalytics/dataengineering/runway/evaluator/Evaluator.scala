@@ -131,15 +131,69 @@ trait Evaluator
                             isRecursive = cp.getRecursive.value(), // this is probably a boolean
                             tableLocator = cp.getTableLocator match {
                               case null => None
-                              case _ =>
-                                Option(cp.getTableLocator.toString) // see known limitations: https://github.com/jpmml/jpmml-evaluator/blob/master/features.md
+                              case _ => Option(TableLocator(
+                                extension = cp.getTableLocator.getExtensions match {
+                                  case null => None
+                                  case _=>
+                                    Option(cp.getTableLocator.getExtensions.asScala.map {
+                                      e =>
+                                        Extension(
+                                          extender = e.getExtender match {
+                                            case null => None
+                                            case _    => Option(e.getExtender)
+                                          },
+                                          name = e.getName match {
+                                            case null => None
+                                            case _    => Option(e.getName)
+                                          },
+                                          value = e.getValue match {
+                                            case null => None
+                                            case _    => Option(e.getValue)
+                                          },
+                                          content = e.getContent match {
+                                            case null => None
+                                            case _    => Option(e.getContent.asScala.map { _.toString })
+                                          }
+                                        )
+                                    })
+                                }
+                              ))
                             },
                             inlineTables = cp.getInlineTable match {
                               case null => None
-                              case _ =>
-                                Option(
-                                  cp.getInlineTable.getRows.asScala.map(r =>
-                                    Row(row = r.toString)))
+                              case _ => Option(InlineTable(
+                                extension = cp.getInlineTable.getExtensions match {
+                                  case null => None
+                                  case _ =>
+                                    Option(cp.getInlineTable.getExtensions.asScala.map {
+                                      e =>
+                                        Extension(
+                                          extender = e.getExtender match {
+                                            case null => None
+                                            case _    => Option(e.getExtender)
+                                          },
+                                          name = e.getName match {
+                                            case null => None
+                                            case _    => Option(e.getName)
+                                          },
+                                          value = e.getValue match {
+                                            case null => None
+                                            case _    => Option(e.getValue)
+                                          },
+                                          content = e.getContent match {
+                                            case null => None
+                                            case _    => Option(e.getContent.asScala.map { _.toString })
+                                          }
+                                        )
+                                    })
+                                },
+                                row = cp.getInlineTable.getRows match {
+                                  case null => None
+                                  case _ => Option(cp.getInlineTable.getRows.asScala.map {
+                                    r => Row(content = r.getContent.asScala.map { _.toString})
+                                  })
+                                }
+                              ))
                             }
                         )))
                   }

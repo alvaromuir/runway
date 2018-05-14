@@ -1259,7 +1259,7 @@ trait KNearestNeighbor extends NearestNeighborModel {
                   case _ =>
                     Option(
                       model.getTrainingInstances.getInlineTable.getRows.asScala
-                        .map(r => Row(row = r.toString)))
+                        .map(r => Row(content = r.getContent.asScala.map { _.toString })))
                 }
             ))
       },
