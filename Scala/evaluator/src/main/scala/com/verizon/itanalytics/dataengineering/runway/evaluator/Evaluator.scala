@@ -36,6 +36,8 @@ trait Evaluator
     with Regression
     with RuleSet
     with ScoreCard
+    with TextModels
+    with TimeSeries
     with VectorMachine {
   val log: Logger = LoggerFactory.getLogger(getClass.getName)
 
@@ -375,9 +377,11 @@ trait Evaluator
         case _ => None
       },
       textModel = evaluator.getSummary match {
+        case "Text model" => Option(parseTextModel(pMML))
         case _ => None
       },
       timeSeriesModel = evaluator.getSummary match {
+        case "Time series" => Option(parseTimeSeriesModel(pMML))
         case _ => None
       },
       treeModel = evaluator.getSummary match {
@@ -469,7 +473,6 @@ trait Evaluator
           case (k, v) => arguments.put(FieldName.create(k.toString), v)
         }
     }
-
 
     pmmlModel.supportVectorMachineModel match {
       case None =>
