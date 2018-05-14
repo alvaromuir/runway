@@ -14,6 +14,11 @@ import scala.collection.JavaConverters._
 @deprecated
 trait TextModels extends TextModel {
 
+  /** Parses provided pMML file as an Text Model
+    *
+    * @param pMML a valid pMML file
+    * @return TextModel
+    */
   def parseTextModel(pMML: PMML): TextModel = {
     val model = pMML.getModels
       .get(0)
