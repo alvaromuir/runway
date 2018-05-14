@@ -13,6 +13,11 @@ import scala.collection.JavaConverters._
 
 trait TimeSeries extends TimeSeriesModel {
 
+  /** Parses provided pMML file as an Time series Model
+    *
+    * @param pMML a valid pMML file
+    * @return TimeSeriesModel
+    */
   def parseTimeSeriesModel(pMML: PMML): TimeSeriesModel = {
     val model = pMML.getModels
       .get(0)
