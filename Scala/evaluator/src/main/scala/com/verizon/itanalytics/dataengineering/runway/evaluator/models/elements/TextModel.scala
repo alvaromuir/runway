@@ -16,6 +16,7 @@ trait TextModel
     with Output
     with ModelStats
     with ModelExplanation
+    with Taxonomy
     with Targets
     with LocalTransformation
     with ModelVerification {
@@ -32,14 +33,21 @@ trait TextModel
       textCorpus: TextCorpus,
       documentTermMatrix: DocumentTermMatrix,
       textModelNormalization: Option[TextModelNormalization] = None,
-      textModelSimiliarity: Option[TextModelSimiliarity] = None
+      textModelSimiliarity: Option[TextModelSimiliarity] = None,
+      modelVerification: Option[ModelVerification] = None,
+      modelName: Option[String] = None,
+      functionName: String,
+      algorithmName: Option[String] = None,
+      numberOfTerms: Int,
+      numberOfDocuments: Int,
+      isScorable: Option[Boolean]
   )
 
   case class TextDictionary(extension: Option[Seq[Extension]] = None,
                             taxonomy: Option[Taxonomy] = None)
 
   case class TextCorpus(extension: Option[Seq[Extension]] = None,
-                        taxonomy: Option[TextDocument] = None)
+                        textDocument: Option[Iterable[TextDocument]] = None)
 
   case class TextDocument(extension: Option[Seq[Extension]] = None,
                           id: String,
