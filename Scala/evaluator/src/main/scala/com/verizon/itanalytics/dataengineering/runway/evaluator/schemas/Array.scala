@@ -9,6 +9,10 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 trait Array {
   case class Array(n: Int, `type`: String, value: String)
 
+  case class RealArray(n: Double, `type`: String, value: String)
+
+  case class IntArray(n: Int, `type`: String, value: String)
+
   case class IntSparseArray(indices: Seq[Int],
                             entries: Seq[Int],
                             n: Int,
@@ -18,5 +22,7 @@ trait Array {
                              entries: Seq[Double],
                              n: Int,
                              defaultValue: Option[Double] = Option(0))
+
+
 
 }
