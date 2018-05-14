@@ -13,10 +13,10 @@ import scala.collection.JavaConverters._
 
 trait SequenceRules extends SequenceModel {
 
-  /** Parses provided pMML file as an Association Model
+  /** Parses provided pMML file as an SequenceRules Model
     *
     * @param pMML a valid pMML file
-    * @return AssociationModel
+    * @return SequenceRulesModel
     */
   def parseSequenceModel(pMML: PMML): SequenceModel = {
     val model = pMML.getModels
