@@ -6,7 +6,7 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
  * 05 13, 2018
  */
 
-trait Counts {
+trait Counts extends Extension {
   case class Counts(extension: Option[Seq[Extension]] = None,
                     totalFreq: Double,
                     missingFreq: Option[Double] = None,
