@@ -59,4 +59,37 @@ trait ModelStats extends DataDictionary with Counts with Targets {
                               confidenceLevel: Double = 0.95,
                               confidenceLowerBound: Option[Double] = None,
                               confidenceUpperBound: Option[Double] = None)
+
+  case class Partition(extension: Option[Seq[Extension]] = None,
+                       partitionFieldStats: Option[Seq[PartitionFieldStats]] =
+                       None,
+                       name: String,
+                       size: Option[Double] = None)
+
+  case class PartitionFieldStats(
+                                  extension: Option[Seq[Extension]] = None,
+                                  counts: Option[Counts] = None,
+                                  numericInfo: Option[NumericInfo] = None,
+                                  frequenciesType: Option[FrequenciesType] = None,
+                                  field: String,
+                                  weighted: Option[String] = Option("0"))
+
+
+
+  case class NumericInfo(extension: Option[Seq[Extension]] = None,
+                         quantiles: Option[Iterable[Quantile]] = None,
+                         minimum: Option[Double] = None,
+                         maximum: Option[Double] = None,
+                         mean: Option[Double] = None,
+                         standardDeviation: Option[Double] = None,
+                         median: Option[Double] = None,
+                         interQuartileRange: Option[Double] = None)
+
+  case class Quantile(extension: Option[Seq[Extension]] = None,
+                      quantileLimit: Double,
+                      quantileValue: Double)
+
+  case class FrequenciesType(
+                              numArray: Array
+                            )
 }

@@ -7,7 +7,7 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
  */
 
 // http://dmg.org/pmml/v4-3/Targets.html
-trait Targets extends Extension {
+trait Targets extends ModelStats {
 
   case class Targets(
       field: Option[String] = None,
@@ -27,38 +27,5 @@ trait Targets extends Extension {
       displayValue: Option[String] = None,
       priorProbability: Option[Double] = None,
       defaultValue: Option[Double]
-  )
-
-  case class Partition(extension: Option[Seq[Extension]] = None,
-                       partitionFieldStats: Option[Seq[PartitionFieldStats]] =
-                         None,
-                       name: String,
-                       number: Option[Double] = None)
-
-  case class PartitionFieldStats(
-      extension: Option[Seq[Extension]] = None,
-      counts: Option[Counts] = None,
-      numericInfo: Option[NumericInfo] = None,
-      frequenciesType: Option[FrequenciesType] = None,
-      field: String,
-      weighted: Option[Int] = Some(0))
-
-
-
-  case class NumericInfo(extension: Option[Seq[Extension]] = None,
-                         quantile: Option[Iterable[Quantile]] = None,
-                         minimum: Option[Double] = None,
-                         maximum: Option[Double] = None,
-                         mean: Option[Double] = None,
-                         standardDeviation: Option[Double] = None,
-                         median: Option[Double] = None,
-                         interQuartileRange: Option[Double] = None)
-
-  case class Quantile(extension: Option[Seq[Extension]] = None,
-                      quantileLimit: Double,
-                      quantileValue: Double)
-
-  case class FrequenciesType(
-      numArray: Array
   )
 }
