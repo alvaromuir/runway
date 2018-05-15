@@ -29,7 +29,7 @@ trait BayesianNetworkModel
       modelExplanation: Option[ModelExplanation] = None,
       targets: Option[Iterable[Targets]] = None,
       localTransformations: Option[LocalTransformation] = None,
-      bayesianNetworkNodes: BayesianNetworkNodes, // toDo: fix this
+      bayesianNetworkNodes: BayesianNetworkNodes,
       modelVerification: Option[ModelVerification] = None,
       modelName: Option[String] = None,
       functionName: String,
@@ -56,19 +56,25 @@ trait BayesianNetworkModel
       parentValue: Option[ParentValue] = None,
       continuousDistribution: ContinuousDistribution)
 
-  case class ValueProbability(value: String, probability: Double)
+  case class ValueProbability(extension: Option[Seq[Extension]] = None, value: String, probability: Double)
 
   case class DiscreteNode(
       extension: Option[Seq[Extension]] = None,
       name: String,
       count: Option[Double] = None,
       derivedField: Option[DerivedField] = None,
-      discreteConditionalProbability: Option[DiscreteProbability] = None,
+      discreteConditionalProbability: Option[DiscreteConditionalProbability] =
+        None,
       valueProbability: Option[ValueProbability] = None)
 
-  case class DiscreteProbability(parentValue: ParentValue,
-                                 valueProbability: ValueProbability)
+  case class DiscreteConditionalProbability(extension: Option[Seq[Extension]] = None,
+                                            parentValue: ParentValue,
+                                            valueProbability: ValueProbability,
+                                            count: Option[Double] = None)
 
-  case class ParentValue(parent: String, value: String)
+  case class ParentValue(extension: Option[Seq[Extension]] = None,
+                         parent: String,
+                         value: String)
+
 
 }
