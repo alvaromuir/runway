@@ -1274,187 +1274,178 @@ trait MiningModels extends MiningModel {
         case null => None
         case _ =>
           Option(model.getEmbeddedModels.asScala.map { m =>
-            EmbeddedModels(
-              modelName = m.getModelName match {
+            EmbeddedModel(
+              output = m.getOutput match {
                 case null => None
-                case _ => Option(m.getModelName)
-              },
-              functionName = m.getMiningFunction.value(),
-              output = m.getOutput match{
-                case null => None
-                case _ =>
-                  Option(
-                    Output(
-                      extension = m.getOutput.getExtensions match {
-                        case null => None
-                        case _ =>
-                          Option(m.getOutput.getExtensions.asScala.map { e =>
-                            Extension(
-                              extender = e.getExtender match {
-                                case null => None
-                                case _    => Option(e.getExtender)
-                              },
-                              name = e.getName match {
-                                case null => None
-                                case _    => Option(e.getName)
-                              },
-                              value = e.getValue match {
-                                case null => None
-                                case _    => Option(e.getValue)
-                              },
-                              content = e.getContent match {
-                                case null => None
-                                case _ => Option(e.getContent.asScala.map { c => c.toString })
-                              }
+                case _ => Option(
+                  Output(
+                    extension = m.getOutput.getExtensions match {
+                      case null => None
+                      case _ =>
+                        Option(m.getOutput.getExtensions.asScala.map { e =>
+                          Extension(
+                            extender = e.getExtender match {
+                              case null => None
+                              case _    => Option(e.getExtender)
+                            },
+                            name = e.getName match {
+                              case null => None
+                              case _    => Option(e.getName)
+                            },
+                            value = e.getValue match {
+                              case null => None
+                              case _    => Option(e.getValue)
+                            },
+                            content = e.getContent match {
+                              case null => None
+                              case _ => Option(e.getContent.asScala.map { c => c.toString })
+                            }
+                          )
+                        })
+                    },
+                    outputField =
+                      m.getOutput.getOutputFields.asScala
+                        .map {
+                          o =>
+                            OutputField(
+                              name = o.getName.getValue,
+                              displayName = Option(o.getDisplayName),
+                              optype = o.getOpType.value(),
+                              targetField = Option(o.getTargetField.getValue),
+                              feature = o.getResultFeature.value(),
+                              value = Option(o.getValue),
+                              ruleFeature = o.getRuleFeature.value(),
+                              algorithm = o.getAlgorithm.value(),
+                              rank = o.getRank.toInt,
+                              rankBasis = o.getRankBasis.value(),
+                              rankOrder = o.getRankOrder.value(),
+                              isMultiValued = o.getIsMultiValued,
+                              segmentId = Option(o.getSegmentId),
+                              isFinalResult = o.isFinalResult
                             )
-                          })
-                      },
-                      outputField =
-                        m.getOutput.getOutputFields.asScala
-                          .map {
-                            o =>
-                              OutputField(
-                                name = o.getName.getValue,
-                                displayName = Option(o.getDisplayName),
-                                optype = o.getOpType.value(),
-                                targetField = Option(o.getTargetField.getValue),
-                                feature = o.getResultFeature.value(),
-                                value = Option(o.getValue),
-                                ruleFeature = o.getRuleFeature.value(),
-                                algorithm = o.getAlgorithm.value(),
-                                rank = o.getRank.toInt,
-                                rankBasis = o.getRankBasis.value(),
-                                rankOrder = o.getRankOrder.value(),
-                                isMultiValued = o.getIsMultiValued,
-                                segmentId = Option(o.getSegmentId),
-                                isFinalResult = o.isFinalResult
-                              )
-                          }
-                    ))
+                        }
+                  ))
               },
               modelStats = m.getModelStats match {
                 case null => None
                 case _ =>
                   Option(
                     ModelStats(
-                      univariateStats =
-                        m.getModelStats.getUnivariateStats match {
-                          case null => None
-                          case _ =>
-                            Option(
-                              m.getModelStats.getUnivariateStats.asScala
-                                .map {
-                                  u =>
-                                    UnivariateStats(
-                                      field = u.getField.getValue,
-                                      weighted = u.getWeighted.value(),
-                                      counts = u.getCounts match {
-                                        case null => None
-                                        case _ =>
-                                          Option(Counts(
-                                            totalFreq = u.getCounts.getTotalFreq,
-                                            missingFreq = Option(
-                                              u.getCounts.getMissingFreq.toDouble),
-                                            invalidFreq = Option(
-                                              u.getCounts.getInvalidFreq.toDouble),
-                                            cardinality =
-                                              Option(u.getCounts.getCardinality.toInt)
+                      univariateStats = m.getModelStats.getUnivariateStats match {
+                        case null => None
+                        case _ =>
+                          Option(
+                            m.getModelStats.getUnivariateStats.asScala
+                              .map {
+                                u =>
+                                  UnivariateStats(
+                                    field = u.getField.getValue,
+                                    weighted = u.getWeighted.value(),
+                                    counts = u.getCounts match {
+                                      case null => None
+                                      case _ =>
+                                        Option(Counts(
+                                          totalFreq = u.getCounts.getTotalFreq,
+                                          missingFreq =
+                                            Option(u.getCounts.getMissingFreq.toDouble),
+                                          invalidFreq =
+                                            Option(u.getCounts.getInvalidFreq.toDouble),
+                                          cardinality =
+                                            Option(u.getCounts.getCardinality.toInt)
+                                        ))
+                                    },
+                                    numericInfo = u.getNumericInfo match {
+                                      case null => None
+                                      case _ =>
+                                        Option(NumericInfo(
+                                          minimum = Option(u.getNumericInfo.getMinimum),
+                                          maximum = Option(u.getNumericInfo.getMaximum),
+                                          mean = Option(u.getNumericInfo.getMean),
+                                          standardDeviation = Option(
+                                            u.getNumericInfo.getStandardDeviation),
+                                          median = Option(u.getNumericInfo.getMedian),
+                                          interQuartileRange = Option(
+                                            u.getNumericInfo.getInterQuartileRange)
+                                        ))
+                                    },
+                                    discStats = u.getDiscrStats match {
+                                      case null => None
+                                      case _ =>
+                                        Option(
+                                          DiscStats(
+                                            arrays =
+                                              Option(u.getDiscrStats.getArrays.asScala
+                                                .map {
+                                                  _.toString
+                                                }),
+                                            modalValue =
+                                              Option(u.getDiscrStats.getModalValue)
                                           ))
-                                      },
-                                      numericInfo = u.getNumericInfo match {
-                                        case null => None
-                                        case _ =>
-                                          Option(NumericInfo(
-                                            minimum =
-                                              Option(u.getNumericInfo.getMinimum),
-                                            maximum =
-                                              Option(u.getNumericInfo.getMaximum),
-                                            mean = Option(u.getNumericInfo.getMean),
-                                            standardDeviation = Option(
-                                              u.getNumericInfo.getStandardDeviation),
-                                            median = Option(u.getNumericInfo.getMedian),
-                                            interQuartileRange = Option(
-                                              u.getNumericInfo.getInterQuartileRange)
-                                          ))
-                                      },
-                                      discStats = u.getDiscrStats match {
-                                        case null => None
-                                        case _ =>
-                                          Option(
-                                            DiscStats(
-                                              arrays =
-                                                Option(u.getDiscrStats.getArrays.asScala
-                                                  .map {
-                                                    _.toString
-                                                  }),
-                                              modalValue =
-                                                Option(u.getDiscrStats.getModalValue)
-                                            ))
-                                      },
-                                      contStats = u.getContStats match {
-                                        case null => None
-                                        case _ =>
-                                          Option(ContStats(
-                                            intervals =
-                                              u.getContStats.getIntervals match {
-                                                case null => None
-                                                case _ =>
-                                                  Option(
-                                                    u.getContStats.getIntervals.asScala
-                                                      .map { i =>
-                                                        Interval(
-                                                          closure = i.getClosure.value(),
-                                                          leftMargin =
-                                                            Option(i.getLeftMargin),
-                                                          rightMargin =
-                                                            Option(i.getRightMargin)
-                                                        )
-                                                      })
-                                              },
-                                            totalValueSom =
-                                              u.getContStats.getTotalValuesSum,
-                                            totalSquaresSum =
-                                              u.getContStats.getTotalSquaresSum
-                                          ))
-                                      },
-                                      anova = u.getAnova match {
-                                        case null => None
-                                        case _ =>
-                                          Option(Anova(
-                                            target = u.getAnova.getTarget.getValue,
-                                            anovaRow = u.getAnova.getAnovaRows match {
+                                    },
+                                    contStats = u.getContStats match {
+                                      case null => None
+                                      case _ =>
+                                        Option(ContStats(
+                                          intervals =
+                                            u.getContStats.getIntervals match {
                                               case null => None
                                               case _ =>
                                                 Option(
-                                                  u.getAnova.getAnovaRows.asScala.map {
-                                                    r =>
-                                                      AnovaRow(
-                                                        `type` = r.getType.value(),
-                                                        sumOfSquares = r.getSumOfSquares,
-                                                        degreesOfFreedom =
-                                                          r.getDegreesOfFreedom,
-                                                        meanOfSquares =
-                                                          r.getMeanOfSquares match {
-                                                            case null => None
-                                                            case _ =>
-                                                              Option(r.getMeanOfSquares)
-                                                          },
-                                                        fValue = r.getFValue match {
-                                                          case null => None
-                                                          case _    => Option(r.getFValue)
-                                                        },
-                                                        pValue = r.getPValue match {
-                                                          case null => None
-                                                          case _    => Option(r.getPValue)
-                                                        }
+                                                  u.getContStats.getIntervals.asScala
+                                                    .map { i =>
+                                                      Interval(
+                                                        closure = i.getClosure.value(),
+                                                        leftMargin =
+                                                          Option(i.getLeftMargin),
+                                                        rightMargin =
+                                                          Option(i.getRightMargin)
                                                       )
-                                                  })
-                                            }
-                                          ))
-                                      }
-                                    )
-                                })
-                        },
+                                                    })
+                                            },
+                                          totalValueSom =
+                                            u.getContStats.getTotalValuesSum,
+                                          totalSquaresSum =
+                                            u.getContStats.getTotalSquaresSum
+                                        ))
+                                    },
+                                    anova = u.getAnova match {
+                                      case null => None
+                                      case _ =>
+                                        Option(Anova(
+                                          target = u.getAnova.getTarget.getValue,
+                                          anovaRow = u.getAnova.getAnovaRows match {
+                                            case null => None
+                                            case _ =>
+                                              Option(
+                                                u.getAnova.getAnovaRows.asScala.map {
+                                                  r =>
+                                                    AnovaRow(
+                                                      `type` = r.getType.value(),
+                                                      sumOfSquares = r.getSumOfSquares,
+                                                      degreesOfFreedom =
+                                                        r.getDegreesOfFreedom,
+                                                      meanOfSquares =
+                                                        r.getMeanOfSquares match {
+                                                          case null => None
+                                                          case _ =>
+                                                            Option(r.getMeanOfSquares)
+                                                        },
+                                                      fValue = r.getFValue match {
+                                                        case null => None
+                                                        case _    => Option(r.getFValue)
+                                                      },
+                                                      pValue = r.getPValue match {
+                                                        case null => None
+                                                        case _    => Option(r.getPValue)
+                                                      }
+                                                    )
+                                                })
+                                          }
+                                        ))
+                                    }
+                                  )
+                              })
+                      },
                       multivariateStats =
                         m.getModelStats.getMultivariateStats match {
                           case null => None
@@ -1469,76 +1460,74 @@ trait MiningModels extends MiningModel {
                                         case _    => Option(m.getTargetCategory)
                                       },
                                       multivariateStats =
-                                        m.getMultivariateStats.asScala.map {
-                                          s =>
-                                            MultivariateStat(
-                                              name = s.getName,
-                                              category = s.getCategory match {
-                                                case null => None
-                                                case _    => Option(s.getCategory)
-                                              },
-                                              exponent = s.getExponent.toInt,
-                                              isIntercept = s.isIntercept,
-                                              importance = s.getImportance match {
+                                        m.getMultivariateStats.asScala.map { s =>
+                                          MultivariateStat(
+                                            name = s.getName,
+                                            category = s.getCategory match {
+                                              case null => None
+                                              case _    => Option(s.getCategory)
+                                            },
+                                            exponent = s.getExponent.toInt,
+                                            isIntercept = s.isIntercept,
+                                            importance = s.getImportance match {
+                                              case null => None
+                                              case _ =>
+                                                Option(s.getImportance.toDouble)
+                                            },
+                                            stdError = s.getStdError match {
+                                              case null => None
+                                              case _    => Option(s.getStdError.toDouble)
+                                            },
+                                            tValue = s.getTValue match {
+                                              case null => None
+                                              case _    => Option(s.getTValue.toDouble)
+                                            },
+                                            chiSquareValue = s.getChiSquareValue match {
+                                              case null => None
+                                              case _ =>
+                                                Option(s.getChiSquareValue.toDouble)
+                                            },
+                                            fStatistic = s.getFStatistic match {
+                                              case null => None
+                                              case _ =>
+                                                Option(s.getFStatistic.toDouble)
+                                            },
+                                            dF = s.getDF match {
+                                              case null => None
+                                              case _    => Option(s.getDF.toDouble)
+                                            },
+                                            pValueAlpha = s.getPValueAlpha match {
+                                              case null => None
+                                              case _ =>
+                                                Option(s.getPValueAlpha.toDouble)
+                                            },
+                                            pValueInitial = s.getPValueInitial match {
+                                              case null => None
+                                              case _ =>
+                                                Option(s.getPValueInitial.toDouble)
+                                            },
+                                            pValueFinal = s.getPValueFinal match {
+                                              case null => None
+                                              case _ =>
+                                                Option(s.getPValueFinal.toDouble)
+                                            },
+                                            confidenceLevel =
+                                              s.getConfidenceLevel.toDouble,
+                                            confidenceLowerBound =
+                                              s.getConfidenceLowerBound match {
                                                 case null => None
                                                 case _ =>
-                                                  Option(s.getImportance.toDouble)
+                                                  Option(
+                                                    s.getConfidenceLowerBound.toDouble)
                                               },
-                                              stdError = s.getStdError match {
-                                                case null => None
-                                                case _    => Option(s.getStdError.toDouble)
-                                              },
-                                              tValue = s.getTValue match {
-                                                case null => None
-                                                case _    => Option(s.getTValue.toDouble)
-                                              },
-                                              chiSquareValue =
-                                                s.getChiSquareValue match {
-                                                  case null => None
-                                                  case _ =>
-                                                    Option(s.getChiSquareValue.toDouble)
-                                                },
-                                              fStatistic = s.getFStatistic match {
+                                            confidenceUpperBound =
+                                              s.getConfidenceUpperBound match {
                                                 case null => None
                                                 case _ =>
-                                                  Option(s.getFStatistic.toDouble)
-                                              },
-                                              dF = s.getDF match {
-                                                case null => None
-                                                case _    => Option(s.getDF.toDouble)
-                                              },
-                                              pValueAlpha = s.getPValueAlpha match {
-                                                case null => None
-                                                case _ =>
-                                                  Option(s.getPValueAlpha.toDouble)
-                                              },
-                                              pValueInitial = s.getPValueInitial match {
-                                                case null => None
-                                                case _ =>
-                                                  Option(s.getPValueInitial.toDouble)
-                                              },
-                                              pValueFinal = s.getPValueFinal match {
-                                                case null => None
-                                                case _ =>
-                                                  Option(s.getPValueFinal.toDouble)
-                                              },
-                                              confidenceLevel =
-                                                s.getConfidenceLevel.toDouble,
-                                              confidenceLowerBound =
-                                                s.getConfidenceLowerBound match {
-                                                  case null => None
-                                                  case _ =>
-                                                    Option(
-                                                      s.getConfidenceLowerBound.toDouble)
-                                                },
-                                              confidenceUpperBound =
-                                                s.getConfidenceUpperBound match {
-                                                  case null => None
-                                                  case _ =>
-                                                    Option(
-                                                      s.getConfidenceUpperBound.toDouble)
-                                                }
-                                            )
+                                                  Option(
+                                                    s.getConfidenceUpperBound.toDouble)
+                                              }
+                                          )
                                         }
                                     )
                                 })
@@ -1577,34 +1566,33 @@ trait MiningModels extends MiningModel {
                       )
                   })
               },
-              localTransformation = m.getLocalTransformations match {
+              localTransformations = m.getLocalTransformations match {
                 case null => None
                 case _ =>
                   Option(
                     LocalTransformation(
-                      extension =
-                        m.getLocalTransformations.getExtensions match {
-                          case null => None
-                          case _ =>
-                            Option(
-                              m.getLocalTransformations.getExtensions.asScala
-                                .map { e =>
-                                  Extension(
-                                    extender = e.getExtender match {
-                                      case null => None
-                                      case _    => Option(e.getExtender)
-                                    },
-                                    name = e.getName match {
-                                      case null => None
-                                      case _    => Option(e.getName)
-                                    },
-                                    value = e.getValue match {
-                                      case null => None
-                                      case _    => Option(e.getValue)
-                                    }
-                                  )
-                                })
-                        },
+                      extension = m.getLocalTransformations.getExtensions match {
+                        case null => None
+                        case _ =>
+                          Option(
+                            m.getLocalTransformations.getExtensions.asScala
+                              .map { e =>
+                                Extension(
+                                  extender = e.getExtender match {
+                                    case null => None
+                                    case _    => Option(e.getExtender)
+                                  },
+                                  name = e.getName match {
+                                    case null => None
+                                    case _    => Option(e.getName)
+                                  },
+                                  value = e.getValue match {
+                                    case null => None
+                                    case _    => Option(e.getValue)
+                                  }
+                                )
+                              })
+                      },
                       derivedFields =
                         m.getLocalTransformations.getDerivedFields match {
                           case null => None
@@ -1619,7 +1607,7 @@ trait MiningModels extends MiningModel {
                                     },
                                     displayName = d.getDisplayName match {
                                       case null => None
-                                      case _ => Option(d.getDisplayName)
+                                      case _    => Option(d.getDisplayName)
                                     },
                                     optype = d.getOpType.value(),
                                     dataType = d.getDataType.value()
@@ -1627,7 +1615,12 @@ trait MiningModels extends MiningModel {
                                 })
                         }
                     ))
-              }
+              },
+              modelName = m.getModelName match {
+                case null => None
+                case _    => Option(m.getModelName)
+              },
+              functionName = m.getMiningFunction.value()
             )
           })
       },
