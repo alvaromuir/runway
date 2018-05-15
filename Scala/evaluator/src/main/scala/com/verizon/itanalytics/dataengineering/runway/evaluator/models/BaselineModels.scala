@@ -998,11 +998,11 @@ trait BaselineModels extends BaselineModel {
         field = model.getTestDistributions.getField.getValue,
         testStatistic = model.getTestDistributions.getTestStatistic.value(),
         resetValue = model.getTestDistributions.getResetValue match {
-          case null => None
+          case null => Option(0.0)
           case _ => Option(model.getTestDistributions.getResetValue)
         },
         windowSize = model.getTestDistributions.getWindowSize match {
-          case null => None
+          case null => Option(0)
           case _ => Option(model.getTestDistributions.getWindowSize)
         },
         weightField = model.getTestDistributions.getWeightField match {

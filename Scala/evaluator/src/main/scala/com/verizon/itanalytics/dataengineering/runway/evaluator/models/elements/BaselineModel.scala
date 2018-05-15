@@ -34,7 +34,7 @@ trait BaselineModel
       functionName: String,
       algorithmName: Option[String] = None,
       mathContext: Option[String] = None,
-      isScorable: Option[Boolean]
+      isScorable: Option[Boolean] = Option(true)
   )
 
 }

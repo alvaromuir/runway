@@ -13,8 +13,8 @@ trait TestDistributions extends TransformationDictionary {
   case class TestDistributions(
       field: String,
       testStatistic: String,
-      resetValue: Option[Double] = None,
-      windowSize: Option[Int] = None,
+      resetValue: Option[Double] = Option(0.0),
+      windowSize: Option[Int] = Option(0),
       weightField: Option[String] = None,
       normalizationScheme: Option[String] = None,
       baseline: Baseline,
