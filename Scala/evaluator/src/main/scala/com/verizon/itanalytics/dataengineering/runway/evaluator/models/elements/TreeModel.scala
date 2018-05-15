@@ -15,8 +15,8 @@ trait TreeModel
     with Output
     with ModelStats
     with ModelExplanation
-    with LocalTransformation
     with Targets
+    with LocalTransformation
     with EmbeddedModel
     with Array
     with Content
