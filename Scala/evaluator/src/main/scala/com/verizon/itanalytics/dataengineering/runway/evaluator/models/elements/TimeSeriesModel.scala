@@ -15,6 +15,7 @@ trait TimeSeriesModel
     with Output
     with ModelStats
     with ModelExplanation
+    with Targets
     with LocalTransformation
     with Array
     with Content
