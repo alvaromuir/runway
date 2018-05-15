@@ -40,7 +40,7 @@ trait AssociationModel
       numberOfItems: Int,
       numberOfItemsets: Int,
       numberOfRules: Int,
-      isScorable: Option[Boolean]
+      isScorable: Option[Boolean] = Option(true)
   )
 
   case class Item(extension: Option[Seq[Extension]] = None,
