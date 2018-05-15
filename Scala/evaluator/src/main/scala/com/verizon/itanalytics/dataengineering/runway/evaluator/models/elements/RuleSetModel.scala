@@ -17,6 +17,7 @@ trait RuleSetModel
     with ModelExplanation
     with Targets
     with LocalTransformation
+    with ScoreDistribution
     with ModelVerification {
 
   case class RuleSetModel(
@@ -50,12 +51,6 @@ trait RuleSetModel
       extension: Option[Seq[Extension]] = None,
       criterion: String
   )
-
-  case class ScoreDistribution(extension: Option[Seq[Extension]] = None,
-                               value: String,
-                               recordCount: Double,
-                               confidence: Option[Double] = None,
-                               probability: Option[Double] = None)
 
   case class Rule(
       simpleRule: Option[SimpleRule] = None,
