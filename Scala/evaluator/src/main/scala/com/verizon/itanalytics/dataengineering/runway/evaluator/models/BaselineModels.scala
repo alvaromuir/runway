@@ -163,7 +163,7 @@ trait BaselineModels extends BaselineModel {
                               numericInfo = u.getNumericInfo match {
                                 case null => None
                                 case _ => Option(NumericInfo(
-                                  quantile = u.getNumericInfo.getQuantiles match {
+                                  quantiles = u.getNumericInfo.getQuantiles match {
                                       case null => None
                                       case _ => Option(u.getNumericInfo.getQuantiles.asScala.map {
                                         q => Quantile(
