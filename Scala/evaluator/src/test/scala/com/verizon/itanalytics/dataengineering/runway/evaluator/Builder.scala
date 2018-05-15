@@ -27,7 +27,7 @@ trait Builder extends BeforeAndAfterEach {
     "supportVectorMachine" -> s"$modelsSrcPath/single_audit_svm.xml",
     "text" -> s"",
     "timeSeries" -> s"",
-    "tree" -> s"",
+    "trees" -> s"$modelsSrcPath/single_audit_dectree.xml",
     "scoreCard" -> s""
   )
 
@@ -48,7 +48,7 @@ trait Builder extends BeforeAndAfterEach {
     "supportVectorMachine" -> s"$dataSrcPath/Audit.csv",
     "text" -> s"",
     "timeSeries" -> s"",
-    "tree" -> s"",
+    "trees" -> s"$dataSrcPath/Iris.csv",
     "scoreCard" -> s""
   )
 

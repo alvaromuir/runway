@@ -38,6 +38,7 @@ trait Evaluator
     with ScoreCard
     with TextModels
     with TimeSeries
+    with Trees
     with VectorMachine {
   val log: Logger = LoggerFactory.getLogger(getClass.getName)
 
@@ -385,6 +386,7 @@ trait Evaluator
         case _ => None
       },
       treeModel = evaluator.getSummary match {
+        case "Tree model" => Option(parseTreeModel(pMML))
         case _ => None
       }
     )
@@ -482,6 +484,38 @@ trait Evaluator
         }
     }
 
+    pmmlModel.scoreCardModel match {
+      // not yet implemented
+      case None    =>
+      case Some(_) =>
+    }
+
+    pmmlModel.sequenceModel match {
+      // not yet implemented
+      case None    =>
+      case Some(_) =>
+    }
+
+    pmmlModel.textModel match {
+      // not yet implemented
+      case None    =>
+      case Some(_) =>
+    }
+
+    pmmlModel.timeSeriesModel match {
+      // not yet implemented
+      case None    =>
+      case Some(_) =>
+    }
+
+
+    pmmlModel.treeModel match {
+      case None =>
+      case Some(_) =>
+        features.map {
+          case (k, v) => arguments.put(FieldName.create(k.toString), v)
+        }
+    }
     arguments.asJava
   }
 
