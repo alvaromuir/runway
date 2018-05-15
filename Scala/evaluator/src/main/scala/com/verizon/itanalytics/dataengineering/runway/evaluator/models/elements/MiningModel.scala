@@ -16,6 +16,7 @@ trait MiningModel
     with ModelStats
     with ModelExplanation
     with Targets
+    with EmbeddedModel
     with LocalTransformation
     with ModelVerification {
 
@@ -27,7 +28,7 @@ trait MiningModel
       modelExplanation: Option[ModelExplanation] = None,
       targets: Option[Iterable[Targets]] = None,
       localTransformations: Option[LocalTransformation] = None,
-      embeddedModels: Option[Seq[EmbeddedModels]] = None,
+      embeddedModels: Option[Seq[EmbeddedModel]] = None,
       segmentation: Option[Segmentation] = None,
       modelVerification: Option[ModelVerification] = None,
       modelName: Option[String] = None,
@@ -45,24 +46,4 @@ trait MiningModel
                      weight: Double = 1,
                      predicate: String)
 
-  case class EmbeddedModels(modelName: Option[String] = None,
-                            functionName: String,
-                            output: Option[Output] = None,
-                            modelStats: Option[ModelStats] = None,
-                            targets: Option[Iterable[Targets]] = None,
-                            localTransformation: Option[LocalTransformation] =
-                              None)
-
-  case class Regression(modelName: Option[String] = None,
-                        functionName: String,
-                        algorithmName: Option[String] = None,
-                        normalizationMethod: String = "none")
-
-  case class DecisionTree(modelName: Option[String] = None,
-                          functionName: String,
-                          algorithmName: Option[String] = None,
-                          missingValueStrategy: String = "none",
-                          missingValuePenalty: Double = 1.0,
-                          noTrueChildStrategy: String = "returnNullPrediction",
-                          splitCharacteristic: String = "multiSplit")
 }
