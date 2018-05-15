@@ -9,7 +9,7 @@ import org.dmg.pmml.NumericInfo
 */
 
 // http://dmg.org/pmml/v4-3/Statistics.html
-trait ModelStats extends DataDictionary with Counts with Targets {
+trait ModelStats extends DataDictionary with Counts {
 
   case class ModelStats(
       univariateStats: Option[Seq[UnivariateStats]] = None,
