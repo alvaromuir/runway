@@ -11,7 +11,7 @@ import scala.collection.JavaConverters._
 * 05 13, 2018
 */
 
-@deprecated
+@deprecated(message = "This module is deprecated", since = "pMML v.4.1")
 trait TextModels extends TextModel {
 
   /** Parses provided pMML file as an Text Model

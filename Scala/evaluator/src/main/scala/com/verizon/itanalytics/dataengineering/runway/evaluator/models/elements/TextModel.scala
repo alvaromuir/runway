@@ -8,7 +8,7 @@ import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas._
  * 05 10, 2018
  */
 
-@deprecated
+@deprecated(message = "This module is deprecated", since = "pMML v.4.1")
 // http://dmg.org/pmml/v4-3/Text.html
 trait TextModel
     extends Extension
