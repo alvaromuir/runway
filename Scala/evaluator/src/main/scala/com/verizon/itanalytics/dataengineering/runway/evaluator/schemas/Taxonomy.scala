@@ -38,7 +38,7 @@ trait Taxonomy extends Extension{
 
   implicit object InlineTableFormat extends JsonFormat[InlineTable] {
     def write(inlineTable: InlineTable) = JsObject(
-      inlineTable.extension match { case _ => "extension" -> inlineTable.extension.toJson },
+      inlineTable.extension match { case _ => "extension" -> JsArray(inlineTable.extension.get.map(_.toJson).toVector) },
       inlineTable.row match { case _ => "row" -> inlineTable.row.toJson }
     )
     def read(json: JsValue): Null = null // not implemented
@@ -46,14 +46,14 @@ trait Taxonomy extends Extension{
 
   implicit object TableLocator extends JsonFormat[TableLocator] {
     def write(tableLocator: TableLocator) = JsObject(
-      tableLocator.extension match { case _ => "extension" -> tableLocator.extension.toJson }
+      tableLocator.extension match { case _ => "extension" -> JsArray(tableLocator.extension.get.map(_.toJson).toVector) }
     )
     def read(json: JsValue): Null = null // not implemented
   }
 
   implicit object ChildParent extends JsonFormat[ChildParent] {
     def write(childParent: ChildParent) = JsObject(
-      childParent.extension match { case _ => "extension" -> childParent.extension.toJson },
+      childParent.extension match { case _ => "extension" -> JsArray(childParent.extension.get.map(_.toJson).toVector) },
       "childField" -> JsString(childParent.childField),
       "parentField" -> JsString(childParent.parentField),
       childParent.parentLevelField match { case _ => "parentLevelField" -> JsString(childParent.parentLevelField.get) },
@@ -66,7 +66,7 @@ trait Taxonomy extends Extension{
 
   implicit object Taxonomy extends JsonFormat[Taxonomy] {
     def write(taxonomy: Taxonomy) = JsObject(
-      taxonomy.extension match { case _ => "taxonomy" -> taxonomy.extension.toJson },
+      taxonomy.extension match { case _ => "taxonomy" -> JsArray(taxonomy.extension.get.map(_.toJson).toVector) },
       "name" -> JsString(taxonomy.name),
       taxonomy.childParents match { case _ => "childParent" -> JsArray(taxonomy.childParents.get.map(_.toJson).toVector) }
     )
