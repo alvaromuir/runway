@@ -1,5 +1,7 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 
+import spray.json._
+
 /*
  * Project: Runway
  * Alvaro Muir, Verizon IT Analytics: Data Engineering
@@ -26,4 +28,41 @@ trait Taxonomy extends Extension{
                          row: Option[Seq[Row]])
 
   case class Row(content: Iterable[String])
+
+  implicit object RowFormat extends JsonFormat[Row] {
+    def write(row: Row) = JsObject(
+      "content" -> JsArray(row.content.map(JsString(_)).toVector)
+    )
+    def read(json: JsValue) = null // not implemented
+  }
+
+  implicit object InlineTableFormat extends JsonFormat[InlineTable] {
+    def write(inlineTable: InlineTable) = JsObject(
+      inlineTable.extension match { case _ => "extension" -> inlineTable.extension.toJson },
+      inlineTable.row match { case _ => "row" -> inlineTable.row.toJson }
+    )
+    def read(json: JsValue) = null // not implemented
+  }
+
+  implicit object TableLocator extends JsonFormat[TableLocator] {
+    def write(tableLocator: TableLocator) = JsObject(
+      tableLocator.extension match { case _ => "extension" -> tableLocator.extension.toJson }
+    )
+    def read(json: JsValue) = null // not implemented
+  }
+
+  implicit object ChildParent extends JsonFormat[ChildParent] {
+    def write(childParent: ChildParent) = JsObject(
+      childParent.extension match { case _ => "extension" -> childParent.extension.toJson },
+      "childField" -> JsString(childParent.childField),
+      "parentField" -> JsString(childParent.parentField),
+      childParent.parentLevelField match { case _ => "parentLevelField" -> JsString(childParent.parentLevelField.get) },
+      "isRecursive" -> JsBoolean(childParent.isRecursive.toBoolean),
+      "tableLocator" -> childParent.tableLocator.toJson,
+      "inlineTables" -> childParent.inlineTables.toJson
+    )
+    def read(json: JsValue) = null // not implemented
+  }
 }
+
+
