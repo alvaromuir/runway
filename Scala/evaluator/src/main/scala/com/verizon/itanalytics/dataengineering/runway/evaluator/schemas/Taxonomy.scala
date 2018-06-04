@@ -63,6 +63,15 @@ trait Taxonomy extends Extension{
     )
     def read(json: JsValue) = null // not implemented
   }
+
+  implicit object Taxonomy extends JsField[Taxonomy] {
+    def write(taxonomy: Taxonomy) = JsObject(
+      taxonomy.extension match { case _ => "taxonomy" -> taxonomy.extension.toJson },
+      "name" -> JsString(taxonomy.name),
+      taxonomy.childParents match { case _ => "childParent" -> JsArray(taxonomy.childParents.get.map(_.toJson).toVector) }
+    )
+    def read(json: JsValue) = null // not implemented
+  }
 }
 
 
