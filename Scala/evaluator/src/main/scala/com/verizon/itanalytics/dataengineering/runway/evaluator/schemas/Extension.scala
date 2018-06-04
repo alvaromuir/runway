@@ -24,7 +24,7 @@ trait Extension {
       extension.value match { case _ => "value" -> JsString(extension.value.get) },
       extension.content match { case _ => "content" -> JsArray(extension.content.get.map(JsString(_)).toVector) }
     )
-    def read(json: JsValue) = null // not implemented
+    def read(json: JsValue): Null = null // not implemented
   }
 
 }
