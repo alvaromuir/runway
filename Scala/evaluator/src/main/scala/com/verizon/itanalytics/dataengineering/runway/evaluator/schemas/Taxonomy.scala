@@ -33,7 +33,7 @@ trait Taxonomy extends Extension{
     def write(row: Row) = JsObject(
       "content" -> JsArray(row.content.map(JsString(_)).toVector)
     )
-    def read(json: JsValue) = null // not implemented
+    def read(json: JsValue): Null = null // not implemented
   }
 
   implicit object InlineTableFormat extends JsonFormat[InlineTable] {
@@ -41,14 +41,14 @@ trait Taxonomy extends Extension{
       inlineTable.extension match { case _ => "extension" -> inlineTable.extension.toJson },
       inlineTable.row match { case _ => "row" -> inlineTable.row.toJson }
     )
-    def read(json: JsValue) = null // not implemented
+    def read(json: JsValue): Null = null // not implemented
   }
 
   implicit object TableLocator extends JsonFormat[TableLocator] {
     def write(tableLocator: TableLocator) = JsObject(
       tableLocator.extension match { case _ => "extension" -> tableLocator.extension.toJson }
     )
-    def read(json: JsValue) = null // not implemented
+    def read(json: JsValue): Null = null // not implemented
   }
 
   implicit object ChildParent extends JsonFormat[ChildParent] {
@@ -61,16 +61,16 @@ trait Taxonomy extends Extension{
       "tableLocator" -> childParent.tableLocator.toJson,
       "inlineTables" -> childParent.inlineTables.toJson
     )
-    def read(json: JsValue) = null // not implemented
+    def read(json: JsValue): Null = null // not implemented
   }
 
-  implicit object Taxonomy extends JsField[Taxonomy] {
+  implicit object Taxonomy extends JsonFormat[Taxonomy] {
     def write(taxonomy: Taxonomy) = JsObject(
       taxonomy.extension match { case _ => "taxonomy" -> taxonomy.extension.toJson },
       "name" -> JsString(taxonomy.name),
       taxonomy.childParents match { case _ => "childParent" -> JsArray(taxonomy.childParents.get.map(_.toJson).toVector) }
     )
-    def read(json: JsValue) = null // not implemented
+    def read(json: JsValue): Null = null // not implemented
   }
 }
 
