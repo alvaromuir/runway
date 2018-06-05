@@ -1,6 +1,6 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 
-import org.dmg.pmml.NumericInfo
+import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
 /*
 * Project: Runway
@@ -66,8 +66,7 @@ trait ModelStats extends DataDictionary with Counts {
                        name: String,
                        size: Option[Double] = None)
 
-  case class PartitionFieldStats(
-                                  extension: Option[Seq[Extension]] = None,
+  case class PartitionFieldStats(extension: Option[Seq[Extension]] = None,
                                   counts: Option[Counts] = None,
                                   numericInfo: Option[NumericInfo] = None,
                                   frequenciesType: Option[FrequenciesType] = None,
@@ -92,4 +91,18 @@ trait ModelStats extends DataDictionary with Counts {
   case class FrequenciesType(
                               numArray: Array
                             )
+
+  implicit object ModelStatsProtocol extends DefaultJsonProtocol {
+    implicit val frequenciesTypeFormat: RootJsonFormat[FrequenciesType] = jsonFormat1(FrequenciesType)
+    implicit val QuantileFormat: RootJsonFormat[Quantile] = jsonFormat3(Quantile)
+    implicit val NumericInfoFormat: RootJsonFormat[NumericInfo] = jsonFormat8(NumericInfo)
+    implicit val PartitionFieldStatsFormat: RootJsonFormat[PartitionFieldStats] = jsonFormat6(PartitionFieldStats)
+    implicit val MultivariateStatFormat: RootJsonFormat[MultivariateStat] = jsonFormat16(MultivariateStat)
+    implicit val MultivariateStatsFormat: RootJsonFormat[MultivariateStats] = jsonFormat2(MultivariateStats)
+    implicit val AnovaRowFormat: RootJsonFormat[AnovaRow] = jsonFormat6(AnovaRow)
+    implicit val AnovaFormat: RootJsonFormat[Anova] = jsonFormat2(Anova)
+    implicit val DiscStatsFormat: RootJsonFormat[DiscStats] = jsonFormat2(DiscStats)
+    implicit val UnivariateStatsFormat: RootJsonFormat[UnivariateStats] = jsonFormat7(UnivariateStats)
+    implicit val ModelStatsFormat: RootJsonFormat[ModelStats] = jsonFormat2(ModelStats)
+  }
 }
