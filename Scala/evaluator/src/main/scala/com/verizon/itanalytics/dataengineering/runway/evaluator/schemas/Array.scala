@@ -1,6 +1,7 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 
 import spray.json._
+
 /*
  * Project: Runway
  * Alvaro Muir, Verizon IT Analytics: Data Engineering
@@ -41,7 +42,6 @@ trait Array {
     def read(json: JsValue): Null = null // not implemented
   }
 
-
   implicit object RealSparseArrayFormat extends JsonFormat[RealSparseArray] {
     def write(realSparseArray: RealSparseArray) = JsObject(
       "indices" -> JsArray(realSparseArray.indices.map(JsNumber(_)).toVector),
@@ -51,11 +51,5 @@ trait Array {
     )
     def read(json: JsValue): Null = null // not implemented
   }
-
-
-
-
-
-
 
 }
