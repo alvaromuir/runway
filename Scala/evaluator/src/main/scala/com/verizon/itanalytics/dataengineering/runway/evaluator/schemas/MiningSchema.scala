@@ -21,7 +21,7 @@ trait MiningSchema {
                          missingValueTreatment: Option[String] = None,
                          invalidValueTreatment: String = "returnInvalid")
 
-  // these need to be used as pick lists
+  // todo: these need to be used as pick lists
   case class OutlierTreatmentMethod()
   case class MissingValueTreatmentMethod()
   case class InvalidValueTreatmentMethod()
