@@ -218,7 +218,7 @@ trait AssociationRules extends AssociationModel {
                                                 )
                                               })
                                       },
-                                    totalValueSom =
+                                    totalValueSum =
                                       u.getContStats.getTotalValuesSum,
                                     totalSquaresSum =
                                       u.getContStats.getTotalSquaresSum
