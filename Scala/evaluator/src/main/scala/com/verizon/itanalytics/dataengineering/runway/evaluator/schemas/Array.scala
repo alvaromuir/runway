@@ -25,11 +25,31 @@ trait Array {
                              n: Int,
                              defaultValue: Option[Double] = Option(0))
 
+  implicit object ArrayFormat extends JsonFormat[Array] {
+    def write(array: Array) = JsObject(
+      "n" -> JsNumber(array.n),
+      "type" -> JsString(array.`type`),
+      "value" -> JsString(array.value)
+    )
+    def read(json: JsValue): Null = null // not implemented
+  }
 
-  implicit object ArrayProtocol extends DefaultJsonProtocol {
-    implicit val arrayFormat: RootJsonFormat[Array] =  jsonFormat3(Array)
-    implicit val realArrayFormat: RootJsonFormat[Array] =  jsonFormat3(Array)
-    implicit val intArrayFormat: RootJsonFormat[Array] =  jsonFormat3(Array)
+  implicit object RealArrayFormat extends JsonFormat[RealArray] {
+    def write(realArray: RealArray) = JsObject(
+      "n" -> JsNumber(realArray.n),
+      "type" -> JsString(realArray.`type`),
+      "value" -> JsString(realArray.value)
+    )
+    def read(json: JsValue): Null = null // not implemented
+  }
+
+  implicit object IntArrayFormat extends JsonFormat[IntArray] {
+    def write(intArray: IntArray) = JsObject(
+      "n" -> JsNumber(intArray.n),
+      "type" -> JsString(intArray.`type`),
+      "value" -> JsString(intArray.value)
+    )
+    def read(json: JsValue): Null = null // not implemented
   }
 
   implicit object IntSparseArrayFormat extends JsonFormat[IntSparseArray] {
