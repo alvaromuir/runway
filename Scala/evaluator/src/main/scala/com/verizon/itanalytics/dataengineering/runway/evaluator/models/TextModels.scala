@@ -11,7 +11,9 @@ import scala.collection.JavaConverters._
 * 05 13, 2018
 */
 
-@deprecated(message = "This module is deprecated", since = "pMML v.4.1")
+@deprecated(message = "Deprecated in v4.2 since element TextIndex (see Transformations) allows for existing model " +
+  "elements to be used to replicate the functionality provided by element TextModel in Transformation ",
+  since = "pMML v.4.2")
 trait TextModels extends TextModel {
 
   /** Parses provided pMML file as an Text Model
@@ -222,7 +224,7 @@ trait TextModels extends TextModel {
                                                 )
                                               })
                                       },
-                                    totalValueSom =
+                                    totalValueSum =
                                       u.getContStats.getTotalValuesSum,
                                     totalSquaresSum =
                                       u.getContStats.getTotalSquaresSum

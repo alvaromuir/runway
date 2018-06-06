@@ -221,7 +221,7 @@ trait Regression extends RegressionModel {
                                                 )
                                               })
                                       },
-                                    totalValueSom =
+                                    totalValueSum =
                                       u.getContStats.getTotalValuesSum,
                                     totalSquaresSum =
                                       u.getContStats.getTotalSquaresSum

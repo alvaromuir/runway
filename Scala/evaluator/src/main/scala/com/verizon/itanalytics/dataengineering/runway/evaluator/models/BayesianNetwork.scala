@@ -219,7 +219,7 @@ trait BayesianNetwork extends BayesianNetworkModel {
                                                 )
                                               })
                                       },
-                                    totalValueSom =
+                                    totalValueSum =
                                       u.getContStats.getTotalValuesSum,
                                     totalSquaresSum =
                                       u.getContStats.getTotalSquaresSum

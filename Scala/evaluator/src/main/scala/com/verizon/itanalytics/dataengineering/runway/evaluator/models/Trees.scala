@@ -218,7 +218,7 @@ trait Trees extends TreeModel {
                                               )
                                             })
                                     },
-                                  totalValueSom =
+                                  totalValueSum =
                                     u.getContStats.getTotalValuesSum,
                                   totalSquaresSum =
                                     u.getContStats.getTotalSquaresSum
@@ -1675,7 +1675,7 @@ trait Trees extends TreeModel {
                                                   )
                                                 })
                                         },
-                                      totalValueSom =
+                                      totalValueSum =
                                         u.getContStats.getTotalValuesSum,
                                       totalSquaresSum =
                                         u.getContStats.getTotalSquaresSum

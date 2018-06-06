@@ -217,7 +217,7 @@ trait NaiveBayes extends NaiveBayesModel {
                                                 )
                                               })
                                       },
-                                    totalValueSom =
+                                    totalValueSum =
                                       u.getContStats.getTotalValuesSum,
                                     totalSquaresSum =
                                       u.getContStats.getTotalSquaresSum

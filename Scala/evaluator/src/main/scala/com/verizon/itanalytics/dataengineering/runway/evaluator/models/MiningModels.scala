@@ -217,7 +217,7 @@ trait MiningModels extends MiningModel {
                                                 )
                                               })
                                       },
-                                    totalValueSom =
+                                    totalValueSum =
                                       u.getContStats.getTotalValuesSum,
                                     totalSquaresSum =
                                       u.getContStats.getTotalSquaresSum
@@ -1402,7 +1402,7 @@ trait MiningModels extends MiningModel {
                                                       )
                                                     })
                                             },
-                                          totalValueSom =
+                                          totalValueSum =
                                             u.getContStats.getTotalValuesSum,
                                           totalSquaresSum =
                                             u.getContStats.getTotalSquaresSum

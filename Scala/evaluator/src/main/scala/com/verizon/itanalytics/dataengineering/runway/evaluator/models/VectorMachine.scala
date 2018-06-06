@@ -220,7 +220,7 @@ trait VectorMachine extends SupportVectorMachineModel {
                                               )
                                             })
                                     },
-                                  totalValueSom =
+                                  totalValueSum =
                                     u.getContStats.getTotalValuesSum,
                                   totalSquaresSum =
                                     u.getContStats.getTotalSquaresSum

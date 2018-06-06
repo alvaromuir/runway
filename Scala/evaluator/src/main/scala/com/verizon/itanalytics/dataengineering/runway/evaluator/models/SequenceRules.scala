@@ -166,7 +166,7 @@ trait SequenceRules extends SequenceModel {
                                               )
                                             })
                                     },
-                                  totalValueSom =
+                                  totalValueSum =
                                     u.getContStats.getTotalValuesSum,
                                   totalSquaresSum =
                                     u.getContStats.getTotalSquaresSum
