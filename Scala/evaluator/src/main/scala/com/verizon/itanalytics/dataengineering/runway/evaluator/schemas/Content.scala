@@ -14,22 +14,11 @@ trait Content {
                      systemId: Option[String] = None,
                      lineNumber: Int = 1,
                      columnNumber: Int = 1)
+
   case class Content(locator: Option[Locator] = None)
 
-  implicit object LocatorFormat extends JsonFormat[Locator] {
-    def write(locator: Locator) = JsObject(
-      locator.publicId match { case _ => "publicId" -> JsString(locator.publicId.get) },
-      locator.systemId match { case _ => "systemId" -> JsString(locator.systemId.get) },
-      "lineNumber" -> JsNumber(locator.lineNumber),
-      "columnNumber" -> JsNumber(locator.columnNumber)
-    )
-    def read(json: JsValue): Null = null // not implemented
-  }
-
-  implicit object ContentFormat extends JsonFormat[Content] {
-    def write(content: Content) = JsObject(
-      content.locator match { case _ => "publicId" -> content.locator.toJson }
-    )
-    def read(json: JsValue): Null = null // not implemented
-  }
+  implicit object ContentProtocol extends DefaultJsonProtocol {
+    implicit val locatorFormat: RootJsonFormat[Locator] =  jsonFormat4(Locator)
+    implicit val contentFormat: RootJsonFormat[Content] =  jsonFormat1(Content)
+    }
 }
