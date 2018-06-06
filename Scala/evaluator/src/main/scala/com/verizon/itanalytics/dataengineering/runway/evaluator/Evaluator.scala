@@ -13,11 +13,15 @@ import java.util.{Date, Locale}
 
 import com.verizon.itanalytics.dataengineering.runway.evaluator.models._
 import javax.xml.bind.JAXBException
-import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas.PMMLSchema
+
 import org.dmg.pmml.{FieldName, Model, PMML}
+
 import org.jpmml.evaluator.{ModelEvaluator, ModelEvaluatorFactory, ReportingValueFactoryFactory, ValueFactoryFactory}
 import org.jpmml.model.PMMLUtil
+
 import org.slf4j.{Logger, LoggerFactory}
+
+import schemas.PMMLSchema
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable
@@ -508,7 +512,6 @@ trait Evaluator
       case Some(_) =>
     }
 
-
     pmmlModel.treeModel match {
       case None =>
       case Some(_) =>
@@ -517,6 +520,10 @@ trait Evaluator
         }
     }
     arguments.asJava
+  }
+
+  def predict(evaluator: ModelEvaluator[_ <: Model], arguments: util.Map[FieldName, Any]) = {
+    evaluator.evaluate(arguments)
   }
 
 }

@@ -1,32 +1,31 @@
 name          := "Project: Runway - Evaluator"
 organization  := "com.verizon.itanalytics.dataengineering.runway"
-version       := "1.0rc"
-scalaVersion  := "2.11.8"
-
-
-libraryDependencies ++= {
-  val jpmmlVersion = "1.4.1"
-  Seq(
-    "org.jpmml" % "pmml-evaluator" % jpmmlVersion,
-    "org.jpmml" % "pmml-evaluator-extension" % jpmmlVersion
-  )
-}
-libraryDependencies += "org.slf4j" % "slf4j-api" % "1.7.25"
-libraryDependencies += "junit" % "junit" % "4.12" % Test
-libraryDependencies += "com.novocode" % "junit-interface" % "0.11" % Test
+version       := "1.0rc-SNAPSHOT"
+assemblyJarName in assembly := s"project_runway-evaluator-${version.value}.jar"
 
 libraryDependencies ++= {
-  val scalaTestVersion = "3.0.5"
+  lazy val jpmmlVersion = "1.4.1"
+  lazy val jacksonVersion = "2.9.5"
+  lazy val scalaTestVersion = "3.0.5"
+
   Seq(
-    "org.scalactic" %% "scalactic" % scalaTestVersion,
-    "org.scalatest" %% "scalatest" % scalaTestVersion % Test
+    "org.jpmml"                  % "pmml-evaluator"           % jpmmlVersion,
+    "org.jpmml"                  % "pmml-evaluator-extension" % jpmmlVersion,
+
+    "io.spray"                    %%  "spray-json"                % "1.3.3",
+    "com.fasterxml.jackson.core"   % "jackson-databind"           % jacksonVersion,
+    "com.fasterxml.jackson.core"   % "jackson-core"               % jacksonVersion,
+
+    "org.scalactic"             %% "scalactic"                % scalaTestVersion,
+    "org.scalatest"             %% "scalatest"                % scalaTestVersion    % Test,
+    "org.slf4j"                  % "slf4j-api"                % "1.7.25",
+    "junit"                      % "junit"                    % "4.12"              % Test,
+    "com.novocode"               % "junit-interface"          % "0.11"              % Test
   )
 }
-
-libraryDependencies += "io.spray" %%  "spray-json" % "1.3.3"
 
 mainClass in assembly := some("com.verizon.itanalytics.dataengineering.runway.microservice.Microservice")
-assemblyJarName in assembly := s"project_runway-evaluator-$version-SNAPSHOT.jar"
+
 
 val meta = """META.INF(.)*""".r
 

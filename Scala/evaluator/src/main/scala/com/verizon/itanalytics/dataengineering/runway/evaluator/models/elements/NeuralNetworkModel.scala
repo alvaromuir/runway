@@ -17,7 +17,7 @@ trait NeuralNetworkModel
     with ModelExplanation
     with Targets
     with LocalTransformation
-    with CompareMeasure
+    with ComparisonMeasure
     with ModelVerification {
 
   case class NeuralNetworkModel(

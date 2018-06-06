@@ -6,14 +6,18 @@ trait Utils {
   object Listify {
     def apply(json: JsValue): List[Any] = listify(json)
 
+    /**
+      * Returns a list of values from JSON input key-pairs
+      * @param json JsValue
+      * @return String
+      */
     def listify(json: JsValue): List[Any] = {
       val observation = json.toString.stripMargin.parseJson.asJsObject
-      val featuresList = observation.getClass.getDeclaredFields.map(_.getName).zip(observation.productIterator.to).toMap.get("fields")
+      observation.getClass.getDeclaredFields.map(_.getName).zip(observation.productIterator.to).toMap.get("fields")
         .head
         .asInstanceOf[Map[String, Any]]
         .values
         .toList
-      return featuresList
     }
 
   }
@@ -24,6 +28,11 @@ trait Utils {
   object Slugify {
     def apply(input:String): String = slugify(input)
 
+    /**
+      * Returns a url-safe string from string input
+      * @param input String
+      * @return String
+      */
     def slugify(input: String): String = {
       import java.text.Normalizer
       Normalizer.normalize(input, Normalizer.Form.NFD)

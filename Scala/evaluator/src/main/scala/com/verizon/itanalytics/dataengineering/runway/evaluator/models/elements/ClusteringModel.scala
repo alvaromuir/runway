@@ -16,7 +16,7 @@ trait ClusteringModel
     with ModelStats
     with ModelExplanation
     with LocalTransformation
-    with CompareMeasure
+    with ComparisonMeasure
     with ModelVerification {
 
   case class ClusteringModel(

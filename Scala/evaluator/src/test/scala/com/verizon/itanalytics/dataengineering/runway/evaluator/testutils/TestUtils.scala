@@ -37,7 +37,7 @@ trait TestUtils extends Utils {
         .toList
       val observations = data.tail
       try {
-        val lines = observations
+        val lines: Unit = observations
           .map { _.split(",").toList }
           .map { header zip _ }
           .map { Map(_: _*) }

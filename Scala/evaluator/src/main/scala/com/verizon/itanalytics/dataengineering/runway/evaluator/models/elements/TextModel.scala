@@ -8,7 +8,9 @@ import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas._
  * 05 10, 2018
  */
 
-@deprecated(message = "This module is deprecated", since = "pMML v.4.1")
+@deprecated(message = "Deprecated in v4.2 since element TextIndex (see Transformations) allows for existing model " +
+  "elements to be used to replicate the functionality provided by element TextModel in Transformation ",
+  since = "pMML v.4.2")
 // http://dmg.org/pmml/v4-3/Text.html
 trait TextModel
     extends Extension

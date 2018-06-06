@@ -129,9 +129,4 @@ trait PMMLSchema
     def read(json: JsValue) = null // not implemented
 
   }
-
-  object JsonSupport extends DefaultJsonProtocol  {
-    implicit val PMMLSchemaFormat: JsonFormat[PMMLSchema] = jsonFormat22(PMMLSchema)
-  }
-
 }

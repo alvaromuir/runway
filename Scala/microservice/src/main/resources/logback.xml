@@ -8,10 +8,10 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_PATH}/runway.log</file>
+        <file>${LOG_PATH}/${LOG_FILE}</file>
         <append>true</append>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/runway.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <fileNamePattern>${LOG_PATH}/${LOG_FILE}.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
             <maxHistory>90</maxHistory>
         </rollingPolicy>
         <encoder>

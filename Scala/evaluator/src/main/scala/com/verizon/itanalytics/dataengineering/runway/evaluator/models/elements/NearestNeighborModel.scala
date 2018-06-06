@@ -17,7 +17,7 @@ trait NearestNeighborModel
     with ModelExplanation
     with Targets
     with LocalTransformation
-    with CompareMeasure
+    with ComparisonMeasure
     with ModelVerification
     with TestDistributions
     with TrainingInstances {
