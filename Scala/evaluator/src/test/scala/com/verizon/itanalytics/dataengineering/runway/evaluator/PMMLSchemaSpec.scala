@@ -8,10 +8,11 @@ import com.verizon.itanalytics.dataengineering.runway.evaluator.schemas.PMMLSche
 import com.verizon.itanalytics.dataengineering.runway.evaluator.testutils.TestUtils
 import org.dmg.pmml.{Model, PMML}
 import org.jpmml.evaluator.ModelEvaluator
-import org.scalatest.FlatSpec
 import org.json4s._
 import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization._
+
+import org.scalatest.FlatSpec
 
 
 /*
