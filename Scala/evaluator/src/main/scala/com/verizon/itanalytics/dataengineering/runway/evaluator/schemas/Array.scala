@@ -1,7 +1,5 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 
-import spray.json._
-
 /*
  * Project: Runway
  * Alvaro Muir, Verizon IT Analytics: Data Engineering
@@ -24,52 +22,5 @@ trait Array {
                              entries: Seq[Double],
                              n: Int,
                              defaultValue: Option[Double] = Option(0))
-
-  implicit object ArrayFormat extends JsonFormat[Array] {
-    def write(array: Array) = JsObject(
-      "n" -> JsNumber(array.n),
-      "type" -> JsString(array.`type`),
-      "value" -> JsString(array.value)
-    )
-    def read(json: JsValue): Null = null // not implemented
-  }
-
-  implicit object RealArrayFormat extends JsonFormat[RealArray] {
-    def write(realArray: RealArray) = JsObject(
-      "n" -> JsNumber(realArray.n),
-      "type" -> JsString(realArray.`type`),
-      "value" -> JsString(realArray.value)
-    )
-    def read(json: JsValue): Null = null // not implemented
-  }
-
-  implicit object IntArrayFormat extends JsonFormat[IntArray] {
-    def write(intArray: IntArray) = JsObject(
-      "n" -> JsNumber(intArray.n),
-      "type" -> JsString(intArray.`type`),
-      "value" -> JsString(intArray.value)
-    )
-    def read(json: JsValue): Null = null // not implemented
-  }
-
-  implicit object IntSparseArrayFormat extends JsonFormat[IntSparseArray] {
-    def write(intSparseArray: IntSparseArray) = JsObject(
-      "indices" -> JsArray(intSparseArray.indices.map(JsNumber(_)).toVector),
-      "entries" -> JsArray(intSparseArray.entries.map(JsNumber(_)).toVector),
-      "n" -> JsNumber(intSparseArray.n),
-      intSparseArray.defaultValue match { case _ => "defaultValue" -> JsNumber(intSparseArray.defaultValue.get) }
-    )
-    def read(json: JsValue): Null = null // not implemented
-  }
-
-  implicit object RealSparseArrayFormat extends JsonFormat[RealSparseArray] {
-    def write(realSparseArray: RealSparseArray) = JsObject(
-      "indices" -> JsArray(realSparseArray.indices.map(JsNumber(_)).toVector),
-      "entries" -> JsArray(realSparseArray.entries.map(JsNumber(_)).toVector),
-      "n" -> JsNumber(realSparseArray.n),
-      realSparseArray.defaultValue match { case _ => "defaultValue" -> JsNumber(realSparseArray.defaultValue.get) }
-    )
-    def read(json: JsValue): Null = null // not implemented
-  }
 
 }

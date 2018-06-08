@@ -1,7 +1,5 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 
-import spray.json._
-
 /*
 * Project: Runway
 * Alvaro Muir, Verizon IT Analytics: Data Engineering
@@ -16,9 +14,4 @@ trait Content {
                      columnNumber: Int = 1)
 
   case class Content(locator: Option[Locator] = None)
-
-  implicit object ContentProtocol extends DefaultJsonProtocol {
-    implicit val locatorFormat: RootJsonFormat[Locator] =  jsonFormat4(Locator)
-    implicit val contentFormat: RootJsonFormat[Content] =  jsonFormat1(Content)
-    }
 }

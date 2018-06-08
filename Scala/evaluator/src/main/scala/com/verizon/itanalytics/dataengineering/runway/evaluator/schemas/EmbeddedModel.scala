@@ -18,8 +18,7 @@ trait EmbeddedModel
                            output: Option[Output] = None,
                            modelStats: Option[ModelStats] = None,
                            targets: Option[Iterable[Targets]] = None,
-                           localTransformations: Option[LocalTransformation] =
-                             None,
+                           localTransformations: Option[LocalTransformation] = None,
                            modelName: Option[String] = None,
                            functionName: String)
 }

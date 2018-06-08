@@ -1,7 +1,5 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 
-import spray.json._
-
 /*
 * Project: Runway
 * Alvaro Muir, Verizon IT Analytics: Data Engineering
@@ -16,9 +14,4 @@ trait ComparisonMeasure extends Extension {
                                minimum: Option[Double] = None,
                                maximum: Option[Double] = None,
                                measure: Option[String] = None)
-
-  implicit object ComparisonMeasureProtocol extends DefaultJsonProtocol {
-    implicit val comparisonMeasureFormat: RootJsonFormat[ComparisonMeasure] = jsonFormat6(ComparisonMeasure)
-  }
-
 }

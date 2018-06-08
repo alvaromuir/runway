@@ -3,8 +3,6 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 import java.time._
 import java.time.format.DateTimeFormatter
 
-import spray.json._
-
 /*
  * Project: Runway
  * Alvaro Muir, Verizon IT Analytics: Data Engineering
@@ -39,26 +37,4 @@ trait DataType {
       `dateTimeSecondsSince[1970]`: Long = timeStamp.toEpochSecond(offset),
       `dateTimeSecondsSince[1980]`: Long = Duration.between(ts1980, timeStamp).toMillis / 1000
   )
-
-  implicit object DataTypeFormat extends JsonFormat[DataType] {
-    def write(dataType: DataType) = JsObject(
-      dataType.string match { case _ => "string" -> JsString(dataType.string.get) },
-      dataType.integer match { case _ => "integer" -> JsNumber(dataType.integer.get) },
-      dataType.float match { case _ => "float" -> JsNumber(dataType.float.get) },
-      dataType.boolean match { case _ => "boolean" -> JsBoolean(dataType.boolean.get) },
-      "date" -> JsString(dataType.date),
-      "time" -> JsString(dataType.time),
-      "dateTime" -> JsString(dataType.dateTime),
-      "dateDaysSince[0]" -> JsNumber(dataType.`dateDaysSince[0]`),
-      "dateDaysSince[1960]" -> JsNumber(dataType.`dateDaysSince[1960]`),
-      "dateDaysSince[1970]" -> JsNumber(dataType.`dateDaysSince[1970]`),
-      "dateDaysSince[1980]" -> JsNumber(dataType.`dateDaysSince[1980]`),
-      "timeSeconds" -> JsNumber(dataType.timeSeconds),
-      "dateTimeSecondsSince[0]" -> JsNumber(dataType.`dateTimeSecondsSince[0]`),
-      "dateTimeSecondsSince[1960]" -> JsNumber(dataType.`dateTimeSecondsSince[1960]`),
-      "dateTimeSecondsSince[1970]" -> JsNumber(dataType.`dateTimeSecondsSince[1970]`),
-      "dateTimeSecondsSince[1980]" -> JsNumber(dataType.`dateTimeSecondsSince[1980]`)
-    )
-    def read(json: JsValue): Null = null // not implemented
-  }
 }

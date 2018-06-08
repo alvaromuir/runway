@@ -9,9 +9,6 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 import com.verizon.itanalytics.dataengineering.runway.evaluator.models.elements._
 import com.verizon.itanalytics.dataengineering.runway.evaluator.models._
 
-import spray.json._
-import DefaultJsonProtocol._
-
 // http://dmg.org/pmml/v4-3/GeneralStructure.html
 trait PMMLSchema
   extends Extension
@@ -60,7 +57,6 @@ trait PMMLSchema
       timeSeriesModel: Option[TimeSeriesModel] = None,
       treeModel: Option[TreeModel] = None
   )
-
   case class Header(extension: Option[Seq[Extension]] = None,
                     copyright: Option[String] = None,
                     description: Option[String] = None,
@@ -71,62 +67,4 @@ trait PMMLSchema
 
   case class Application(extension: Option[Seq[Extension]] = None, name: String, version: Option[String] = None)
   case class Annotation(extension: Option[Seq[Extension]] = None, annotation: Option[String] = None)
-
-
-  implicit object ApplicationFormat extends JsonFormat[Application] {
-    def write(application: Application) = JsObject(
-      application.extension match { case _ => "extension" -> JsArray(application.extension.get.map(_.toJson).toVector) },
-      "name" -> JsString(application.name),
-      application.version match { case _ => "version" -> JsString(application.version.get) }
-    )
-    def read(json: JsValue) = null // not implemented
-  }
-
-  implicit object Annotation extends JsonFormat[Annotation] {
-    def write(annotation: Annotation) = JsObject(
-      annotation.extension match { case _ => "extension" -> JsArray(annotation.extension.get.map(_.toJson).toVector) },
-      annotation.annotation match { case _ => "annotation" -> JsString(annotation.annotation.get) }
-    )
-    def read(json: JsValue) = null // not implemented
-  }
-
-  implicit object HeaderFormat extends JsonFormat[Header] {
-    def write(header: Header) = JsObject(
-      header.description match { case _ => "description" -> JsString(header.description.get) },
-      header.modelVersion match { case _ => "modelVersion" -> JsString(header.modelVersion.get) },
-      header.application match { case _ => "application" -> header.application.get.toJson },
-      header.annotations match { case _ => "annotations" -> JsArray(header.annotations.get.map(_.toJson).toVector) },
-      header.timeStamp match { case _ => "timeStamp" -> JsString(header.timeStamp.get)}
-    )
-    def read(json: JsValue) = null // not implemented
-  }
-
-  object PMMLSchemaFormat extends JsonFormat[PMMLSchema] {
-    def write(pMMLSchema: PMMLSchema) = JsObject(
-      "header" -> pMMLSchema.header.toJson,
-      pMMLSchema.miningBuildTask match { case _ => "miningBuildTask" -> JsString(pMMLSchema.miningBuildTask.get) },
-      "dataDictionary" -> pMMLSchema.dataDictionary.toJson,
-      "transformationDictionary" -> JsNull,
-      "version" -> JsString(pMMLSchema.version),
-      "associationModel" -> JsNull,
-      "bayesianNetworkModel" -> JsNull,
-      "clusteringModel" -> JsNull,
-      "gaussianProcessModel" -> JsNull,
-      "generalRegressionModel" -> JsNull,
-      "miningModel" -> JsNull,
-      "naiveBayesModel" -> JsNull,
-      "nearestNeighborModel" -> JsNull,
-      "neuralNetwork" -> JsNull,
-      "regressionModel" -> JsNull,
-      "ruleSetModel" -> JsNull,
-      "sequenceModel" -> JsNull,
-      "scoreCardModel" -> JsNull,
-      "supportVectorMachineModel" -> JsNull,
-      "textModel" -> JsNull,
-      "timeSeriesModel" -> JsNull,
-      "treeModel" -> JsNull
-    )
-    def read(json: JsValue) = null // not implemented
-
-  }
 }

@@ -1,7 +1,5 @@
 package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 
-import spray.json.{DefaultJsonProtocol, RootJsonFormat}
-
 /*
  * Project: Runway
  * Alvaro Muir, Verizon IT Analytics: Data Engineering
@@ -15,10 +13,6 @@ trait DerivedField extends DataDictionary {
                           dataType: String,
                           intervals: Option[Seq[Interval]] = None,
                           values: Option[Seq[String]] = None)
-
-  implicit object DerivedFieldProtocol extends DefaultJsonProtocol {
-    implicit val arrayFormat: RootJsonFormat[DerivedField] =  jsonFormat6(DerivedField)
-  }
 }
 
 
