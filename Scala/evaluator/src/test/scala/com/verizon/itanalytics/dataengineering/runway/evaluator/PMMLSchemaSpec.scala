@@ -9,8 +9,10 @@ import com.verizon.itanalytics.dataengineering.runway.evaluator.testutils.TestUt
 import org.dmg.pmml.{Model, PMML}
 import org.jpmml.evaluator.ModelEvaluator
 import org.scalatest.FlatSpec
+import org.json4s._
+import org.json4s.jackson.Serialization
+import org.json4s.jackson.Serialization._
 
-import spray.json._
 
 /*
  * Project: Runway
@@ -25,6 +27,8 @@ class PMMLSchemaSpec
     with Evaluator
     with PMMLSchema {
   val testModelPath = mapModels("association")
+
+  implicit val formats = Serialization.formats(NoTypeHints)
 
   "the evaluator" should
     "read Association models" in {
@@ -129,7 +133,7 @@ class PMMLSchemaSpec
     val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
     val pmmlSchema: PMMLSchema = parsePmml(evaluator.getPMML)
 
-    assert(true)
+    assert(write(pmmlSchema.header.application) === """{"name":"Rattle/PMML","version":"1.2.30"}""")
   }
 
 }
