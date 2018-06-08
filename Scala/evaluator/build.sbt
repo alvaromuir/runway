@@ -5,16 +5,14 @@ assemblyJarName in assembly := s"project_runway-evaluator-${version.value}.jar"
 
 libraryDependencies ++= {
   lazy val jpmmlVersion = "1.4.1"
-  lazy val jacksonVersion = "2.9.5"
   lazy val scalaTestVersion = "3.0.5"
+  lazy val json4sVersion = "3.6.0-M4"
 
   Seq(
     "org.jpmml"                  % "pmml-evaluator"           % jpmmlVersion,
     "org.jpmml"                  % "pmml-evaluator-extension" % jpmmlVersion,
 
-    "io.spray"                    %%  "spray-json"                % "1.3.3",
-    "com.fasterxml.jackson.core"   % "jackson-databind"           % jacksonVersion,
-    "com.fasterxml.jackson.core"   % "jackson-core"               % jacksonVersion,
+    "org.json4s"                %% "json4s-jackson"           % json4sVersion,
 
     "org.scalactic"             %% "scalactic"                % scalaTestVersion,
     "org.scalatest"             %% "scalatest"                % scalaTestVersion    % Test,
