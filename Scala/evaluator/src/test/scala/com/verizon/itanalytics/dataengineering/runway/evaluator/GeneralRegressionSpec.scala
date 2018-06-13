@@ -24,8 +24,8 @@ class GeneralRegressionSpec
   val testDataPath = mapData("generalRegression")
   val pMML: PMML = readPMML(new File(testModelPath))
   val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-  val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
-  val model: Option[GeneralRegressionModel] = pmmlModel.generalRegressionModel
+  val pmmlSchema: PMMLSchema = parsePmml(evaluator.getPMML)
+  val model: Option[GeneralRegressionModel] = pmmlSchema.generalRegressionModel
 
   "the evaluator" should
     "read General Regression models" in {
@@ -36,7 +36,7 @@ class GeneralRegressionSpec
   }
 
   it should "provide information on required input fields" in {
-    val dataDictionary = pmmlModel.dataDictionary
+    val dataDictionary = pmmlSchema.dataDictionary
     val taxonomies = Some(dataDictionary.taxonomies).get.toList.head
     val dataFields = Some(dataDictionary.dataFields).get.toList.head
 
@@ -273,7 +273,7 @@ class GeneralRegressionSpec
     val testData = readDataFile(new File(testDataPath), lineNum = 10).head
     val observations = testData.filterKeys(inputFields)
 
-    val arguments = createArguments(pmmlModel, observations)
+    val arguments = createArguments(pmmlSchema, observations)
     val results = evaluator.evaluate(arguments)
 
     val field = FieldName.create("sepal_length")

@@ -1,18 +1,20 @@
 package com.verizon.itanalytics.dataengineering.runway.microservice.utils
 
-import spray.json._
+import org.json4s._
+import org.json4s.jackson.JsonMethods._
 
 trait Utils {
   object Listify {
-    def apply(json: JsValue): List[Any] = listify(json)
+    implicit val formats = DefaultFormats
+    def apply(json: String): List[Any] = listify(json)
 
     /**
       * Returns a list of values from JSON input key-pairs
-      * @param json JsValue
+      * @param json json String value
       * @return String
       */
-    def listify(json: JsValue): List[Any] = {
-      val observation = json.toString.stripMargin.parseJson.asJsObject
+    def listify(json: String): List[Any] = {
+      val observation = parse(json.toString.stripMargin)
       observation.getClass.getDeclaredFields.map(_.getName).zip(observation.productIterator.to).toMap.get("fields")
         .head
         .asInstanceOf[Map[String, Any]]

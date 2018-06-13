@@ -5,6 +5,7 @@ import akka.stream.ActorMaterializer
 import com.typesafe.config.{Config, ConfigFactory}
 
 import org.scalatest.{Matchers, WordSpec}
+import org.slf4j.{Logger, LoggerFactory}
 import slick.lifted.TableQuery
 
 import scala.concurrent.ExecutionContextExecutor
@@ -27,14 +28,16 @@ class MicroServiceSpec extends WordSpec with Matchers {
 
   lazy val models = TableQuery[ModelsTable]
 
+  val log: Logger = LoggerFactory.getLogger(getClass.getName)
+
   "The microservice" should {
 
     "initialize a database on launch" in {
       initTable().onComplete {
         case Success(_) => log.info("Database successfully seeded.")
         case Failure(e) =>
-          log.error(s"ERROR: Database seeding failed with error message: $e. Now exiting")
-          System.exit(1)
+          log.error(s"ERROR: Database seeding failed with error message: $e")
+//          System.exit(1)
       }
 
       assert(models.baseTableRow.tableName.contains("models"))

@@ -21,8 +21,8 @@ class RuleSetSpec extends FlatSpec with Builder with TestUtils with Evaluator {
   val testDataPath = mapData("ruleSet")
   val pMML: PMML = readPMML(new File(testModelPath))
   val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-  val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
-  val model: Option[RuleSetModel] = pmmlModel.ruleSetModel
+  val pmmlSchema: PMMLSchema = parsePmml(evaluator.getPMML)
+  val model: Option[RuleSetModel] = pmmlSchema.ruleSetModel
 
   "the evaluator" should
     "read Rule Set models" in {
@@ -32,7 +32,7 @@ class RuleSetSpec extends FlatSpec with Builder with TestUtils with Evaluator {
   }
 
   it should "provide information on required input fields" in {
-    val dataDictionary = pmmlModel.dataDictionary
+    val dataDictionary = pmmlSchema.dataDictionary
     val taxonomies = Some(dataDictionary.taxonomies).get.toList.head
     val dataFields = Some(dataDictionary.dataFields).get.toList.head
 
@@ -168,11 +168,11 @@ class RuleSetSpec extends FlatSpec with Builder with TestUtils with Evaluator {
     val testData = Map[Any, Any]("BP" -> "HIGH", "Na" -> 0.5023, "Cholesterol" -> "HIGH", "Age" -> 36, "K" -> 0.0621d)
     val observations = testData.filterKeys(inputFields)
 
-    val arguments = createArguments(pmmlModel, observations)
+    val arguments = createArguments(pmmlSchema, observations)
     val results = evaluator.evaluate(arguments)
 
     val field = FieldName.create("$C-Drug")
     assert(Some(results.asScala.keys.head).contains(field))
-    assert(Some(results.asScala(field)).get.toString.contains("result=drugY, confidence_entries=[drugY=0.0], entityId=null}"))
+    assert(Some(results.asScala(field)).get.toString.contains("{result=drugA, confidence_entries=[drugB=0.3, drugA=0.32], entityId=RULE2}"))
   }
 }

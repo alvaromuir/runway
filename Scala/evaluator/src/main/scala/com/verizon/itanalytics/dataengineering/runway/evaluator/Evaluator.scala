@@ -398,127 +398,27 @@ trait Evaluator
 
   /**
     * Returns hashmap of arguments used in making predictions
-    * @param pmmlModel a valid PMMLSchema
+    * @param pmmlSchema a valid PMMLSchema
     * @param features a immutable Map[Any, Any]
     * @return LinkedHashMap[FieldName, FieldValue]
     */
-  def createArguments(pmmlModel: PMMLSchema,
+  def createArguments(pmmlSchema: PMMLSchema,
                       features: Map[Any, Any]): util.Map[FieldName, Any] = {
     val arguments = new mutable.LinkedHashMap[FieldName, Any]
 
 
 //    todo: improve this logic
-    pmmlModel.associationModel match {
+    pmmlSchema.associationModel match {
       case None =>
+        features.map {
+          case (k, v) => arguments.put(FieldName.create(k.toString), v)
+      }
       case Some(_) =>
         features.mapValues(_.asInstanceOf[List[Any]].asJava).map {
           case (k, v) => arguments.put(FieldName.create(k.toString), v)
         }
     }
 
-    pmmlModel.bayesianNetworkModel match {
-      // not yet implemented
-      case None    =>
-      case Some(_) =>
-    }
-
-    pmmlModel.clusteringModel match {
-      case None =>
-      case Some(_) =>
-        features.map {
-          case (k, v) => arguments.put(FieldName.create(k.toString), v)
-        }
-    }
-
-    pmmlModel.generalRegressionModel match {
-      case None =>
-      case Some(_) =>
-        features.map {
-          case (k, v) => arguments.put(FieldName.create(k.toString), v)
-        }
-    }
-
-    pmmlModel.gaussianProcessModel match {
-      // not yet implemented
-      case None    =>
-      case Some(_) =>
-    }
-
-    pmmlModel.naiveBayesModel match {
-      // not yet implemented
-      case None    =>
-      case Some(_) =>
-    }
-
-    pmmlModel.nearestNeighborModel match {
-      // not yet implemented
-      case None    =>
-      case Some(_) =>
-    }
-
-    pmmlModel.neuralNetwork match {
-      case None =>
-      case Some(_) =>
-        features.map {
-          case (k, v) => arguments.put(FieldName.create(k.toString), v)
-        }
-    }
-
-    pmmlModel.regressionModel match {
-      case None =>
-      case Some(_) =>
-        features.map {
-          case (k, v) => arguments.put(FieldName.create(k.toString), v)
-        }
-    }
-
-    pmmlModel.regressionModel match {
-      case None =>
-      case Some(_) =>
-        features.map {
-          case (k, v) => arguments.put(FieldName.create(k.toString), v)
-        }
-    }
-
-    pmmlModel.supportVectorMachineModel match {
-      case None =>
-      case Some(_) =>
-        features.map {
-          case (k, v) => arguments.put(FieldName.create(k.toString), v)
-        }
-    }
-
-    pmmlModel.scoreCardModel match {
-      // not yet implemented
-      case None    =>
-      case Some(_) =>
-    }
-
-    pmmlModel.sequenceModel match {
-      // not yet implemented
-      case None    =>
-      case Some(_) =>
-    }
-
-    pmmlModel.textModel match {
-      // not yet implemented
-      case None    =>
-      case Some(_) =>
-    }
-
-    pmmlModel.timeSeriesModel match {
-      // not yet implemented
-      case None    =>
-      case Some(_) =>
-    }
-
-    pmmlModel.treeModel match {
-      case None =>
-      case Some(_) =>
-        features.map {
-          case (k, v) => arguments.put(FieldName.create(k.toString), v)
-        }
-    }
     arguments.asJava
   }
 

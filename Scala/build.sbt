@@ -22,7 +22,7 @@ val shared = Seq(
   ),
   organization := "com.verizon.itanalytics.dataengineering",
   version := "0.1",
-  scalaVersion := "2.11.8"
+  scalaVersion := "2.11.12"
 )
 
 lazy val Runway = (project in file("."))

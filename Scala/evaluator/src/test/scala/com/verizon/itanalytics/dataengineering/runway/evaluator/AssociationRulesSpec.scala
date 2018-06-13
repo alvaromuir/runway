@@ -24,8 +24,8 @@ class AssociationRulesSpec
   val testModelPath = mapModels("association")
   val pMML: PMML = readPMML(new File(testModelPath))
   val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-  val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
-  val model: Option[AssociationModel] = pmmlModel.associationModel
+  val pmmlSchema: PMMLSchema = parsePmml(evaluator.getPMML)
+  val model: Option[AssociationModel] = pmmlSchema.associationModel
 
   "the evaluator" should
     "read Association models" in {
@@ -35,7 +35,7 @@ class AssociationRulesSpec
   }
 
   it should "provide information on required input fields" in {
-    val dataDictionary = pmmlModel.dataDictionary
+    val dataDictionary = pmmlSchema.dataDictionary
     val taxonomies = Some(dataDictionary.taxonomies).get.toList.head
     val dataFields = Some(dataDictionary.dataFields).get.toList.head
 
@@ -185,7 +185,7 @@ class AssociationRulesSpec
 
     val observations = Map(inputField -> List("beer", "softdrink")).toMap[Any, Any]
 
-    val arguments = createArguments(pmmlModel, observations)
+    val arguments = createArguments(pmmlSchema, observations)
     val results = evaluator.evaluate(arguments)
 
     val field = null

@@ -1,7 +1,6 @@
 package com.verizon.itanalytics.dataengineering.runway.microservice
 
 import Tables._
-
 import akka.Done
 import akka.actor.{ActorRef, ActorSystem}
 import akka.event.{Logging, LoggingAdapter}
@@ -11,14 +10,12 @@ import akka.http.scaladsl.common.{EntityStreamingSupport, JsonEntityStreamingSup
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
-
 import com.typesafe.config.{Config, ConfigFactory}
-
 import de.heikoseeberger.accessus.Accessus._
+import org.slf4j.{Logger, LoggerFactory}
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.util.{Failure, Success}
-
 
 object MicroService extends ServiceRoutes {
   private val config: Config = ConfigFactory.load()
@@ -34,13 +31,13 @@ object MicroService extends ServiceRoutes {
   System.setProperty("LOG_LEVEL", logLevel)
 
   implicit val system: ActorSystem = ActorSystem(s"${appId}RestService")
-  val modelRegistry: ActorRef = system.actorOf(ModelRegistry.props, "modelRegistry")
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
+  implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
+  val log: Logger = LoggerFactory.getLogger(getClass.getName)
 
   def main(args: scala.Array[String]): Unit = {
 
-    implicit val materializer: ActorMaterializer = ActorMaterializer()
-    implicit val executionContext: ExecutionContextExecutor = system.dispatcher
     implicit val jsonStreamingSupport: JsonEntityStreamingSupport =
       EntityStreamingSupport.json().withParallelMarshalling(parallelism = 8, unordered = false)
 
@@ -76,7 +73,7 @@ object MicroService extends ServiceRoutes {
 
       case Failure(e) =>
         log.error(s"ERROR: Database seeding failed with error message: $e. Now exiting")
-        System.exit(1)
+//        System.exit(1)
     }
   }
 

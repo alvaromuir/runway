@@ -26,8 +26,8 @@ class TreesSpec
   val testDataPath = mapData("trees")
   val pMML: PMML = readPMML(new File(testModelPath))
   val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-  val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
-  val model: Option[TreeModel] = pmmlModel.treeModel
+  val pmmlSchema: PMMLSchema = parsePmml(evaluator.getPMML)
+  val model: Option[TreeModel] = pmmlSchema.treeModel
 
   "the evaluator" should
     "read Tree models" in {
@@ -37,7 +37,7 @@ class TreesSpec
   }
 
   it should "provide information on required input fields" in {
-    val dataDictionary = pmmlModel.dataDictionary
+    val dataDictionary = pmmlSchema.dataDictionary
     val taxonomies = Some(dataDictionary.taxonomies).get.toList.head
     val dataFields = Some(dataDictionary.dataFields).get.toList.head
 
@@ -187,7 +187,7 @@ class TreesSpec
     val testData = readDataFile(new File(testDataPath), lineNum = 10).head
     val observations = testData.filterKeys(inputFields)
 
-    val arguments = createArguments(pmmlModel, observations)
+    val arguments = createArguments(pmmlSchema, observations)
     val results = evaluator.evaluate(arguments)
 
     val field = FieldName.create("TARGET_Adjusted")

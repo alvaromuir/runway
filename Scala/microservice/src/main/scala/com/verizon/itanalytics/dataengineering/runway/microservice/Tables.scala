@@ -21,8 +21,6 @@ object Tables {
   private val srcDataFileName: String = config.getString("db.srcDataFileName")
   private val srcDataFile = s"$dataUploadPath/$srcDataFileName"
 
-  val log: Logger = LoggerFactory.getLogger(getClass.getName)
-
   final case class ModelsTable(tag: Tag) extends Table[Model](tag, "models") {
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)

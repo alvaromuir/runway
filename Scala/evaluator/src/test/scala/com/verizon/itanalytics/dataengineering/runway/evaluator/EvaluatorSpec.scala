@@ -22,7 +22,7 @@ class EvaluatorSpec
   val testModelPath = mapModels("association")
   var pMML: PMML = readPMML(new File(testModelPath))
   var evaluator: ModelEvaluator[_ <: Model] = _
-  var pmmlModel: PMMLSchema = _
+  var pmmlSchema: PMMLSchema = _
 
   "the evaluator" should
     "read files and return a valid PMML instance" in {
@@ -36,15 +36,15 @@ class EvaluatorSpec
   }
 
   it should "parse files into valid PMMLSchema" in {
-    pmmlModel = parsePmml(evaluator.getPMML)
-    assert(pmmlModel.associationModel.isDefined)
+    pmmlSchema = parsePmml(evaluator.getPMML)
+    assert(pmmlSchema.associationModel.isDefined)
   }
 
   it should "parses observations appropriately for arguments" in {
     val inputField = evaluator.getInputFields.get(0).getName.getValue
     val observations = List("beer", "softdrink")
 
-    val arguments = createArguments(pmmlModel, Map(inputField -> observations))
+    val arguments = createArguments(pmmlSchema, Map(inputField -> observations))
 
     assert(arguments.asScala.head._1.toString.contains(inputField))
     assert(arguments.asScala.head._2.toString.contains(observations.head))

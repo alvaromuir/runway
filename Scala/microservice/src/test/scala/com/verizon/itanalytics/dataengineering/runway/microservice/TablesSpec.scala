@@ -33,7 +33,7 @@ class TablesSpec extends FlatSpec with Utils {
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
-  val name = "Some Model Name"
+  val name = "TableSpecTest Model Name"
   val project = Some("Some Project Name")
   val description = Some("Some model description goes here....")
   val algorithm = Some("testing algo")
@@ -47,7 +47,7 @@ class TablesSpec extends FlatSpec with Utils {
     "insert records into the database (via seedTable)" in {
 
     val model = Model(
-      name = Slugify(name),
+      name = Slugify(s"${this.getClass.getSimpleName} Model Name"),
       project = project,
       description = description,
       algorithm = algorithm,
@@ -55,7 +55,7 @@ class TablesSpec extends FlatSpec with Utils {
       filePath= filePath
     )
 
-    initTable()
+//    initTable()
 
     db.run(models += model).onComplete {
       case Success(_) =>
@@ -69,8 +69,6 @@ class TablesSpec extends FlatSpec with Utils {
     db.run(models.result).onComplete {
       case Success(rows) =>
         val rslt = rows.head
-
-        // todo: move these tests out of the run future ... parent test will always pass otherwise...
         assert(rslt.name == Slugify(name))
         assert(rslt.project.contains(Slugify(project.get)))
         assert(rslt.description.contains(description.get))

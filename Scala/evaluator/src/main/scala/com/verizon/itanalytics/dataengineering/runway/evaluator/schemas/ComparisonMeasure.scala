@@ -6,7 +6,6 @@ package com.verizon.itanalytics.dataengineering.runway.evaluator.schemas
 * 05 05, 2018
 */
 
-
 trait ComparisonMeasure extends Extension {
   case class ComparisonMeasure(extension: Option[Seq[Extension]] = None,
                                kind: String,

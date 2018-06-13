@@ -51,7 +51,7 @@ class PMMLSchemaSpec
         .value() == miningFunction)
   }
 
-  it should "parse association pMML files to a PmmlModel case class" in {
+  it should "parse association pMML files to a pmmlSchema case class" in {
     val pMML: PMML = readPMML(new File(testModelPath))
     val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
     val pmmlSchema: PMMLSchema = parsePmml(evaluator.getPMML)

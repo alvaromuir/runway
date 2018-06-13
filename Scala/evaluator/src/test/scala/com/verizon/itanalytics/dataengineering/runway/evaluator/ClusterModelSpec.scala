@@ -25,8 +25,8 @@ class ClusterModelSpec
   val testDataPath = mapData("clustering")
   val pMML: PMML = readPMML(new File(testModelPath))
   val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-  val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
-  val model: Option[ClusteringModel] = pmmlModel.clusteringModel
+  val pmmlSchema: PMMLSchema = parsePmml(evaluator.getPMML)
+  val model: Option[ClusteringModel] = pmmlSchema.clusteringModel
 
   "the evaluator" should
     "read Clustering models" in {
@@ -36,7 +36,7 @@ class ClusterModelSpec
   }
 
   it should "provide information on required input fields" in {
-    val dataDictionary = pmmlModel.dataDictionary
+    val dataDictionary = pmmlSchema.dataDictionary
     val taxonomies = Some(dataDictionary.taxonomies).get.toList.head
     val dataFields = Some(dataDictionary.dataFields).get.toList.head
 
@@ -205,7 +205,7 @@ class ClusterModelSpec
     val testData = readDataFile(new File(testDataPath), lineNum = 10).head
     val observations = testData.filterKeys(inputFields)
 
-    val arguments = createArguments(pmmlModel, observations)
+    val arguments = createArguments(pmmlSchema, observations)
     val results = evaluator.evaluate(arguments)
 
     val field = null

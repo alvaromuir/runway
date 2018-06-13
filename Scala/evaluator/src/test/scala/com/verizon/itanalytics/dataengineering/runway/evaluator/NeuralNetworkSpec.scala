@@ -25,8 +25,8 @@ class NeuralNetworkSpec extends FlatSpec
   val testDataPath = mapData("neuralNetwork")
   val pMML: PMML = readPMML(new File(testModelPath))
   val evaluator: ModelEvaluator[_ <: Model] = evaluatePmml(pMML)
-  val pmmlModel: PMMLSchema = parsePmml(evaluator.getPMML)
-  val model: Option[NeuralNetworkModel] = pmmlModel.neuralNetwork
+  val pmmlSchema: PMMLSchema = parsePmml(evaluator.getPMML)
+  val model: Option[NeuralNetworkModel] = pmmlSchema.neuralNetwork
 
   "the evaluator" should
     "read Neural Network models" in {
@@ -36,7 +36,7 @@ class NeuralNetworkSpec extends FlatSpec
   }
 
   it should "provide information on required input fields" in {
-    val dataDictionary = pmmlModel.dataDictionary
+    val dataDictionary = pmmlSchema.dataDictionary
     val taxonomies = Some(dataDictionary.taxonomies).get.toList.head
     val dataFields = Some(dataDictionary.dataFields).get.toList.head
 
@@ -224,7 +224,7 @@ class NeuralNetworkSpec extends FlatSpec
     val testData = readDataFile(new File(testDataPath), lineNum = 10).head
     val observations = testData.filterKeys(inputFields)
 
-    val arguments = createArguments(pmmlModel, observations)
+    val arguments = createArguments(pmmlSchema, observations)
     val results = evaluator.evaluate(arguments)
 
     val field = FieldName.create("class")
