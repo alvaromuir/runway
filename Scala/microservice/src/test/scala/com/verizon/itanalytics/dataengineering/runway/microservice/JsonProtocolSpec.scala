@@ -42,7 +42,7 @@ class JsonProtocolSpec extends FlatSpec with Matchers with Utils {
     jsonEntity._2.contentType shouldEqual ContentTypes.`application/json`
 
     assert(jsonResp.status == StatusCodes.OK.intValue)
-    assert(jsonResp.timeStamp.get.startsWith(testTimeStamp.substring(0, 18)))
+    assert(jsonResp.timeStamp.get.startsWith(testTimeStamp.substring(0, 15)))
     assert(jsonResp.msg.contains(testString))
     assert(jsonResp.pMML.isEmpty)
     assert(jsonResp.results.isEmpty)
@@ -66,7 +66,7 @@ class JsonProtocolSpec extends FlatSpec with Matchers with Utils {
     jsonEntity._2.contentType shouldEqual ContentTypes.`application/json`
 
     assert(jsonResp("status") == StatusCodes.OK.intValue)
-    assert(jsonResp("timeStamp").toString.startsWith(testTimeStamp.substring(0, 18)))
+    assert(jsonResp("timeStamp").toString.startsWith(testTimeStamp.substring(0, 15)))
     assert(jsonResp("msg").toString.contains("OK"))
     assert(jsonResp.get("pMML").nonEmpty)
     assert(jsonResp.get("results").isEmpty)
@@ -92,7 +92,7 @@ class JsonProtocolSpec extends FlatSpec with Matchers with Utils {
     val jsonResp = parse(jsonEntity._2.getData.utf8String).extract[JsonResponse]
 
     assert(jsonResp.status == StatusCodes.OK.intValue)
-    assert(jsonResp.timeStamp.get.startsWith(testTimeStamp.substring(0, 18)))
+    assert(jsonResp.timeStamp.get.startsWith(testTimeStamp.substring(0, 15)))
     assert(jsonResp.msg.contains(testString))
     assert(jsonResp.pMML.isEmpty)
     assert(jsonResp.results.isEmpty)
@@ -118,7 +118,7 @@ class JsonProtocolSpec extends FlatSpec with Matchers with Utils {
     val jsonResp = parse(jsonEntity._2.getData.utf8String).extract[JsonResponse]
 
     assert(jsonResp.status == StatusCodes.OK.intValue)
-    assert(jsonResp.timeStamp.get.startsWith(testTimeStamp.substring(0, 18)))
+    assert(jsonResp.timeStamp.get.startsWith(testTimeStamp.substring(0, 15)))
     assert(jsonResp.msg.equals("OK"))
     assert(jsonResp.pMML.isEmpty)
     assert(jsonResp.results.isEmpty)
@@ -151,7 +151,7 @@ class JsonProtocolSpec extends FlatSpec with Matchers with Utils {
             val jsonResp = parse(jsonEntity._2.getData.utf8String).extract[JsonResponse]
 
             assert(jsonResp.status == StatusCodes.OK.intValue)
-            assert(jsonResp.timeStamp.get.startsWith(testTimeStamp.substring(0, 18)))
+            assert(jsonResp.timeStamp.get.startsWith(testTimeStamp.substring(0, 15)))
             assert(jsonResp.msg.equals("OK"))
             assert(jsonResp.pMML.isEmpty)
             assert(jsonResp.results.nonEmpty)
@@ -168,7 +168,6 @@ class JsonProtocolSpec extends FlatSpec with Matchers with Utils {
 
   }
 
-
   it should "encode a throwable error to json-encoded HttpEntity objects" in {
     val errMsg = s"${StatusCodes.InternalServerError.defaultMessage} Attempting to jsonize invalid type"
     val jsonEntity = jsonize(false.asInstanceOf[AnyRef])
@@ -178,14 +177,11 @@ class JsonProtocolSpec extends FlatSpec with Matchers with Utils {
     val jsonResp = parse(jsonEntity._2.getData.utf8String).extract[JsonResponse]
 
     assert(jsonResp.status == StatusCodes.InternalServerError.intValue)
-    assert(jsonResp.timeStamp.get.startsWith(testTimeStamp.substring(0, 18)))
+    assert(jsonResp.timeStamp.get.startsWith(testTimeStamp.substring(0, 15)))
     assert(jsonResp.msg.equals(errMsg))
     assert(jsonResp.pMML.isEmpty)
     assert(jsonResp.results.isEmpty)
     assert(jsonResp.estimate.isEmpty)
   }
-
-
-
 
 }
