@@ -40,11 +40,12 @@ class ServiceRoutesSpec
 
   lazy val routes: Route = serviceRoutes
 
-  val sourceDir = "./microservice/src/test/resources"
+  val sourceDir = "microservice/src/test/resources"
   val fileName = "iris_rf.pmml"
   val fileName2 = "IrisGeneralRegression.xml"
   val testJson = "iris_test.json"
   val testData = "iris_test.csv"
+  val testData2 = "iris_test_headless.csv"
   val uploadDir = "/tmp"
   val name = s"${this.getClass.getSimpleName} Model Name"
   val project = Some("Some Project Name")
@@ -59,7 +60,7 @@ class ServiceRoutesSpec
     get {
       pathSingleSlash {
         complete {
-          "well, hello 😉"
+          "well, hello"
         }
       } ~
         path("hello") {
@@ -134,7 +135,7 @@ class ServiceRoutesSpec
         val pattern(testTimeStamp) = LocalDateTime.now().toString
         val jsonResp = parse(responseAs[String]).extract[JsonResponse]
         assert(jsonResp.status == 200)
-        assert(jsonResp.timeStamp.get.startsWith(testTimeStamp.substring(0, 18)))
+        assert(jsonResp.timeStamp.get.startsWith(testTimeStamp.substring(0, 15)))
         assert(jsonResp.msg.contains("This is just a test. Or is it \uD83D\uDE09"))
         assert(jsonResp.pMML.isEmpty)
         assert(jsonResp.results.isEmpty)
@@ -155,7 +156,6 @@ class ServiceRoutesSpec
           log.error(errMsg)
       }
     }
-
 
     "return a list of if models present (GET /models)" in {
       val request = HttpRequest(uri = s"$pathPrefix/models")
@@ -249,6 +249,43 @@ class ServiceRoutesSpec
 
     }
 
+    "evaluate a batch of observations (POST /models/{name}/batch)" in {
+      implicit val timeout: RouteTestTimeout = RouteTestTimeout(3.seconds dilated)
+
+      val csvFile = new File(s"$sourceDir/$testData").toPath
+      val fileData = Multipart.FormData.BodyPart.fromPath("csv", ContentTypes.`text/plain(UTF-8)`, csvFile)
+      val formData = Multipart.FormData(fileData)
+
+      val request = Post(s"$pathPrefix/models/${Slugify(name)}/batch", formData)
+
+      request ~> routes ~> check {
+        val lines = responseAs[String].split("\n")
+        assert(lines.length equals 150)
+        assert(lines.head.contains("Probability_setosa=1.0"))
+        assert(lines.last.contains("Probability_virginica=0.89"))
+
+      }
+    }
+
+    "evaluate a batch of observations (POST /models/{name}/batch) with user-inputted fields" in {
+      implicit val timeout: RouteTestTimeout = RouteTestTimeout(3.seconds dilated)
+
+      val csvFile = new File(s"$sourceDir/$testData2").toPath
+      val fileData = Multipart.FormData.BodyPart.fromPath("csv", ContentTypes.`text/plain(UTF-8)`, csvFile)
+      val fields = Multipart.FormData.BodyPart.Strict("fields","Sepal.Length,Sepal.Width,Petal.Length,Petal.Width")
+      val formData = Multipart.FormData(fileData, fields)
+
+      val request = Post(s"$pathPrefix/models/${Slugify(name)}/batch", formData)
+
+      request ~> routes ~> check {
+        val lines = responseAs[String].split("\n")
+        assert(lines.length equals 150)
+        assert(lines.head.contains("Probability_setosa=1.0"))
+        assert(lines.last.contains("Probability_virginica=0.89"))
+
+      }
+    }
+
     "update a specific model (PUT /models/{name})" in {
       implicit val timeout: RouteTestTimeout = RouteTestTimeout(3.seconds dilated)
 
@@ -300,8 +337,4 @@ class ServiceRoutesSpec
     }
 
   }
-
-//todo: test for batch encoding
-
-
 }
