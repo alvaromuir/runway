@@ -2,7 +2,7 @@ package com.verizon.itanalytics.dataengineering.runway.microservice
 
 import Tables._
 import akka.Done
-import akka.actor.{ActorRef, ActorSystem}
+import akka.actor.ActorSystem
 import akka.event.{Logging, LoggingAdapter}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.Http.ServerBinding

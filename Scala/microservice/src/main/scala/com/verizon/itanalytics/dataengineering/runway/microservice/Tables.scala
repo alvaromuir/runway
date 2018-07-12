@@ -2,7 +2,6 @@ package com.verizon.itanalytics.dataengineering.runway.microservice
 
 import com.typesafe.config.{Config, ConfigFactory}
 import com.verizon.itanalytics.dataengineering.runway.microservice.JsonProtocol.Model
-import org.slf4j.{Logger, LoggerFactory}
 import slick.jdbc.H2Profile.api._
 
 import scala.concurrent.{Await, Future}

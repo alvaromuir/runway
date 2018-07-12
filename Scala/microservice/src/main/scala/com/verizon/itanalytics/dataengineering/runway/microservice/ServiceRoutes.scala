@@ -68,7 +68,7 @@ trait ServiceRoutes extends Utils {
         pathPrefix(s"$apiVersion") {
           path("test") {
             get {
-              val resp = "This is just a test. Or is it 😉"
+              val resp = "This is just a test. Or is it?"
               complete(jsonize(resp))
             }
           } ~
@@ -149,7 +149,7 @@ trait ServiceRoutes extends Utils {
                   path(Segments) { segments =>
                     val name = segments.head
                     segments.size match {
-                      case 2 => {
+                      case 2 =>
                         val action = segments(1)
                         action match {
                           case "batch" =>
@@ -264,7 +264,6 @@ trait ServiceRoutes extends Utils {
                               }
                             }
                         }
-                      }
                       case 1 =>
                         concat(
                           post {
