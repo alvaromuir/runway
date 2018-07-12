@@ -1,6 +1,6 @@
 name          := "Project: Runway"
 organization  := "com.verizon.itanalytics.dataengineering.runway"
-version       := "1.0rc"
+version       := "1.0rc-SNAPSHOT"
 scalaVersion  := "2.11.12"
 
 val shared = Seq(
