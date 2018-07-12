@@ -136,7 +136,7 @@ class ServiceRoutesSpec
         val jsonResp = parse(responseAs[String]).extract[JsonResponse]
         assert(jsonResp.status == 200)
         assert(jsonResp.timeStamp.get.startsWith(testTimeStamp.substring(0, 15)))
-        assert(jsonResp.msg.contains("This is just a test. Or is it \uD83D\uDE09"))
+        assert(jsonResp.msg.contains("Just a test; Is it tho? \uD83E\uDD14"))
         assert(jsonResp.pMML.isEmpty)
         assert(jsonResp.results.isEmpty)
         assert(jsonResp.estimate.isEmpty)
@@ -149,7 +149,6 @@ class ServiceRoutesSpec
           request ~> routes ~> check {
             status should ===(StatusCodes.OK)
             contentType should ===(ContentTypes.`application/json`)
-            assert(parse(responseAs[String]).extract[JsonResponse].results.get.isEmpty)
           }
         case Failure(e) =>
           val errMsg = s"ERROR querying data: $e"

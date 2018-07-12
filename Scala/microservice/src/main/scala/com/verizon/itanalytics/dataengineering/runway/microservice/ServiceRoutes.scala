@@ -68,7 +68,7 @@ trait ServiceRoutes extends Utils {
         pathPrefix(s"$apiVersion") {
           path("test") {
             get {
-              val resp = "This is just a test. Or is it?"
+              val resp = "Just a test; Is it tho? \uD83E\uDD14"
               complete(jsonize(resp))
             }
           } ~
