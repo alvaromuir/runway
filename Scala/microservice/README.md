@@ -1,6 +1,6 @@
 # Project: Runway
 
-Project: Runway exposes data models in an easy to use, highligh-available RESTful interface.
+Project: Runway exposes data models in an easy to use, high-availability RESTful interface.
 
 ## Getting Started
 
@@ -33,18 +33,48 @@ To add a new model, simply post the pmml/xml file with a project name, a file ID
 to the /models directory
 
 ```
-curl -X POST \
--F "project=your_project_name" \
--F "id=your_model_id" \
+$ curl -X POST \
+-F "name=<your_model_name>" \
+-F "project=<your_project_name>" \
 -F "file=@/path/to/your_pmml.xml" \
-http://localhost:8080/models
+-F "description=<your_model_description>" \
+-F "author=<your_name>"  \
+http://<hostname>:8080/api/v1/models
 ```
 
 which should return
 
 ```$xslt
-uploaded 'your_pmml.xml' and created model 'your_model_id'
+uploaded 'your_pmml.xml' and created model 'slugified-model-name'
 ```
+PUT (to update) and DELETE follow the same pattern, with appropriate fields.
+
+To get a estimate, send a JSON file to your model as so:
+```
+$ curl -X POST \
+-H "Content-Type: application/json" \
+-d '{"your_json": 0, "goes_here": 1}' \
+http://<hostname>:8080/api/v1/models/<your_slugified-model-name>
+```
+
+To get a batch of estimates, you can post a CSV file:
+```
+$ curl -X POST \
+-F "csv=@<your_batch_file_path> \
+http://<hostname>:8080/api/v1/models/<your_slugified-model-name>/batch
+```
+
+CSV missing headers? Just add them to the POST command via a 'fields' entry:
+```
+$ curl -X POST \
+-F "csv=@<your_batch_file_path> \
+-F "fields='feat_a, feat_b, feat_c, feat_d'" \
+http://<hostname>:8080/api/v1/models/<your_slugified-model-name>/batch
+```
+
+*note, incorrect feature names will return an error
+
+
 ## Running the tests
 
 From an sbt console, simply run a test
