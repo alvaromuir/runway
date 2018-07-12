@@ -11,15 +11,12 @@ import java.text.SimpleDateFormat
 import java.util
 import java.util.Date
 
-import akka.http.javadsl.common.JsonEntityStreamingSupport
-import akka.http.scaladsl.common.EntityStreamingSupport
-import akka.{Done, NotUsed}
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.{ExceptionHandler, Route}
 import akka.stream.alpakka.csv.scaladsl.{CsvParsing, CsvToMap}
-import akka.stream.scaladsl.{FileIO, Flow, Keep, RunnableGraph, Sink, Source}
-import akka.stream.{ActorMaterializer, IOResult, Materializer}
+import akka.stream.scaladsl.{FileIO, Flow}
+import akka.stream.{ActorMaterializer, Materializer}
 import akka.util.{ByteString, Timeout}
 import com.typesafe.config.{Config, ConfigFactory}
 import org.dmg.pmml
@@ -30,7 +27,6 @@ import spray.json._
 import spray.json.DefaultJsonProtocol._
 
 import scala.collection.JavaConverters._
-import scala.collection.mutable
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
@@ -198,18 +194,17 @@ trait ServiceRoutes extends Utils {
                                                       k.asInstanceOf[Any] -> v
                                                         .asInstanceOf[Any]
                                                   })
-                                                  .mapAsync(5)(observations => {
+                                                  .mapAsync(2)(observations => {
                                                     Future(createArguments(
                                                       pmmlSchema,
                                                       observations))
                                                   })
-                                                  .mapAsync[util.Map[FieldName,
-                                                                     _]](5)(
+                                                  .mapAsync[util.Map[FieldName, _]](2)(
                                                     arguments => {
                                                       Future(evaluator.evaluate(
                                                         arguments))
                                                     })
-                                                  .mapAsync(5)(line => {
+                                                  .mapAsync(2)(line => {
                                                     Future(s"$line\n")
                                                   })
                                                   .map(ByteString(_))
@@ -231,9 +226,9 @@ trait ServiceRoutes extends Utils {
 
                                               }
 
-                                              complete(HttpEntity(
-                                                ContentTypes.`application/json`,
-                                                rslts))
+                                              complete(HttpResponse(
+                                                entity = HttpEntity.Chunked.fromData(ContentTypes.`text/plain(UTF-8)`,
+                                                rslts)))
 
                                           }
                                         case Failure(e) =>

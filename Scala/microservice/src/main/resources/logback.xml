@@ -26,6 +26,6 @@
         <appender-ref ref="FILE"/>
     </root>
 
-    <logger name="slick"  level="INFO" />
+    <logger name="slick"  level="ERROR" />
 
 </configuration>
