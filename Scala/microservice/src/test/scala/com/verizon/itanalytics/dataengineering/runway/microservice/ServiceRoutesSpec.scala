@@ -83,7 +83,7 @@ class ServiceRoutesSpec
     "return a greeting for GET requests to the root path" in {
       // tests:
       Get() ~> heartbeatTestRoute ~> check {
-        responseAs[String] shouldEqual "well, hello 😉"
+        responseAs[String] shouldEqual "well, hello"
       }
     }
 
