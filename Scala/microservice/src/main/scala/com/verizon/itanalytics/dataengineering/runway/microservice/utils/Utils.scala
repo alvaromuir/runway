@@ -46,5 +46,14 @@ trait Utils {
         .toLowerCase                  // Lowercase the final results
     }
   }
+
+  def isNumeric(s: String): Boolean = {
+    try {
+      s.toInt
+      true
+    } catch {
+      case e: Exception => false
+    }
+  }
 }
 
