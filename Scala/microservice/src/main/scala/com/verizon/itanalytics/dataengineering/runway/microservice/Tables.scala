@@ -1,7 +1,9 @@
 package com.verizon.itanalytics.dataengineering.runway.microservice
 
+import JsonProtocol.Model
+
 import com.typesafe.config.{Config, ConfigFactory}
-import com.verizon.itanalytics.dataengineering.runway.microservice.JsonProtocol.Model
+
 import slick.jdbc.H2Profile.api._
 
 import scala.concurrent.{Await, Future}
@@ -31,6 +33,7 @@ object Tables {
     def filePath = column[String]("filePath")
     def creation_dt = column[Option[String]]("creation_dt")
     def updated_dt = column[Option[String]]("updated_dt")
+    def idx = index("idx_a", (id, name), unique = true)
     def * =
       (id,
        name,

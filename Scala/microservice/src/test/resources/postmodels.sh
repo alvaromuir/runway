@@ -54,6 +54,6 @@ do
   if [[ $file == *.pmml ]] || [[ $file == *.xml ]];
   then
     model=$(basename $file | sed 's/\.[^.]*$//')
-    curl -X POST -F "id=$model" -F "project=runway" -F "file=@$file" $url
+    curl -X POST -F "name=$model" -F "project=runway" -F "file=@$file" -F "author=Alvaro Muir" $url
     fi
 done;

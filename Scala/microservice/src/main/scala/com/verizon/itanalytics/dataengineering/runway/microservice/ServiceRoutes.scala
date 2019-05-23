@@ -14,11 +14,13 @@ import java.util.Date
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.{ExceptionHandler, Route}
+
 import akka.stream.alpakka.csv.scaladsl.{CsvParsing, CsvToMap}
 import akka.stream.scaladsl.{FileIO, Flow}
 import akka.stream.{ActorMaterializer, Materializer}
 import akka.util.{ByteString, Timeout}
 import com.typesafe.config.{Config, ConfigFactory}
+
 import org.dmg.pmml
 import org.dmg.pmml.FieldName
 import org.jpmml.evaluator.ModelEvaluator
@@ -56,6 +58,7 @@ trait ServiceRoutes extends Utils {
         log.error(errMsg)
         complete(jsonize(e))
     }
+
 
   def serviceRoutes: Route = {
     import akka.http.scaladsl.server.Directives._
@@ -102,53 +105,19 @@ trait ServiceRoutes extends Utils {
                                   log.info(infoMsg)
 
 
-                                  val namePrefix = Slugify(name).splitAt(Slugify(name).lastIndexOf("-"))._1
-                                  val containsNamePrefix = for {
+
+
+                                  val slugifiedName = db.run((for {
                                     m <- models
-                                    if m.name startsWith namePrefix
-                                  } yield m
-
-
-                                  val checkExists = db.run(containsNamePrefix.exists.result)
-                                  val slugifiedName = checkExists.map {
-                                    case true =>
-                                      val tailNum = Slugify(name).splitAt(Slugify(name).lastIndexOf("-"))._2.substring(1)
-                                      if (isNumeric(tailNum)) {
-                                        s"$namePrefix-${tailNum.toInt + 1}"
-                                      } else {
-                                        Slugify(name)
-                                      }
-                                    case false =>
-                                      Slugify(name)
+                                    if m.name === Slugify(name)
+                                  } yield m).exists.result).onSuccess {
+                                    case false => Slugify(name)
+                                    case true => Versionize(Slugify(name))
                                   }
 
-                                  slugifiedName.onSuccess( {
-                                    case slug =>
-                                      onComplete(
-                                        db.run(
-                                          models += Model(
-                                            name = slug,
-                                            project = project,
-                                            description = description,
-                                            algorithm =
-                                              Option(evaluator.getSummary),
-                                            author = author,
-                                            filePath = filePath
-                                          ))) {
-                                        case Success(_) =>
-                                          val infoMsg =
-                                            s"model: $name record created as '$slug'"
-                                          log.info(infoMsg)
-                                          complete(jsonize(
-                                            infoMsg,
-                                            Option(StatusCodes.Created.intValue)))
-                                        case Failure(e) =>
-                                          val errMsg =
-                                            s"ERROR submitting model: $e"
-                                          log.error(errMsg)
-                                          complete(jsonize(e))
-                                      }
-                                  })
+                                  println(slugifiedName)
+
+
 
                                   onComplete(
                                     db.run(
@@ -218,6 +187,7 @@ trait ServiceRoutes extends Utils {
                                 case (metadata, byteSource) =>
                                   val sink = FileIO.toPath(Paths
                                     .get(dataUploadPath) resolve metadata.fileName)
+
                                   val uploaded = byteSource.runWith(sink)
 
                                   onComplete(uploaded) {
@@ -228,6 +198,7 @@ trait ServiceRoutes extends Utils {
                                           // todo: check for correct headers
                                           // todo: better error checking for batch
                                           // todo: assign parallelism to settings file
+                                          // todo: check for duplicate name slugs and file names
                                           val pmmlSchema =
                                             parsePmml(evaluator.getPMML)
 

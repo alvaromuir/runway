@@ -321,6 +321,7 @@ class ServiceRoutesSpec
 
       val expectedResp = s"model: ${Slugify(name)} record deleted"
       request ~> routes ~> check {
+        println(responseAs[String])
         status should ===(StatusCodes.OK)
         contentType should ===(ContentTypes.`application/json`)
         assert(parse(responseAs[String]).extract[JsonResponse].msg.contains(expectedResp))
@@ -331,7 +332,6 @@ class ServiceRoutesSpec
             val errMsg = s"ERROR querying data: $e"
             log.error(errMsg)
         }
-
       }
     }
 

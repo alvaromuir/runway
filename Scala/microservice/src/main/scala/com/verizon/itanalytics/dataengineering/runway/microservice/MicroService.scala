@@ -52,7 +52,7 @@ object MicroService extends ServiceRoutes {
             port
           )
           .onComplete {
-            case Success(ServerBinding(address)) => println(s"\n\nListening on $address\n\n")
+            case Success(ServerBinding(address)) => println(s"\nListening on $address\n")
             case Failure(cause)                  => println(s"Can't bind to $interface:$port: $cause")
           }
 
